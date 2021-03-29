@@ -19,7 +19,8 @@ import { idle } from "./utils.js";
 import workerURL from "emit-chunk:./worker.js";
 
 const code = document.querySelector("#code");
-const btn = document.querySelector("#go");
+const run = document.querySelector("#run");
+const share = document.querySelector("#share");
 const log = document.querySelector("#log");
 const cvs = document.querySelector("#jxl");
 const ctx = cvs.getContext("2d");
@@ -41,19 +42,29 @@ async function rerender() {
 
 const IDBKey = "source";
 async function main() {
-  const lastSource = await get(IDBKey);
+  const p = new URLSearchParams(location.search);
+  let lastSource = "";
+  if (p.has("code")) {
+    lastSource = atob(p.get("code"));
+  } else {
+    lastSource = await get(IDBKey);
+  }
   if (lastSource) {
     code.value = lastSource;
   }
   code.addEventListener("change", () => {
     set(IDBKey, code.value);
   });
-  btn.disabled = false;
-  btn.onclick = async () => {
-    btn.disabled = true;
+  run.disabled = false;
+  run.onclick = async () => {
+    run.disabled = true;
     log.innerHTML = "";
     await rerender();
-    btn.disabled = false;
+    run.disabled = false;
+  };
+  share.onclick = () => {
+    p.set("code", btoa(code.value));
+    location.search = p;
   };
 }
 main();

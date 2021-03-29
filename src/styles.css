@@ -25,3 +25,13 @@ body {
 a {
   color: #007;
 }
+footer {
+  text-align: center;
+}
+#buttons {
+  display: flex;
+}
+#buttons > * {
+  text-align: center;
+  flex: 1 1 0;
+}
