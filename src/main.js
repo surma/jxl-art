@@ -12,6 +12,7 @@
  */
 
 import { wrap } from "comlink";
+import { get, set } from "idb-keyval";
 
 import { idle } from "./utils.js";
 
@@ -38,11 +39,23 @@ async function rerender() {
   ctx.putImageData(imageData, 0, 0);
 }
 
-btn.onclick = async () => {
-  btn.disabled = true;
-  log.innerHTML = "";
-  await rerender();
+const IDBKey = "source";
+async function main() {
+  const lastSource = await get(IDBKey);
+  if (lastSource) {
+    code.value = lastSource;
+  }
+  code.addEventListener("change", () => {
+    set(IDBKey, code.value);
+  });
   btn.disabled = false;
-};
+  btn.onclick = async () => {
+    btn.disabled = true;
+    log.innerHTML = "";
+    await rerender();
+    btn.disabled = false;
+  };
+}
+main();
 
 idle().then(() => import("./sw-installer.js"));
