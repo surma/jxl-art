@@ -18,27 +18,59 @@ import { idle } from "./utils.js";
 
 import workerURL from "emit-chunk:./worker.js";
 
-const code = document.querySelector("#code");
-const run = document.querySelector("#run");
-const share = document.querySelector("#share");
-const log = document.querySelector("#log");
-const cvs = document.querySelector("#jxl");
+const { code, run, share, log, cvs, jxl, png, size } = document.all;
 const ctx = cvs.getContext("2d");
 
 const worker = new Worker(workerURL);
 const api = wrap(worker);
 
+let jxlData;
 async function rerender() {
-  const jxlData = await api.encodeJxl(code.value);
+  jxlData = await api.encodeJxl(code.value);
   if (typeof jxlData === "string") {
     log.innerHTML = jxlData;
     return;
   }
+  jxl.textContent = `Download JXL (${jxlData.byteLength} bytes)`;
   const imageData = await api.decodeJxl(jxlData);
   ctx.canvas.width = imageData.width;
   ctx.canvas.height = imageData.height;
   ctx.putImageData(imageData, 0, 0);
 }
+
+run.onclick = async () => {
+  run.disabled = true;
+  log.innerHTML = "";
+  await rerender();
+  [run, jxl, png].forEach((btn) => (btn.disabled = false));
+};
+
+share.onclick = () => {
+  const p = new URLSearchParams(location.search);
+  p.set("code", btoa(code.value));
+  location.search = p;
+};
+
+jxl.onclick = () => {
+  if (!jxlData) {
+    return;
+  }
+  const blob = new Blob([jxlData], { type: "image/jxl" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "art.jxl";
+  a.click();
+};
+
+png.onclick = async () => {
+  const blob = await new Promise((resolve) => cvs.toBlob(resolve, "image/png"));
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "art.png";
+  a.click();
+};
 
 const IDBKey = "source";
 async function main() {
@@ -56,16 +88,6 @@ async function main() {
     set(IDBKey, code.value);
   });
   run.disabled = false;
-  run.onclick = async () => {
-    run.disabled = true;
-    log.innerHTML = "";
-    await rerender();
-    run.disabled = false;
-  };
-  share.onclick = () => {
-    p.set("code", btoa(code.value));
-    location.search = p;
-  };
 }
 main();
 
