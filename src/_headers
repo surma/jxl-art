@@ -1,0 +1,17 @@
+# Long-term cache by default.
+/*
+  Cache-Control: max-age=31536000
+
+# And here are the exceptions:
+/
+  Cache-Control: no-cache
+
+/index.html
+  Cache-Control: no-cache
+
+
+/sw.js
+  Cache-Control: no-cache
+
+/manifest.json
+  Cache-Control: no-cache

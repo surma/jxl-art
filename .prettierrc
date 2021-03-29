@@ -1,0 +1,22 @@
+{
+  "overrides": [
+    {
+      "files": "*.as",
+      "options": {
+        "parser": "typescript"
+      }
+    },
+    {
+      "files": "*.html.ejs",
+      "options": {
+        "parser": "html"
+      }
+    },
+    {
+      "files": "*.json.ejs",
+      "options": {
+        "parser": "babel"
+      }
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<title>A Thing</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="manifest" href="<%= emitEjs('src/manifest.json.ejs') %>" />
+<style>
+  html,
+  body {
+    background: #ddd;
+  }
+</style>
+<main>
+  <canvas id="cvs"></canvas>
+</main>
+<script src="<%= emitChunk('src/main.js') %>"></script>
