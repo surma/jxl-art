@@ -10,10 +10,20 @@
   #jxl {
     image-rendering: pixelated;
   }
+  #code {
+    height: 20em;
+  }
 </style>
 <main>
+  <div>
+    <pre id="log"></pre>
+    <textarea id="code">
+      if N > 0
+        - Set 0
+        - Set 255
+    </textarea>
+    <button id="go">Run</button>
+  </div>
   <canvas id="jxl"></canvas>
-  <pre id="log"></pre>
-  <texarea id="code"></texarea>
 </main>
 <script src="<%= emitChunk('src/main.js') %>"></script>

@@ -17,22 +17,17 @@ import { idle } from "./utils.js";
 
 import workerURL from "emit-chunk:./worker.js";
 
-const t = `if N > 0
-  - Set 0
-  - Set 255
-`;
-
 const code = document.querySelector("#code");
+const btn = document.querySelector("#go");
 const log = document.querySelector("#log");
 const cvs = document.querySelector("#jxl");
 const ctx = cvs.getContext("2d");
 
-async function main() {
-  const worker = new Worker(workerURL);
-  const api = wrap(worker);
+const worker = new Worker(workerURL);
+const api = wrap(worker);
 
-  const jxlData = await api.encodeJxl(t);
-  console.log({ jxlData });
+async function rerender() {
+  const jxlData = await api.encodeJxl(code.value);
   if (typeof jxlData === "string") {
     log.innerHTML = jxlData;
     return;
@@ -43,5 +38,11 @@ async function main() {
   ctx.putImageData(imageData, 0, 0);
 }
 
-main();
+btn.onclick = async () => {
+  btn.disabled = true;
+  log.innerHTML = "";
+  await rerender();
+  btn.disabled = false;
+};
+
 idle().then(() => import("./sw-installer.js"));
