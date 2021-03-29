@@ -33,7 +33,7 @@
     "simple-git-hooks": "^2.2.0"
   },
   "lint-staged": {
-    "*.{ejs,as,js,css,md}": "prettier --write",
+    "*.{html.ejs,as,js,css,md}": "prettier --write",
     "*.{js,css,md}": "prettier --write"
   },
   "simple-git-hooks": {
