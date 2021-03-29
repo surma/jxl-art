@@ -2,33 +2,21 @@
 <title>JXL Art</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="manifest" href="<%= emitEjs('src/manifest.json.ejs') %>" />
-<style>
-  html,
-  body {
-    background: #ddd;
-  }
-  #jxl {
-    image-rendering: pixelated;
-  }
-  #code {
-    height: 20em;
-  }
-  #controls {
-    display: flex;
-    flex-direction: column;
-  }
-</style>
+<link rel="stylesheet" href="<%= emitAsset('src/styles.css') %>" />
 <main>
   <div id="controls">
-    <pre id="log"></pre>
     <textarea id="code">
       if N > 0
         - Set 0
         - Set 255
     </textarea>
     <button id="go" disabled>Run</button>
-    <a href="wtf.html">WTF is this?</a>
+    <a href="wtf.html" style="text-align: center">WTF is this? Help.</a>
+    <pre id="log"></pre>
   </div>
   <canvas id="jxl"></canvas>
 </main>
+<footer>
+  Made with 🤪 by <a href="https://twitter.com/dassurma">Surma</a>.
+</footer>
 <script src="<%= emitChunk('src/main.js') %>"></script>

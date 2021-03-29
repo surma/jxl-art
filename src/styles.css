@@ -1,0 +1,27 @@
+html,
+body {
+  background: #ddd;
+  margin: 0;
+  font-family: Helvetica Neue, Helvetica, sans-serif;
+}
+#jxl {
+  image-rendering: pixelated;
+}
+#code {
+  height: 20em;
+}
+#controls {
+  display: flex;
+  flex-direction: column;
+}
+#log {
+  margin: 0;
+}
+#log:not(:empty) {
+  border: 1px solid red;
+  margin: 1em 0;
+  padding: 0.5em;
+}
+a {
+  color: #007;
+}
