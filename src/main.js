@@ -24,12 +24,15 @@ const ctx = cvs.getContext("2d");
 const worker = new Worker(workerURL);
 const api = wrap(worker);
 
+function showError(error) {
+  log.innerHTML = error;
+}
+
 let jxlData;
 async function rerender() {
   jxlData = await api.encodeJxl(code.value);
   if (typeof jxlData === "string") {
-    log.innerHTML = jxlData;
-    return;
+    return showError(jxlData);
   }
   jxl.textContent = `Download JXL (${jxlData.byteLength} bytes)`;
   const imageData = await api.decodeJxl(jxlData);
@@ -41,7 +44,11 @@ async function rerender() {
 run.onclick = async () => {
   run.disabled = true;
   log.innerHTML = "";
-  await rerender();
+  try {
+    await rerender();
+  } catch (e) {
+    showError(e.message);
+  }
   [run, jxl, png].forEach((btn) => (btn.disabled = false));
 };
 
