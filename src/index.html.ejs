@@ -13,9 +13,13 @@
   #code {
     height: 20em;
   }
+  #controls {
+    display: flex;
+    flex-direction: column;
+  }
 </style>
 <main>
-  <div>
+  <div id="controls">
     <pre id="log"></pre>
     <textarea id="code">
       if N > 0
@@ -23,6 +27,7 @@
         - Set 255
     </textarea>
     <button id="go">Run</button>
+    <a href="wtf.html">WTF is this?</a>
   </div>
   <canvas id="jxl"></canvas>
 </main>

@@ -33,7 +33,7 @@ export default {
   plugins: [
     asset(),
     ejs({
-      files: ["src/_headers", "src/index.html.ejs"],
+      files: ["src/_headers", "src/index.html.ejs", "src/wtf.html.ejs"],
     }),
     emitChunk(),
     resolve(),

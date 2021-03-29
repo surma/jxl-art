@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<title>JXL Art</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="manifest" href="<%= emitEjs('src/manifest.json.ejs') %>" />
+<style>
+  html,
+  body {
+    background: #ddd;
+  }
+</style>
+
+<p>Decision nodes are of the form:</p>
+
+<pre>
+if [property] > [value:int]
+   (THEN BRANCH)
+   (ELSE BRANCH)
+</pre>
+
+<p>Leaf nodes are of the form;</p>
+
+<pre>
+  - [predictor] +-[offset:int]
+</pre>
+
+<p>List of properties:</p>
+
+<ul>
+  <li><code>c</code>: the channel number (0=R, 1=G, 2=B)</li>
+  <li>
+    <code>g</code>: group id, not useful (jxl_from_tree makes a single-group
+    image)
+  </li>
+  <li><code>x, y</code>: coordinates</li>
+  <li><code>|N|, |W| </code>: not useful (only useful after transforms)</li>
+  <li><code>N</code>: pixel above (north)</li>
+  <li><code>W</code>: pixel to the left (west)</li>
+  <li>
+    <code>W-WW-NW+NWW</code>: basically the error of the gradient predictor for
+    the pixel on the left
+  </li>
+  <li><code>W+N-NW</code>: value of gradient predictor (before clamping)</li>
+  <li>
+    <code> W-NW</code>: left minus topleft, i.e. error of the N predictor for
+    the pixel on the left
+  </li>
+  <li>
+    <code> NW-N</code>: topleft minus top, i.e. error of W predictor for the
+    pixel above
+  </li>
+  <li>
+    <code> N-NE</code>: top minus topright, i.e. error of W predictor for pixel
+    on top right
+  </li>
+  <li>
+    <code> N-NN</code>: top minus toptop, i.e. error of N predictor for pixel
+    above
+  </li>
+  <li>
+    <code> W-WW</code>: left minus leftleft, i.e. error of W predictor for the
+    pixel on the left
+  </li>
+  <li><code> WGH</code>: signed max-absval-error of the weighted predictor</li>
+</ul>
+
+<p>List of predictors:</p>
+
+<ul>
+  <li>
+    <code>Set</code>: always predicts zero, so effectively sets the pixel value
+    to [offset]
+  </li>
+  <li><code>W</code>: value of pixel on the left</li>
+  <li><code>N</code>: value of pixel above</li>
+  <li><code>NW</code>: value of topleft pixel</li>
+  <li><code>NE</code>: value of topright pixel</li>
+  <li><code>WW</code>: value of pixel to the left of the pixel on the left</li>
+  <li><code>Select</code>: predictor from lossless WebP</li>
+  <li><code>Gradient</code>: W+N-NW, clamped to min(W,N)..max(W,N)</li>
+  <li>
+    <code>Weighted</code>: weighted sum of 4 self-correcting subpredictors based
+    on their past performance (warning: not clamped so can get out of range)
+  </li>
+  <li>
+    <code>AvgW+N, AvgW+NW, AvgN+NW, AvgN+NE</code>: average of two pixel values
+  </li>
+  <li>
+    <code>AvgAll</code>: weighted sum of various pixels: (6 * top - 2 * toptop +
+    7 * left + 1 * leftleft + 1 * toprightright + 3 * topright + 8) / 16
+  </li>
+</ul>
+
+<p>Edge cases:</p>
+
+<ul>
+  <li>If x=y=0, W is set to 0. Otherwise, if x=0, W is set to N.</li>
+  <li>If y=0, N is set to W.</li>
+  <li>If x=0 or y=0, NW is set to W.</li>
+  <li>Similarly, NE and NN fall back to N and WW falls back to W.</li>
+</ul>
