@@ -16,23 +16,28 @@ import { wrap } from "comlink";
 import { idle } from "./utils.js";
 
 import workerURL from "emit-chunk:./worker.js";
-import testImageURL from "asset-url:./images/out.jxl";
 
-const t = `
-if N > 0
+const t = `if N > 0
   - Set 0
   - Set 255
 `;
 
-const cvs = document.querySelector("#cvs");
+const code = document.querySelector("#code");
+const log = document.querySelector("#log");
+const cvs = document.querySelector("#jxl");
 const ctx = cvs.getContext("2d");
 
 async function main() {
   const worker = new Worker(workerURL);
   const api = wrap(worker);
 
-  const data = await fetch(testImageURL).then((r) => r.arrayBuffer());
-  const imageData = await api.decodeJxl(data);
+  const jxlData = await api.encodeJxl(t);
+  console.log({ jxlData });
+  if (typeof jxlData === "string") {
+    log.innerHTML = jxlData;
+    return;
+  }
+  const imageData = await api.decodeJxl(jxlData);
   ctx.canvas.width = imageData.width;
   ctx.canvas.height = imageData.height;
   ctx.putImageData(imageData, 0, 0);

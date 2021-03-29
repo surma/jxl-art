@@ -12,7 +12,7 @@
  */
 
 export function idle() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     if ("requestIdleCallback" in self) {
       requestIdleCallback(resolve);
     } else {

@@ -7,8 +7,13 @@
   body {
     background: #ddd;
   }
+  #jxl {
+    image-rendering: pixelated;
+  }
 </style>
 <main>
-  <canvas id="cvs"></canvas>
+  <canvas id="jxl"></canvas>
+  <pre id="log"></pre>
+  <texarea id="code"></texarea>
 </main>
 <script src="<%= emitChunk('src/main.js') %>"></script>

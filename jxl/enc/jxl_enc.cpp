@@ -162,7 +162,7 @@ val JxlFromTree(std::string in) {
     std::stringstream ss(in);
     auto tok = [&ss]() {
       std::string out;
-      std::getline(ss, out);
+      ss >> out;
       return out;
     };
     if (!ParseNode(tok, tree)) {
@@ -227,9 +227,8 @@ val JxlFromTree(std::string in) {
   //   return 1;
   // }
 
-  auto js_result = val::null();
   if (EncodeFile(cparams, &io, &enc_state, &bytes)) {
-    js_result = Uint8Array.new_(typed_memory_view(bytes.size(), bytes.data()));
+    return Uint8Array.new_(typed_memory_view(bytes.size(), bytes.data()));
   }
 
   return val("Something went wrong");

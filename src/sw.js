@@ -15,10 +15,10 @@ import fileList from "file-list:";
 
 const excludedResources = ["sw.js", "_headers"];
 
-addEventListener("install", event => {
+addEventListener("install", (event) => {
   const resourcesToCache = fileList
-    .filter(file => !excludedResources.includes(file.name))
-    .map(file => file.name);
+    .filter((file) => !excludedResources.includes(file.name))
+    .map((file) => file.name);
 
   event.waitUntil(
     (async () => {
@@ -28,18 +28,18 @@ addEventListener("install", event => {
   );
 });
 
-addEventListener("activate", event => {
+addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-addEventListener("fetch", event => {
+addEventListener("fetch", (event) => {
   if (event.request.method !== "GET") {
     return;
   }
   event.respondWith(
     (async () => {
       const cachedResponse = await caches.match(event.request, {
-        ignoreSearch: true
+        ignoreSearch: true,
       });
       return cachedResponse || fetch(event.request);
     })()
