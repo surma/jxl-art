@@ -19,7 +19,7 @@ import "./pinch-zoom.js";
 
 import workerURL from "emit-chunk:./worker.js";
 
-const { code, run, share, log, cvs, jxl, png, zoom } = document.all;
+const { code, run, share, log, cvs, jxl, png, zoom, prettier } = document.all;
 const ctx = cvs.getContext("2d");
 
 const worker = new Worker(workerURL);
@@ -72,6 +72,10 @@ jxl.onclick = () => {
   a.href = url;
   a.download = "art.jxl";
   a.click();
+};
+
+prettier.onclick = async () => {
+  code.value = await api.prettier(code.value);
 };
 
 png.onclick = async () => {
