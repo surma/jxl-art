@@ -162,5 +162,9 @@ if [property] > [value:int]
       <code>N</code> and <code>WW</code> falls back to <code>W</code>.
     </li>
   </ul>
-  <footer>Commit <%= meta.currentCommit %></footer>
+  <footer>
+    Commit <%= meta.currentCommit %>
+    <button class="button" id="nuke">Nuke cache ☣️</button>
+  </footer>
+  <script src="<%= emitChunk('src/wtf.js'); %>"></script>
 </body>
