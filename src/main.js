@@ -19,7 +19,7 @@ import "./pinch-zoom.js";
 
 import workerURL from "emit-chunk:./worker.js";
 
-const { code, run, share, log, cvs, jxl, png, size } = document.all;
+const { code, run, share, log, cvs, jxl, png, zoom } = document.all;
 const ctx = cvs.getContext("2d");
 
 const worker = new Worker(workerURL);
@@ -96,6 +96,9 @@ async function main() {
     set(IDBKey, code.value);
   });
   run.disabled = false;
+  const rect = zoom.getBoundingClientRect();
+  const scale = Math.min(rect.width, rect.height) / 1024;
+  zoom.scaleTo(scale.toFixed(2));
 }
 main();
 

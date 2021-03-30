@@ -3,6 +3,9 @@ body {
   background: #ddd;
   margin: 0;
   font-family: Arial, sans-serif;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 #jxl {
   image-rendering: pixelated;

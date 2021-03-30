@@ -3,26 +3,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="manifest" href="<%= emitEjs('src/manifest.json.ejs') %>" />
 <link rel="stylesheet" href="<%= emitAsset('src/styles.css') %>" />
-<main>
-  <div id="controls">
-    <textarea id="code">
+<div id="controls">
+  <textarea id="code">
       if N > 0
         - Set 0
         - Set 255
-    </textarea>
-    <button id="run" disabled class="button">Run ▶️</button>
-    <button id="share" class="button">Share 🌍</button>
-    <a href="wtf.html" class="button">Help 😭</a>
-    <button disabled id="jxl" class="button">Download JXL ⬇️</button>
-    <button disabled id="png" class="button">Download PNG ⬇️</button>
-    <pre id="log"></pre>
-  </div>
-  <div style="overflow: auto">
-    <pinch-zoom>
-      <canvas id="cvs" width="1024" height="1024"></canvas>
-    </pinch-zoom>
-  </div>
-</main>
+    </textarea
+  >
+  <button id="run" disabled class="button">Run ▶️</button>
+  <button id="share" class="button">Share 🌍</button>
+  <a href="wtf.html" class="button">Help 😭</a>
+  <button disabled id="jxl" class="button">Download JXL ⬇️</button>
+  <button disabled id="png" class="button">Download PNG ⬇️</button>
+  <pre id="log"></pre>
+</div>
+<pinch-zoom id="zoom">
+  <canvas id="cvs" width="1024" height="1024"></canvas>
+</pinch-zoom>
 <footer>
   Made with 🤪 by <a href="https://twitter.com/dassurma">Surma</a>.
 </footer>
