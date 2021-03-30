@@ -30,6 +30,10 @@ function showLog(error) {
   log.innerHTML = error;
 }
 
+async function storeCode() {
+  set(IDBKey, code.value);
+}
+
 let jxlData;
 async function rerender() {
   jxlData = await api.encodeJxl(code.value);
@@ -84,6 +88,7 @@ jxl.onclick = () => {
 
 prettier.onclick = async () => {
   code.value = await api.prettier(code.value);
+  storeCode();
 };
 
 png.onclick = async () => {
@@ -109,9 +114,7 @@ async function main() {
   if (lastSource) {
     code.value = lastSource;
   }
-  code.addEventListener("input", () => {
-    set(IDBKey, code.value);
-  });
+  code.addEventListener("input", () => storeCode());
   run.disabled = false;
   const rect = zoom.getBoundingClientRect();
   const scale = Math.min(rect.width, rect.height) / 1024;
