@@ -13,6 +13,7 @@
 
 import { wrap } from "comlink";
 import { get, set } from "idb-keyval";
+import { inflate, deflate } from "./deflate.js";
 
 import { idle } from "./utils.js";
 import "./pinch-zoom.js";
@@ -59,7 +60,8 @@ run.onclick = async () => {
 share.onclick = () => {
   const u = new URL(location);
   const p = new URLSearchParams(u.search);
-  p.set("code", btoa(code.value));
+  const payload = btoa(deflate(code.value, 9));
+  p.set("zcode", payload);
   u.search = "?" + p.toString();
   history.replaceState({}, "", u);
   navigator.clipboard.writeText(u.toString());
@@ -95,7 +97,9 @@ const IDBKey = "source";
 async function main() {
   const p = new URLSearchParams(location.search);
   let lastSource = "";
-  if (p.has("code")) {
+  if (p.has("zcode")) {
+    lastSource = inflate(atob(p.get("zcode")));
+  } else if (p.has("code")) {
     lastSource = atob(p.get("code"));
   } else {
     lastSource = await get(IDBKey);
