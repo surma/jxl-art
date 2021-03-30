@@ -71,16 +71,14 @@ body.text {
   right: 0;
   bottom: 0;
 }
-#jxl,
-#png {
+#output footer {
   position: absolute;
   bottom: 0;
   right: 0;
-  height: 3em;
-  z-index: 9;
-}
-#png {
-  bottom: calc(3.1em);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 0.1em;
+  display: flex;
+  flex-direction: column;
 }
 
 /* pinch zoom stuff */

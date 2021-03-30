@@ -17,13 +17,15 @@
   <pre id="log"></pre>
 </div>
 <div id="output">
-  <button disabled id="jxl" class="button">Download JXL ⬇️</button>
-  <button disabled id="png" class="button">Download PNG ⬇️</button>
   <pinch-zoom id="zoom">
     <canvas id="cvs" width="1024" height="1024"></canvas>
   </pinch-zoom>
+  <footer>
+    <button disabled id="jxl" class="button">Download JXL ⬇️</button>
+    <button disabled id="png" class="button">Download PNG ⬇️</button>
+    <div id="credits">
+      Made with 🤪 by <a href="https://twitter.com/dassurma">Surma</a>.
+    </div>
+  </footer>
 </div>
-<footer>
-  Made with 🤪 by <a href="https://twitter.com/dassurma">Surma</a>.
-</footer>
 <script src="<%= emitChunk('src/main.js') %>"></script>
