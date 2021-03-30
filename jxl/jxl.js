@@ -903,7 +903,7 @@ var jxl = (function () {
       s: function (a) {
         return zb(a + 16) + 16;
       },
-      f: function () {},
+      g: function () {},
       r: function (a, b, c) {
         new Ga(a).ea(b, c);
         "uncaught_exception" in Q ? Q.aa++ : (Q.aa = 1);
@@ -1193,7 +1193,7 @@ var jxl = (function () {
           },
         });
       },
-      j: function (a, b, c) {
+      i: function (a, b, c) {
         c = R(c);
         if (2 === b) {
           var d = ma;
@@ -1254,16 +1254,16 @@ var jxl = (function () {
           toWireType: function () {},
         });
       },
-      h: Qa,
-      e: function (a) {
+      f: Qa,
+      j: function (a) {
         if (0 === a) return Y(ib());
         a = hb(a);
         return Y(ib()[a]);
       },
-      l: function (a) {
+      m: function (a) {
         4 < a && (X[a].$ += 1);
       },
-      i: function (a, b, c, d) {
+      h: function (a, b, c, d) {
         a || V("Cannot use deleted val. handle = " + a);
         a = X[a].value;
         var h = kb[b];
@@ -1302,10 +1302,10 @@ var jxl = (function () {
         }
         return h(a, c, d);
       },
-      m: function (a) {
+      q: function (a) {
         return Y(hb(a));
       },
-      q: function (a, b) {
+      l: function (a, b) {
         a = jb(a, "_emval_take_value");
         a = a.readValueFromPointer(b);
         return Y(a);
@@ -1316,7 +1316,7 @@ var jxl = (function () {
       v: function (a, b, c) {
         D.copyWithin(a, b, b + c);
       },
-      g: function (a) {
+      e: function (a) {
         a >>>= 0;
         var b = D.length;
         if (2147483648 < a) return !1;

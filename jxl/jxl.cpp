@@ -122,6 +122,8 @@ val decode(std::string data) {
 namespace jxl {
 
 namespace {
+  thread_local const uint32_t buf_size = 100;
+  thread_local std::string last_parse_error = std::string(buf_size, '\0');
 template <typename F> bool ParseNode(F &tok, Tree &tree) {
   static const std::unordered_map<std::string, int> property_map = {
       {"c", 0},           {"g", 1},      {"y", 2},     {"x", 3},
@@ -151,19 +153,19 @@ template <typename F> bool ParseNode(F &tok, Tree &tree) {
     int p;
     t = tok();
     if (!property_map.count(t)) {
-      fprintf(stderr, "Unexpected property: %s\n", t.c_str());
+      snprintf(&last_parse_error[0], buf_size, "Unexpected property: %s\n", t.c_str());
       return false;
     }
     p = property_map.at(t);
     if ((t = tok()) != ">") {
-      fprintf(stderr, "Expected >, found %s\n", t.c_str());
+      snprintf(&last_parse_error[0], buf_size, "Expected >, found %s\n", t.c_str());
       return false;
     }
     t = tok();
     size_t num = 0;
     int split = std::stoi(t, &num);
     if (num != t.size()) {
-      fprintf(stderr, "Invalid splitval: %s\n", t.c_str());
+      snprintf(&last_parse_error[0], buf_size, "Invalid splitval: %s\n", t.c_str());
       return false;
     }
     size_t pos = tree.size();
@@ -176,7 +178,7 @@ template <typename F> bool ParseNode(F &tok, Tree &tree) {
     t = tok();
     Predictor p;
     if (!predictor_map.count(t)) {
-      fprintf(stderr, "Unexpected predictor: %s\n", t.c_str());
+      snprintf(&last_parse_error[0], buf_size, "Unexpected predictor: %s\n", t.c_str());
       return false;
     }
     p = predictor_map.at(t);
@@ -191,39 +193,17 @@ template <typename F> bool ParseNode(F &tok, Tree &tree) {
     size_t num = 0;
     int offset = std::stoi(t, &num);
     if (num != t.size()) {
-      fprintf(stderr, "Invalid offset: %s\n", t.c_str());
+      snprintf(&last_parse_error[0], buf_size, "Invalid offset: %s\n", t.c_str());
       return false;
     }
     if (subtract)
       offset = -offset;
     tree.emplace_back(PropertyDecisionNode::Leaf(p, offset));
   } else {
-    fprintf(stderr, "Unexpected node type: %s\n", t.c_str());
+    snprintf(&last_parse_error[0], buf_size, "Unexpected node type: %s\n", t.c_str());
     return false;
   }
   return true;
-}
-
-void PrintTree(const Tree &tree, const std::string &path) {
-  FILE *f = fopen((path + ".dot").c_str(), "w");
-  fprintf(f, "digraph{\n");
-  for (size_t cur = 0; cur < tree.size(); cur++) {
-    if (tree[cur].property < 0) {
-      fprintf(f, "n%05zu [label=\"%s%+" PRId64 "\"];\n", cur,
-              PredictorName(tree[cur].predictor), tree[cur].predictor_offset);
-    } else {
-      fprintf(f, "n%05zu [label=\"%s>%d\"];\n", cur,
-              PropertyName(tree[cur].property).c_str(), tree[cur].splitval);
-      fprintf(f, "n%05zu -> n%05d [style=dashed];\n", cur, tree[cur].rchild);
-      fprintf(f, "n%05zu -> n%05d;\n", cur, tree[cur].lchild);
-    }
-  }
-  fprintf(f, "}\n");
-  fclose(f);
-  std::string command = "dot " + path + ".dot -T png -o " + path + ".png";
-  if (system(command.c_str()) != 0) {
-    JXL_ABORT("Command failed: %s", command.c_str());
-  }
 }
 
 class Heuristics : public DefaultEncoderHeuristics {
@@ -251,7 +231,7 @@ val JxlFromTree(std::string in) {
       return out;
     };
     if (!ParseNode(tok, tree)) {
-      return val("Parsing failed.");
+      return val(last_parse_error);
     }
   }
   constexpr size_t kSize = 1024;
