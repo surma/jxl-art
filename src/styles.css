@@ -59,6 +59,30 @@ body.text {
   margin: 0 auto;
 }
 
+#output {
+  position: relative;
+  flex-grow: 1;
+}
+
+#zoom {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+#jxl,
+#png {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 3em;
+  z-index: 9;
+}
+#png {
+  bottom: calc(3.1em);
+}
+
 /* pinch zoom stuff */
 pinch-zoom {
   display: block;

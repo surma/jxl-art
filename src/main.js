@@ -99,7 +99,7 @@ async function main() {
   if (lastSource) {
     code.value = lastSource;
   }
-  code.addEventListener("change", () => {
+  code.addEventListener("input", () => {
     set(IDBKey, code.value);
   });
   run.disabled = false;
