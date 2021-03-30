@@ -46,6 +46,9 @@ footer {
   color: black;
   font-size: 1em;
 }
+.button[disabled] {
+  color: #888;
+}
 
 body.text {
   padding: 1em;
