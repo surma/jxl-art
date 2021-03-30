@@ -1,24 +1,10 @@
-// Copyright (c) the JPEG XL Project
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-
 #include <emscripten/bind.h>
 #include <emscripten/val.h>
 
-using namespace emscripten;
+#include "lib/jxl/color_encoding_internal.h"
+#include <jxl/decode.h>
 
-thread_local const val Uint8Array = val::global("Uint8Array");
-
+#include "skcms.h"
 
 #include <stdio.h>
 
@@ -34,11 +20,109 @@ thread_local const val Uint8Array = val::global("Uint8Array");
 #include "lib/jxl/modular/encoding/encoding.h"
 #include "lib/jxl/modular/encoding/ma.h"
 
+using namespace emscripten;
+
+thread_local const val Uint8ClampedArray = val::global("Uint8ClampedArray");
+thread_local const val ImageData = val::global("ImageData");
+thread_local const val Uint8Array = val::global("Uint8Array");
+
+// R, G, B, A
+#define COMPONENTS_PER_PIXEL 4
+
+#ifndef JXL_DEBUG_ON_ALL_ERROR
+#define JXL_DEBUG_ON_ALL_ERROR 0
+#endif
+
+#if JXL_DEBUG_ON_ALL_ERROR
+#define EXPECT_TRUE(a)                                                         \
+  if (!(a)) {                                                                  \
+    fprintf(stderr, "Assertion failure (%d): %s\n", __LINE__, #a);             \
+    return val::null();                                                        \
+  }
+#define EXPECT_EQ(a, b)                                                        \
+  {                                                                            \
+    int a_ = a;                                                                \
+    int b_ = b;                                                                \
+    if (a_ != b_) {                                                            \
+      fprintf(stderr, "Assertion failure (%d): %s (%d) != %s (%d)\n",          \
+              __LINE__, #a, a_, #b, b_);                                       \
+      return val::null();                                                      \
+    }                                                                          \
+  }
+#else
+#define EXPECT_TRUE(a)                                                         \
+  if (!(a)) {                                                                  \
+    return val::null();                                                        \
+  }
+
+#define EXPECT_EQ(a, b) EXPECT_TRUE((a) == (b));
+#endif
+
+val decode(std::string data) {
+  std::unique_ptr<
+      JxlDecoder,
+      std::integral_constant<decltype(&JxlDecoderDestroy), JxlDecoderDestroy>>
+      dec(JxlDecoderCreate(nullptr));
+  EXPECT_EQ(JXL_DEC_SUCCESS,
+            JxlDecoderSubscribeEvents(dec.get(), JXL_DEC_BASIC_INFO |
+                                                     JXL_DEC_COLOR_ENCODING |
+                                                     JXL_DEC_FULL_IMAGE));
+
+  auto next_in = (const uint8_t *)data.c_str();
+  auto avail_in = data.size();
+  JxlDecoderSetInput(dec.get(), next_in, avail_in);
+  EXPECT_EQ(JXL_DEC_BASIC_INFO, JxlDecoderProcessInput(dec.get()));
+  JxlBasicInfo info;
+  EXPECT_EQ(JXL_DEC_SUCCESS, JxlDecoderGetBasicInfo(dec.get(), &info));
+  size_t pixel_count = info.xsize * info.ysize;
+  size_t component_count = pixel_count * COMPONENTS_PER_PIXEL;
+
+  EXPECT_EQ(JXL_DEC_COLOR_ENCODING, JxlDecoderProcessInput(dec.get()));
+  static const JxlPixelFormat format = {COMPONENTS_PER_PIXEL, JXL_TYPE_FLOAT,
+                                        JXL_LITTLE_ENDIAN, 0};
+  size_t icc_size;
+  EXPECT_EQ(JXL_DEC_SUCCESS,
+            JxlDecoderGetICCProfileSize(
+                dec.get(), &format, JXL_COLOR_PROFILE_TARGET_DATA, &icc_size));
+  std::vector<uint8_t> icc_profile(icc_size);
+  EXPECT_EQ(JXL_DEC_SUCCESS,
+            JxlDecoderGetColorAsICCProfile(
+                dec.get(), &format, JXL_COLOR_PROFILE_TARGET_DATA,
+                icc_profile.data(), icc_profile.size()));
+
+  EXPECT_EQ(JXL_DEC_NEED_IMAGE_OUT_BUFFER, JxlDecoderProcessInput(dec.get()));
+  size_t buffer_size;
+  EXPECT_EQ(JXL_DEC_SUCCESS,
+            JxlDecoderImageOutBufferSize(dec.get(), &format, &buffer_size));
+  EXPECT_EQ(buffer_size, component_count * sizeof(float));
+
+  auto float_pixels = std::make_unique<float[]>(component_count);
+  EXPECT_EQ(JXL_DEC_SUCCESS,
+            JxlDecoderSetImageOutBuffer(dec.get(), &format, float_pixels.get(),
+                                        component_count * sizeof(float)));
+  EXPECT_EQ(JXL_DEC_FULL_IMAGE, JxlDecoderProcessInput(dec.get()));
+
+  auto byte_pixels = std::make_unique<uint8_t[]>(component_count);
+  // Convert to sRGB.
+  skcms_ICCProfile jxl_profile;
+  EXPECT_TRUE(
+      skcms_Parse(icc_profile.data(), icc_profile.size(), &jxl_profile));
+  EXPECT_TRUE(skcms_Transform(
+      float_pixels.get(), skcms_PixelFormat_RGBA_ffff,
+      info.alpha_premultiplied ? skcms_AlphaFormat_PremulAsEncoded
+                               : skcms_AlphaFormat_Unpremul,
+      &jxl_profile, byte_pixels.get(), skcms_PixelFormat_RGBA_8888,
+      skcms_AlphaFormat_Unpremul, skcms_sRGB_profile(), pixel_count));
+
+  return ImageData.new_(Uint8ClampedArray.new_(typed_memory_view(
+                            component_count, byte_pixels.get())),
+                        info.xsize, info.ysize);
+}
+
 namespace jxl {
 
 namespace {
-template <typename F>
-bool ParseNode(F& tok, Tree& tree) {
+template <typename F> bool ParseNode(F &tok, Tree &tree) {
   static const std::unordered_map<std::string, int> property_map = {
       {"c", 0},           {"g", 1},      {"y", 2},     {"x", 3},
       {"|N|", 4},         {"|W|", 5},    {"N", 6},     {"W", 7},
@@ -110,7 +194,8 @@ bool ParseNode(F& tok, Tree& tree) {
       fprintf(stderr, "Invalid offset: %s\n", t.c_str());
       return false;
     }
-    if (subtract) offset = -offset;
+    if (subtract)
+      offset = -offset;
     tree.emplace_back(PropertyDecisionNode::Leaf(p, offset));
   } else {
     fprintf(stderr, "Unexpected node type: %s\n", t.c_str());
@@ -119,8 +204,8 @@ bool ParseNode(F& tok, Tree& tree) {
   return true;
 }
 
-void PrintTree(const Tree& tree, const std::string& path) {
-  FILE* f = fopen((path + ".dot").c_str(), "w");
+void PrintTree(const Tree &tree, const std::string &path) {
+  FILE *f = fopen((path + ".dot").c_str(), "w");
   fprintf(f, "digraph{\n");
   for (size_t cur = 0; cur < tree.size(); cur++) {
     if (tree[cur].property < 0) {
@@ -142,19 +227,19 @@ void PrintTree(const Tree& tree, const std::string& path) {
 }
 
 class Heuristics : public DefaultEncoderHeuristics {
- public:
-  bool CustomFixedTreeLossless(const jxl::FrameDimensions& frame_dim,
-                               Tree* tree) override {
+public:
+  bool CustomFixedTreeLossless(const jxl::FrameDimensions &frame_dim,
+                               Tree *tree) override {
     *tree = tree_;
     return true;
   }
 
   explicit Heuristics(Tree tree) : tree_(std::move(tree)) {}
 
- private:
+private:
   Tree tree_;
 };
-}  // namespace
+} // namespace
 
 val JxlFromTree(std::string in) {
   Tree tree;
@@ -187,8 +272,8 @@ val JxlFromTree(std::string in) {
     Properties properties(num_props);
     weighted::State wp_state(weighted::Header(), channel.w, channel.h);
     for (size_t y = 0; y < channel.h; y++) {
-      pixel_type* JXL_RESTRICT p = channel.Row(y);
-      float* JXL_RESTRICT pf = image.PlaneRow(c, y);
+      pixel_type *JXL_RESTRICT p = channel.Row(y);
+      float *JXL_RESTRICT pf = image.PlaneRow(c, y);
       InitPropsRow(&properties, static_props, y);
       for (size_t x = 0; x < channel.w; x++) {
         PredictionResult res =
@@ -221,11 +306,6 @@ val JxlFromTree(std::string in) {
   cparams.channel_colors_percent = 0;
   cparams.modular_group_size_shift = 3;
   PaddedBytes bytes;
-  // JXL_CHECK(EncodeFile(cparams, &io, &enc_state, &compressed));
-  // if (!WriteFile(compressed, out)) {
-  //   fprintf(stderr, "Failed to write to \"%s\"\n", out);
-  //   return 1;
-  // }
 
   if (EncodeFile(cparams, &io, &enc_state, &bytes)) {
     return Uint8Array.new_(typed_memory_view(bytes.size(), bytes.data()));
@@ -233,16 +313,9 @@ val JxlFromTree(std::string in) {
 
   return val("Something went wrong");
 }
-}  // namespace jxl
-
-// int main(int argc, char** argv) {
-//   if (argc != 3 && argc != 4) {
-//     fprintf(stderr, "Usage: %s tree_in.txt out.jxl [tree_drawing]\n", argv[0]);
-//     return 1;
-//   }
-//   return jxl::JxlFromTree(argv[1], argv[2], argc < 4 ? nullptr : argv[3]);
-// }
+} // namespace jxl
 
 EMSCRIPTEN_BINDINGS(my_module) {
   function("jxl_from_tree", &jxl::JxlFromTree);
+  function("decode", &decode);
 }

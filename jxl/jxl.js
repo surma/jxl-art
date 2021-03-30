@@ -1,11 +1,11 @@
-var jxl_enc = (function () {
+var jxl = (function () {
   var _scriptDir = import.meta.url;
 
-  return function (jxl_enc) {
-    jxl_enc = jxl_enc || {};
+  return function (jxl) {
+    jxl = jxl || {};
 
     var f;
-    f || (f = typeof jxl_enc !== "undefined" ? jxl_enc : {});
+    f || (f = typeof jxl !== "undefined" ? jxl : {});
     var aa, ba;
     f.ready = new Promise(function (a, b) {
       aa = a;
@@ -197,7 +197,7 @@ var jxl_enc = (function () {
         ? a.startsWith("data:application/octet-stream;base64,")
         : 0 === a.indexOf("data:application/octet-stream;base64,");
     }
-    var O = "jxl_enc.wasm";
+    var O = "jxl.wasm";
     if (!Ca()) {
       var Da = O;
       O = f.locateFile ? f.locateFile(Da, x) : x + Da;
@@ -900,16 +900,16 @@ var jxl_enc = (function () {
       },
     });
     var Ab = {
-      q: function (a) {
+      s: function (a) {
         return zb(a + 16) + 16;
       },
-      C: function () {},
-      p: function (a, b, c) {
+      f: function () {},
+      r: function (a, b, c) {
         new Ga(a).ea(b, c);
         "uncaught_exception" in Q ? Q.aa++ : (Q.aa = 1);
         throw a;
       },
-      z: function (a, b, c, d, h) {
+      B: function (a, b, c, d, h) {
         var g = Ha(c);
         b = R(b);
         W(a, {
@@ -931,7 +931,7 @@ var jxl_enc = (function () {
           S: null,
         });
       },
-      y: function (a, b) {
+      A: function (a, b) {
         b = R(b);
         W(a, {
           name: b,
@@ -948,7 +948,7 @@ var jxl_enc = (function () {
           S: null,
         });
       },
-      j: function (a, b, c) {
+      o: function (a, b, c) {
         c = Ha(c);
         b = R(b);
         W(a, {
@@ -968,7 +968,7 @@ var jxl_enc = (function () {
           S: null,
         });
       },
-      m: function (a, b, c, d, h, g) {
+      k: function (a, b, c, d, h, g) {
         var m = Ya(b, c);
         a = R(a);
         h = $a(d, h);
@@ -1131,7 +1131,7 @@ var jxl_enc = (function () {
           { da: !0 }
         );
       },
-      k: function (a, b) {
+      p: function (a, b) {
         b = R(b);
         var c = "std::string" === b;
         W(a, {
@@ -1193,7 +1193,7 @@ var jxl_enc = (function () {
           },
         });
       },
-      f: function (a, b, c) {
+      j: function (a, b, c) {
         c = R(c);
         if (2 === b) {
           var d = ma;
@@ -1244,7 +1244,7 @@ var jxl_enc = (function () {
           },
         });
       },
-      A: function (a, b) {
+      C: function (a, b) {
         b = R(b);
         W(a, {
           oa: !0,
@@ -1255,7 +1255,7 @@ var jxl_enc = (function () {
         });
       },
       h: Qa,
-      B: function (a) {
+      e: function (a) {
         if (0 === a) return Y(ib());
         a = hb(a);
         return Y(ib()[a]);
@@ -1263,7 +1263,7 @@ var jxl_enc = (function () {
       l: function (a) {
         4 < a && (X[a].$ += 1);
       },
-      n: function (a, b, c, d) {
+      i: function (a, b, c, d) {
         a || V("Cannot use deleted val. handle = " + a);
         a = X[a].value;
         var h = kb[b];
@@ -1302,10 +1302,10 @@ var jxl_enc = (function () {
         }
         return h(a, c, d);
       },
-      g: function (a) {
+      m: function (a) {
         return Y(hb(a));
       },
-      o: function (a, b) {
+      q: function (a, b) {
         a = jb(a, "_emval_take_value");
         a = a.readValueFromPointer(b);
         return Y(a);
@@ -1313,10 +1313,10 @@ var jxl_enc = (function () {
       b: function () {
         B();
       },
-      t: function (a, b, c) {
+      v: function (a, b, c) {
         D.copyWithin(a, b, b + c);
       },
-      e: function (a) {
+      g: function (a) {
         a >>>= 0;
         var b = D.length;
         if (2147483648 < a) return !1;
@@ -1338,7 +1338,7 @@ var jxl_enc = (function () {
         }
         return !1;
       },
-      v: function (a, b) {
+      x: function (a, b) {
         var c = 0;
         mb().forEach(function (d, h) {
           var g = b + c;
@@ -1349,7 +1349,7 @@ var jxl_enc = (function () {
         });
         return 0;
       },
-      w: function (a, b) {
+      y: function (a, b) {
         var c = mb();
         H[a >> 2] = c.length;
         var d = 0;
@@ -1359,11 +1359,11 @@ var jxl_enc = (function () {
         H[b >> 2] = d;
         return 0;
       },
-      x: function () {
+      z: function () {
         return 0;
       },
-      r: function () {},
-      i: function (a, b, c, d) {
+      t: function () {},
+      n: function (a, b, c, d) {
         for (var h = 0, g = 0; g < c; g++) {
           for (
             var m = H[(b + 8 * g) >> 2], k = H[(b + (8 * g + 4)) >> 2], n = 0;
@@ -1387,8 +1387,8 @@ var jxl_enc = (function () {
         return 0;
       },
       a: C,
-      s: function () {},
-      u: function (a, b, c, d) {
+      u: function () {},
+      w: function (a, b, c, d) {
         return ub(a, b, c, d);
       },
     };
@@ -1537,7 +1537,7 @@ var jxl_enc = (function () {
     noExitRuntime = !0;
     Db();
 
-    return jxl_enc.ready;
+    return jxl.ready;
   };
 })();
-export default jxl_enc;
+export default jxl;

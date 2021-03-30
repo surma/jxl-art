@@ -1,28 +1,22 @@
 import { expose } from "comlink";
 
-import decoder from "../jxl/dec/jxl_dec.js";
-import decoderWasmURL from "asset-url:../jxl/dec/jxl_dec.wasm";
+import glue from "../jxl/jxl.js";
+import wasmURL from "asset-url:../jxl/jxl.wasm";
 
-import encoder from "../jxl/enc/jxl_enc.js";
-import encoderWasmURL from "asset-url:../jxl/enc/jxl_enc.wasm";
+const instanceP = glue({
+  locateFile() {
+    return wasmURL;
+  },
+});
 
 expose({
   async encodeJxl(code) {
-    const instance = await encoder({
-      locateFile() {
-        return encoderWasmURL;
-      },
-    });
-
+    const instance = await instanceP;
     const data = instance.jxl_from_tree(code);
     return data;
   },
   async decodeJxl(data) {
-    const instance = await decoder({
-      locateFile() {
-        return decoderWasmURL;
-      },
-    });
+    const instance = await instanceP;
     const imageData = instance.decode(data);
     return imageData;
   },
