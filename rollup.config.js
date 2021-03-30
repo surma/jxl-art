@@ -11,6 +11,8 @@
  * limitations under the License.
  */
 
+import { execSync } from "child_process";
+
 import resolve from "@rollup/plugin-node-resolve";
 import omt from "@surma/rollup-plugin-off-main-thread";
 import { terser } from "rollup-plugin-terser";
@@ -24,6 +26,10 @@ import asset from "./rollup/asset.js";
 
 require("rimraf").sync("build");
 
+const currentCommit = execSync("git show HEAD --format=format:%h -s").toString(
+  "utf8"
+);
+
 export default {
   output: {
     dir: "build",
@@ -33,7 +39,10 @@ export default {
   plugins: [
     asset(),
     ejs({
-      files: ["src/_headers", "src/index.html.ejs", "src/wtf.html.ejs"],
+      meta: {
+        currentCommit,
+      },
+      files: ["src/_headers", "src/index.html.ejs"],
     }),
     emitChunk(),
     resolve(),

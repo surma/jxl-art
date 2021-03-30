@@ -17,7 +17,7 @@ import { basename } from "path";
 
 import * as ejs from "ejs";
 
-export default function({ files }) {
+export default function ({ files, meta = {} } = {}) {
   files = files.slice(); // Copy
   const assets = new Map();
   const chunks = new Map();
@@ -29,6 +29,7 @@ export default function({ files }) {
       for (let file of files) {
         const source = await fsp.readFile(file, "utf-8");
         ejs.render(source, {
+          meta,
           bundle: {},
           emitAsset(path) {
             const source = readFileSync(path);
@@ -36,25 +37,25 @@ export default function({ files }) {
             const referenceId = rollupContext.emitFile({
               type: "asset",
               name,
-              source
+              source,
             });
             assets.set(path, referenceId);
           },
           emitChunk(id) {
             const referenceId = rollupContext.emitFile({
               type: "chunk",
-              id
+              id,
             });
             chunks.set(id, referenceId);
           },
           emitEjs(file) {
             files.push(file);
-          }
+          },
         });
         const fileName = basename(file).replace(/\.ejs$/, "");
         const referenceId = this.emitFile({
           type: "asset",
-          fileName
+          fileName,
         });
         templates.push({ referenceId, source });
       }
@@ -63,6 +64,7 @@ export default function({ files }) {
       const rollupContext = this;
       for (const { referenceId, source } of templates) {
         const result = ejs.render(source, {
+          meta,
           bundle: {},
           emitAsset(name) {
             if (!assets.has(name)) {
@@ -78,10 +80,10 @@ export default function({ files }) {
           },
           emitEjs(file) {
             return basename(file).replace(/\.ejs$/, "");
-          }
+          },
         });
         this.setAssetSource(referenceId, result);
       }
-    }
+    },
   };
 }
