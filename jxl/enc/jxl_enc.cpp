@@ -20,19 +20,6 @@ using namespace emscripten;
 thread_local const val Uint8Array = val::global("Uint8Array");
 
 
-#include <stdio.h>
-
-#include <fstream>
-#include <iostream>
-#include <unordered_map>
-
-#include "lib/jxl/base/file_io.h"
-#include "lib/jxl/enc_cache.h"
-#include "lib/jxl/enc_file.h"
-#include "lib/jxl/enc_heuristics.h"
-#include "lib/jxl/modular/encoding/context_predict.h"
-#include "lib/jxl/modular/encoding/encoding.h"
-#include "lib/jxl/modular/encoding/ma.h"
 
 namespace jxl {
 

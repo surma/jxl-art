@@ -6,7 +6,7 @@ CODEC_BUILD_DIR := $(CODEC_BUILD_ROOT)
 
 ENVIRONMENT = worker
 
-OUT_JS = dec/jxl_dec.js enc/jxl_enc.js
+OUT_JS = dec/jxl_dec.js
 OUT_WASM = $(OUT_JS:.js=.wasm)
 OUT_WORKER = $(OUT_JS:.js=.worker.js)
 
