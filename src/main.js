@@ -15,6 +15,7 @@ import { wrap } from "comlink";
 import { get, set } from "idb-keyval";
 
 import { idle } from "./utils.js";
+import "./pinch-zoom.js";
 
 import workerURL from "emit-chunk:./worker.js";
 

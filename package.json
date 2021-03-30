@@ -18,6 +18,7 @@
     "comlink": "^4.3.0",
     "ejs": "^3.1.6",
     "idb-keyval": "^5.0.4",
+    "pointer-tracker": "^2.4.0",
     "rimraf": "^3.0.2",
     "rollup": "^2.43.1",
     "rollup-plugin-postcss": "^4.0.0",
