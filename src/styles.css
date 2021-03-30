@@ -8,11 +8,19 @@ body {
   flex-direction: column;
 }
 #cvs {
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -o-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: optimize-contrast;
+  image-rendering: crisp-edges;
   image-rendering: pixelated;
+  -ms-interpolation-mode: nearest-neighbor;
 }
 #code {
   height: 20em;
   flex-basis: 100%;
+  font-family: monospace;
 }
 #controls {
   display: flex;
