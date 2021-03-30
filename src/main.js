@@ -17,7 +17,7 @@ import { get, set } from "idb-keyval";
 import { idle } from "./utils.js";
 import "./pinch-zoom.js";
 
-import workerURL from "emit-chunk:./worker.js";
+import workerURL from "omt:./worker.js";
 
 const { code, run, share, log, cvs, jxl, png, zoom, prettier } = document.all;
 const ctx = cvs.getContext("2d");

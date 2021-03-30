@@ -12,9 +12,6 @@
 /wtf.html
   Cache-Control: no-cache
 
-/worker.js
-  Cache-Control: no-cache
-
 /sw.js
   Cache-Control: no-cache
 
