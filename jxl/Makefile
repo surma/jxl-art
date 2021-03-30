@@ -6,7 +6,7 @@ CODEC_BUILD_DIR := $(CODEC_BUILD_ROOT)
 
 ENVIRONMENT = worker
 
-OUT_JS = dec/jxl_dec.js
+OUT_JS = jxl.js
 OUT_WASM = $(OUT_JS:.js=.wasm)
 OUT_WORKER = $(OUT_JS:.js=.worker.js)
 
@@ -14,14 +14,7 @@ OUT_WORKER = $(OUT_JS:.js=.worker.js)
 
 all: $(OUT_JS)
 
-# Define dependencies for all variations of build artifacts.
-$(filter enc/%,$(OUT_JS)): enc/jxl_enc.cpp
-$(filter dec/%,$(OUT_JS)): dec/jxl_dec.cpp
-
-enc/jxl_enc.js dec/jxl_dec.js : CODEC_BUILD_DIR:=$(CODEC_BUILD_DIR)
-enc/jxl_enc.js dec/jxl_dec.js: $(CODEC_BUILD_DIR)/lib/libjxl.a
-
-$(OUT_JS):
+$(OUT_JS): jxl.cpp $(CODEC_BUILD_DIR)/lib/libjxl.a
 	$(CXX) \
 		$(CXXFLAGS) \
 		$(LDFLAGS) \
@@ -49,9 +42,6 @@ $(OUT_JS):
 
 %/lib/libjxl.a: %/Makefile
 	$(MAKE) -C $(<D) jxl-static
-
-# Enable SIMD on a SIMD build.
-$(CODEC_MT_SIMD_BUILD_DIR)/Makefile: CXXFLAGS+=-msimd128
 
 %/Makefile: $(CODEC_DIR)/CMakeLists.txt
 	emcmake cmake \

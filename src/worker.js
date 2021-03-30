@@ -1,14 +1,11 @@
 import { expose } from "comlink";
 
-import decoder from "../jxl/dec/jxl_dec.js";
-import decoderWasmURL from "asset-url:../jxl/dec/jxl_dec.wasm";
+import glue from "../jxl/jxl.js";
+import wasmURL from "asset-url:../jxl/jxl.wasm";
 
-// import encoder from "../jxl/enc/jxl_enc.js";
-// import encoderWasmURL from "asset-url:../jxl/enc/jxl_enc.wasm";
-
-const instanceP = decoder({
+const instanceP = glue({
   locateFile() {
-    return decoderWasmURL;
+    return wasmURL;
   },
 });
 

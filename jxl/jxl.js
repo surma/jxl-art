@@ -1,11 +1,11 @@
-var jxl_dec = (function () {
+var jxl = (function () {
   var _scriptDir = import.meta.url;
 
-  return function (jxl_dec) {
-    jxl_dec = jxl_dec || {};
+  return function (jxl) {
+    jxl = jxl || {};
 
     var f;
-    f || (f = typeof jxl_dec !== "undefined" ? jxl_dec : {});
+    f || (f = typeof jxl !== "undefined" ? jxl : {});
     var aa, ba;
     f.ready = new Promise(function (a, b) {
       aa = a;
@@ -197,7 +197,7 @@ var jxl_dec = (function () {
         ? a.startsWith("data:application/octet-stream;base64,")
         : 0 === a.indexOf("data:application/octet-stream;base64,");
     }
-    var O = "jxl_dec.wasm";
+    var O = "jxl.wasm";
     if (!Ca()) {
       var Da = O;
       O = f.locateFile ? f.locateFile(Da, x) : x + Da;
@@ -1537,7 +1537,7 @@ var jxl_dec = (function () {
     noExitRuntime = !0;
     Db();
 
-    return jxl_dec.ready;
+    return jxl.ready;
   };
 })();
-export default jxl_dec;
+export default jxl;
