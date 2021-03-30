@@ -13,7 +13,7 @@
 
 import { wrap } from "comlink";
 import { get, set } from "idb-keyval";
-import { inflate, deflate } from "./deflate.js";
+import inflate from "./inflate.js";
 
 import { idle } from "./utils.js";
 import "./pinch-zoom.js";
@@ -57,11 +57,13 @@ run.onclick = async () => {
   [run, jxl, png].forEach((btn) => (btn.disabled = false));
 };
 
-share.onclick = () => {
+share.onclick = async () => {
   const u = new URL(location);
   const p = new URLSearchParams(u.search);
+  const { default: deflate } = await import("./deflate.js");
   const payload = btoa(deflate(code.value, 9));
   p.set("zcode", payload);
+  p.delete("code");
   u.search = "?" + p.toString();
   history.replaceState({}, "", u);
   navigator.clipboard.writeText(u.toString());
