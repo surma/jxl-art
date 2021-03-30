@@ -27,7 +27,7 @@ body {
   flex-basis: 100%;
 }
 #log:not(:empty) {
-  border: 1px solid red;
+  /* border: 1px solid red; */
   margin: 1em 0;
   padding: 0.5em;
 }

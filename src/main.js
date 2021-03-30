@@ -25,7 +25,7 @@ const ctx = cvs.getContext("2d");
 const worker = new Worker(workerURL);
 const api = wrap(worker);
 
-function showError(error) {
+function showLog(error) {
   log.innerHTML = error;
 }
 
@@ -33,7 +33,7 @@ let jxlData;
 async function rerender() {
   jxlData = await api.encodeJxl(code.value);
   if (typeof jxlData === "string") {
-    return showError(jxlData);
+    return showLog(jxlData);
   }
   jxl.textContent = jxl.textContent.replace(
     /(\([^)]+\))?$/,
@@ -51,15 +51,19 @@ run.onclick = async () => {
   try {
     await rerender();
   } catch (e) {
-    showError(e.message);
+    showLog(e.message);
   }
   [run, jxl, png].forEach((btn) => (btn.disabled = false));
 };
 
 share.onclick = () => {
-  const p = new URLSearchParams(location.search);
+  const u = new URL(location);
+  const p = new URLSearchParams(u.search);
   p.set("code", btoa(code.value));
-  location.search = p;
+  u.search = "?" + p.toString();
+  history.replaceState({}, "", u);
+  navigator.clipboard.writeText(u.toString());
+  showLog("URL copied to clipboard.");
 };
 
 jxl.onclick = () => {
