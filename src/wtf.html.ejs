@@ -21,23 +21,30 @@
   </p>
 
   <p>
-    The oversimplified summary is that JPEG XL divides the image it encodes into
-    rectangles, up to 1024x1024. Within each rectangle, a different prediction
-    tree is used. The job of a prediction tree is to make a prediction what the
-    value of each pixel is based on neighboring pixels and their so-called
-    gradients. As a result only the <em>difference</em> between the actual image
-    and the prediction needs to be encoded. The better the predictions, the
-    smaller the difference, the smaller the amount of data that needs to be
-    encoded, yielding something more compressible, hence the small file size. In
-    the context of JXL art, however, the difference is assumed to be zero, so
-    that the predictions alone define what the image is. The prediction tree is
-    a combination of if-else statements and different predictors. The
-    flexibility of these prediction trees is intentionally limited as execution
-    needs to be fast and very small. The prediction tree is run for every
-    channel (red, green and blue) and for every pixel, although a pixel can only
-    be predicted if all the pixels to the left and to the top have already been
-    predicted. You can think about it as if the entire image is predicted
-    row-by-row, top-to-bottom, left-to-right (just like Westerners read books).
+    The oversimplified summary is that JPEG XL has a modular mode that divides
+    the image it encodes into squares, up to 1024x1024. JPEG XL uses a
+    prediction tree to make a prediction what the value of each pixel is in such
+    a square, based on neighboring pixels and their gradients. As a result only
+    the <em>difference</em> (or error) between the <em>actual</em> image and the
+    prediction needs to be encoded. The better the predictions, the smaller the
+    error, the more compressible the data, the smaller the file size. Profit.
+  </p>
+
+  <p>
+    In the context of JXL art, however, there is only one 1024x1024 square and
+    the error is always assumed to be zero, which makes the image consist of
+    <em>only</em> the prediction tree. That means the predictions effectively
+    generate the image. The process of creating JXL art is writing that
+    prediction tree. A prediction tree is a tree of if-else statements,
+    branching on different properties and selecting a predictor for each leaf of
+    the tree. The flexibility of these prediction trees is intentionally limited
+    because they need to be small and execution needs to be fast, as it is part
+    of the image decoding process. The prediction tree is run for every channel
+    (red, green and blue) and for every pixel. Some predictors incorporate the
+    values of the current pixel’s neighbors, specifically to the left, top-left,
+    top and top-right, which dictates in which order the pixels have to be
+    predicted: Row-by-row, top-to-bottom, left-to-right — just like Westerners
+    read text.
   </p>
 
   <p>
