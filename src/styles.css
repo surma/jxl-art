@@ -2,20 +2,26 @@ html,
 body {
   background: #ddd;
   margin: 0;
-  font-family: Helvetica Neue, Helvetica, sans-serif;
+  font-family: Arial, sans-serif;
 }
 #jxl {
   image-rendering: pixelated;
 }
 #code {
   height: 20em;
+  flex-basis: 100%;
 }
 #controls {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+#controls > * {
+  flex-grow: 1;
 }
 #log {
   margin: 0;
+  flex-basis: 100%;
 }
 #log:not(:empty) {
   border: 1px solid red;
@@ -28,10 +34,21 @@ a {
 footer {
   text-align: center;
 }
-#buttons {
-  display: flex;
-}
-#buttons > * {
+
+.button {
+  border: 1px solid black;
+  background: linear-gradient(to bottom, #eee, #ccc);
+  border-radius: 2px;
+  margin: 0.1em;
+  padding: 0.5em 1em;
   text-align: center;
-  flex: 1 1 0;
+  text-decoration: none;
+  color: black;
+  font-size: 1em;
+}
+
+body.text {
+  padding: 1em;
+  max-width: 76ch;
+  margin: 0 auto;
 }

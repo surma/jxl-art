@@ -10,142 +10,149 @@
   }
 </style>
 
-<p>
-  <strong
-    >JXL Art is the practice of using
-    <a href="https://jpeg.org/jpegxl/">JPEG XL</a>’s prediction tree to generate
-    art</strong
-  >. If you have questions, you can join the <code>#jxl-art</code> channel on
-  the <a href="https://discord.gg/DqkQgDRTFu">JPEG XL Discord</a>.
-</p>
+<body class="text">
+  <p>
+    <strong
+      >JXL Art is the practice of using
+      <a href="https://jpeg.org/jpegxl/">JPEG XL</a>’s prediction tree to
+      generate art</strong
+    >. If you have questions, you can join the <code>#jxl-art</code> channel on
+    the <a href="https://discord.gg/DqkQgDRTFu">JPEG XL Discord</a>.
+  </p>
 
-<p>
-  The oversimplified summary is that JPEG XL divides the image it encodes into
-  rectangles, up to 1024x1024. Within each rectangle, a different prediction
-  tree is used. The job of a prediction tree is to make a prediction what the
-  value of each pixel is based on neighboring pixels and their so-called
-  gradients. As a result only the <em>difference</em> between the actual image
-  and the prediction needs to be encoded. The better the predictions, the
-  smaller the difference, the smaller the amount of data that needs to be
-  encoded, yielding something more compressible, hence the small file size. In
-  the context of JXL art, however, the difference is assumed to be zero, so that
-  the predictions alone define what the image is. The prediction tree is a
-  combination of if-else statements and different predictors. The flexibility of
-  these prediction trees is intentionally limited as execution needs to be fast
-  and very small. The prediction tree is run for every channel (red, green and
-  blue) and for every pixel, although a pixel can only be predicted if all the
-  pixels to the left and to the top have already been predicted. You can think
-  about it as if the entire image is predicted row-by-row, top-to-bottom,
-  left-to-right (just like Westerners read books).
-</p>
+  <p>
+    The oversimplified summary is that JPEG XL divides the image it encodes into
+    rectangles, up to 1024x1024. Within each rectangle, a different prediction
+    tree is used. The job of a prediction tree is to make a prediction what the
+    value of each pixel is based on neighboring pixels and their so-called
+    gradients. As a result only the <em>difference</em> between the actual image
+    and the prediction needs to be encoded. The better the predictions, the
+    smaller the difference, the smaller the amount of data that needs to be
+    encoded, yielding something more compressible, hence the small file size. In
+    the context of JXL art, however, the difference is assumed to be zero, so
+    that the predictions alone define what the image is. The prediction tree is
+    a combination of if-else statements and different predictors. The
+    flexibility of these prediction trees is intentionally limited as execution
+    needs to be fast and very small. The prediction tree is run for every
+    channel (red, green and blue) and for every pixel, although a pixel can only
+    be predicted if all the pixels to the left and to the top have already been
+    predicted. You can think about it as if the entire image is predicted
+    row-by-row, top-to-bottom, left-to-right (just like Westerners read books).
+  </p>
 
-<p>
-  A program starts with a decision node — an if-else-like statement. Technically
-  you can also just give a single predictor, but that’s not very useful to
-  generate art, now is it. A decision node looks like this:
-</p>
+  <p>
+    A program starts with a decision node — an if-else-like statement.
+    Technically you can also just give a single predictor, but that’s not very
+    useful to generate art, now is it. A decision node looks like this:
+  </p>
 
-<pre>
+  <pre>
 if [property] > [value:int]
    (THEN BRANCH)
    (ELSE BRANCH)
-</pre>
+</pre
+  >
 
-<p>
-  Both the <code>THEN</code> branch and the <code>ELSE</code> branch can either
-  be another decision node or a leaf node.
-</p>
+  <p>
+    Both the <code>THEN</code> branch and the <code>ELSE</code> branch can
+    either be another decision node or a leaf node.
+  </p>
 
-<p>The following properties can be used in a decision node:</p>
+  <p>The following properties can be used in a decision node:</p>
 
-<ul>
-  <li><code>c</code>: the channel number (0=R, 1=G, 2=B)</li>
-  <li><code>x</code>,<code>y</code>: coordinates</li>
-  <li><code>N</code>: value of pixel above (north)</li>
-  <li><code>W</code>: value of pixel to the left (west)</li>
-  <li>
-    <code>W-WW-NW+NWW</code>: basically the error of the gradient predictor for
-    the pixel on the left
-  </li>
-  <li><code>W+N-NW</code>: value of gradient predictor (before clamping)</li>
-  <li>
-    <code>W-NW</code>: left minus topleft, i.e. error of the
-    <code>N</code> predictor for the pixel on the left
-  </li>
-  <li>
-    <code>NW-N</code>: topleft minus top, i.e. error of <code>W</code> predictor
-    for the pixel above
-  </li>
-  <li>
-    <code>N-NE</code>: top minus topright, i.e. error of
-    <code>W</code> predictor for pixel on top right
-  </li>
-  <li>
-    <code>N-NN</code>: top minus toptop, i.e. error of <code>N</code> predictor
-    for pixel above
-  </li>
-  <li>
-    <code>W-WW</code>: left minus leftleft, i.e. error of
-    <code>W</code> predictor for the pixel on the left
-  </li>
-  <li><code>WGH</code>: signed max-absval-error of the weighted predictor</li>
-</ul>
+  <ul>
+    <li><code>c</code>: the channel number (0=R, 1=G, 2=B)</li>
+    <li><code>x</code>,<code>y</code>: coordinates</li>
+    <li><code>N</code>: value of pixel above (north)</li>
+    <li><code>W</code>: value of pixel to the left (west)</li>
+    <li>
+      <code>W-WW-NW+NWW</code>: basically the error of the gradient predictor
+      for the pixel on the left
+    </li>
+    <li><code>W+N-NW</code>: value of gradient predictor (before clamping)</li>
+    <li>
+      <code>W-NW</code>: left minus topleft, i.e. error of the
+      <code>N</code> predictor for the pixel on the left
+    </li>
+    <li>
+      <code>NW-N</code>: topleft minus top, i.e. error of
+      <code>W</code> predictor for the pixel above
+    </li>
+    <li>
+      <code>N-NE</code>: top minus topright, i.e. error of
+      <code>W</code> predictor for pixel on top right
+    </li>
+    <li>
+      <code>N-NN</code>: top minus toptop, i.e. error of
+      <code>N</code> predictor for pixel above
+    </li>
+    <li>
+      <code>W-WW</code>: left minus leftleft, i.e. error of
+      <code>W</code> predictor for the pixel on the left
+    </li>
+    <li><code>WGH</code>: signed max-absval-error of the weighted predictor</li>
+  </ul>
 
-<p>Leaf nodes are of the following form:</p>
+  <p>Leaf nodes are of the following form:</p>
 
-<pre>
+  <pre>
   - [predictor] +-[offset:int]
-</pre>
+</pre
+  >
 
-<p>The following predictors are supported in leaf nodes:</p>
+  <p>The following predictors are supported in leaf nodes:</p>
 
-<ul>
-  <li>
-    <code>Set</code>: always predicts zero, so effectively sets the pixel value
-    to [offset]
-  </li>
-  <li><code>W</code>: value of pixel on the left</li>
-  <li><code>N</code>: value of pixel above</li>
-  <li><code>NW</code>: value of topleft pixel</li>
-  <li><code>NE</code>: value of topright pixel</li>
-  <li><code>WW</code>: value of pixel to the left of the pixel on the left</li>
-  <li><code>Select</code>: predictor from lossless WebP</li>
-  <li>
-    <code>Gradient</code>: <code>W+N-NW</code>, clamped to
-    <code>min(W,N)..max(W,N)</code>
-  </li>
-  <li>
-    <code>Weighted</code>: weighted sum of 4 self-correcting subpredictors based
-    on their past performance (warning: not clamped so can get out of range)
-  </li>
-  <li>
-    <code>AvgW+N</code
-    >,<code>AvgW+NW</code>,<code>AvgN+NW</code>,<code>AvgN+NE</code>: average of
-    two pixel values
-  </li>
-  <li>
-    <code>AvgAll</code>: weighted sum of various pixels:
-    <code
-      >(6 * top - 2 * toptop + 7 * left + 1 * leftleft + 1 * toprightright + 3 *
-      topright + 8) / 16</code
-    >
-  </li>
-</ul>
+  <ul>
+    <li>
+      <code>Set</code>: always predicts zero, so effectively sets the pixel
+      value to [offset]
+    </li>
+    <li><code>W</code>: value of pixel on the left</li>
+    <li><code>N</code>: value of pixel above</li>
+    <li><code>NW</code>: value of topleft pixel</li>
+    <li><code>NE</code>: value of topright pixel</li>
+    <li>
+      <code>WW</code>: value of pixel to the left of the pixel on the left
+    </li>
+    <li><code>Select</code>: predictor from lossless WebP</li>
+    <li>
+      <code>Gradient</code>: <code>W+N-NW</code>, clamped to
+      <code>min(W,N)..max(W,N)</code>
+    </li>
+    <li>
+      <code>Weighted</code>: weighted sum of 4 self-correcting subpredictors
+      based on their past performance (warning: not clamped so can get out of
+      range)
+    </li>
+    <li>
+      <code>AvgW+N</code
+      >,<code>AvgW+NW</code>,<code>AvgN+NW</code>,<code>AvgN+NE</code>: average
+      of two pixel values
+    </li>
+    <li>
+      <code>AvgAll</code>: weighted sum of various pixels:
+      <code
+        >(6 * top - 2 * toptop + 7 * left + 1 * leftleft + 1 * toprightright + 3
+        * topright + 8) / 16</code
+      >
+    </li>
+  </ul>
 
-<p>Edge cases:</p>
+  <p>Edge cases:</p>
 
-<ul>
-  <li>
-    If <code>x=y=0</code>, <code>W</code> is set to 0. Otherwise, if
-    <code>x=0</code>, <code>W</code> is set to <code>N</code>.
-  </li>
-  <li>If <code>y=0</code>, <code>N</code> is set to <code>W</code>.</li>
-  <li>
-    If <code>x=0</code> or <code>y=0</code>, <code>NW</code> is set to
-    <code>W</code>.
-  </li>
-  <li>
-    Similarly, <code>NE</code> and <code>NN</code> fall back to
-    <code>N</code> and <code>WW</code> falls back to <code>W</code>.
-  </li>
-</ul>
+  <ul>
+    <li>
+      If <code>x=y=0</code>, <code>W</code> is set to 0. Otherwise, if
+      <code>x=0</code>, <code>W</code> is set to <code>N</code>.
+    </li>
+    <li>If <code>y=0</code>, <code>N</code> is set to <code>W</code>.</li>
+    <li>
+      If <code>x=0</code> or <code>y=0</code>, <code>NW</code> is set to
+      <code>W</code>.
+    </li>
+    <li>
+      Similarly, <code>NE</code> and <code>NN</code> fall back to
+      <code>N</code> and <code>WW</code> falls back to <code>W</code>.
+    </li>
+  </ul>
+</body>
