@@ -35,7 +35,10 @@ async function rerender() {
   if (typeof jxlData === "string") {
     return showError(jxlData);
   }
-  jxl.textContent = `Download JXL (${jxlData.byteLength} bytes)`;
+  jxl.textContent = jxl.textContent.replace(
+    /(\([^)]+\))?$/,
+    `(${jxlData.byteLength} bytes)`
+  );
   const imageData = await api.decodeJxl(jxlData);
   ctx.canvas.width = imageData.width;
   ctx.canvas.height = imageData.height;
