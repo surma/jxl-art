@@ -5,9 +5,17 @@
 <link rel="stylesheet" href="<%= emitAsset('src/styles.css') %>" />
 <div id="controls">
   <textarea id="code">
-      if N > 0
-        - Set 0
-        - Set 255
+    if W-NW > -1
+    if NW-N > -1
+     if N > 254
+      - Set 0
+       if y > 0
+         - W + 1
+         if x > 0
+         - W + 1
+         - Set 0
+      - NW + 0
+    - Select + 1
     </textarea
   >
   <button id="run" disabled class="button">Run ▶️</button>
