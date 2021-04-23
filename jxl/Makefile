@@ -1,5 +1,5 @@
 CODEC_URL = https://gitlab.com/wg1/jpeg-xl.git
-CODEC_VERSION = v0.3.6
+CODEC_VERSION = ab7c5e9b6795134377aa4846ceaae2c5bc504f76
 CODEC_DIR = node_modules/jxl
 CODEC_BUILD_ROOT := $(CODEC_DIR)/build
 CODEC_BUILD_DIR := $(CODEC_BUILD_ROOT)
@@ -26,6 +26,7 @@ $(OUT_JS): jxl.cpp $(CODEC_BUILD_DIR)/lib/libjxl.a
 		-I $(CODEC_DIR)/third_party/skcms \
 		--bind \
 		--closure 1 \
+		-s INVOKE_RUN=0 \
 		-s ALLOW_MEMORY_GROWTH=1 \
 		-s MODULARIZE=1 \
 		-s TEXTDECODER=2 \
@@ -34,6 +35,7 @@ $(OUT_JS): jxl.cpp $(CODEC_BUILD_DIR)/lib/libjxl.a
 		-s EXPORT_NAME="$(basename $(@F))" \
 		-o $@ \
 		$+ \
+		$(CODEC_DIR)/tools/jxl_from_tree.cc \
 		$(CODEC_BUILD_DIR)/third_party/brotli/libbrotlidec-static.a \
 		$(CODEC_BUILD_DIR)/third_party/brotli/libbrotlienc-static.a \
 		$(CODEC_BUILD_DIR)/third_party/brotli/libbrotlicommon-static.a \

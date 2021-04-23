@@ -52,10 +52,28 @@ function prettier(it, depth = 0) {
       .filter((v) => v)
       [Symbol.iterator]();
   }
-  const { value: token, done } = it.next();
-  if (done) {
-    return result;
+  let token,
+    done,
+    foundConfig = false;
+  while (true) {
+    ({ value: token, done } = it.next());
+    if (done) {
+      return result;
+    }
+    if (token.toLowerCase() === "if" || token.toLowerCase() === "-") {
+      if (foundConfig) {
+        result += "\n";
+      }
+      break;
+    }
+    if (token.toLowerCase() === "squeeze") {
+      result += "Squeeze\n";
+    } else {
+      result += `${token} ${mustNext(it)}\n`;
+    }
+    foundConfig = true;
   }
+
   if (token.toLowerCase() === "if") {
     result += `${"  ".repeat(depth)}if ${mustNext(it)} ${
       (mustNext(it), ">")
