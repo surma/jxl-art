@@ -60,6 +60,9 @@ footer {
 .button[disabled] {
   color: #888;
 }
+.button:active {
+  background: linear-gradient(to bottom, #ccc, #eee);
+}
 
 body.text {
   padding: 1em;
