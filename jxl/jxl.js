@@ -4,28 +4,28 @@ var jxl = (function () {
   return function (jxl) {
     jxl = jxl || {};
 
-    var e;
-    e || (e = typeof jxl !== "undefined" ? jxl : {});
+    var g;
+    g || (g = typeof jxl !== "undefined" ? jxl : {});
     var aa, ba;
-    e.ready = new Promise(function (a, b) {
+    g.ready = new Promise(function (a, b) {
       aa = a;
       ba = b;
     });
-    var r = {},
-      v;
-    for (v in e) e.hasOwnProperty(v) && (r[v] = e[v]);
+    var m = {},
+      t;
+    for (t in g) g.hasOwnProperty(t) && (m[t] = g[t]);
     var ca = [],
       da = "./this.program";
     function ea(a, b) {
       throw b;
     }
-    var x = "",
+    var u = "",
       fa;
-    x = self.location.href;
-    _scriptDir && (x = _scriptDir);
-    0 !== x.indexOf("blob:")
-      ? (x = x.substr(0, x.lastIndexOf("/") + 1))
-      : (x = "");
+    u = self.location.href;
+    _scriptDir && (u = _scriptDir);
+    0 !== u.indexOf("blob:")
+      ? (u = u.substr(0, u.lastIndexOf("/") + 1))
+      : (u = "");
     fa = function (a) {
       var b = new XMLHttpRequest();
       b.open("GET", a, !1);
@@ -33,61 +33,68 @@ var jxl = (function () {
       b.send(null);
       return new Uint8Array(b.response);
     };
-    var ha = e.print || console.log.bind(console),
-      y = e.printErr || console.warn.bind(console);
-    for (v in r) r.hasOwnProperty(v) && (e[v] = r[v]);
-    r = null;
-    e.arguments && (ca = e.arguments);
-    e.thisProgram && (da = e.thisProgram);
-    e.quit && (ea = e.quit);
-    var A;
-    e.wasmBinary && (A = e.wasmBinary);
+    var ha = g.print || console.log.bind(console),
+      z = g.printErr || console.warn.bind(console);
+    for (t in m) m.hasOwnProperty(t) && (g[t] = m[t]);
+    m = null;
+    g.arguments && (ca = g.arguments);
+    g.thisProgram && (da = g.thisProgram);
+    g.quit && (ea = g.quit);
+    var ia;
+    g.wasmBinary && (ia = g.wasmBinary);
     var noExitRuntime;
-    e.noExitRuntime && (noExitRuntime = e.noExitRuntime);
-    "object" !== typeof WebAssembly && B("no native wasm support detected");
-    var C,
-      ia = !1,
-      ja = new TextDecoder("utf8");
-    function ka(a, b) {
+    g.noExitRuntime && (noExitRuntime = g.noExitRuntime);
+    "object" !== typeof WebAssembly && A("no native wasm support detected");
+    var B,
+      ja = !1,
+      ka = new TextDecoder("utf8");
+    function la(a) {
+      for (var b = 0; a[b] && !(NaN <= b); ) ++b;
+      return ka.decode(
+        a.subarray ? a.subarray(0, b) : new Uint8Array(a.slice(0, b))
+      );
+    }
+    function ma(a, b) {
       if (!a) return "";
       b = a + b;
-      for (var c = a; !(c >= b) && D[c]; ) ++c;
-      return ja.decode(D.subarray(a, c));
+      for (var c = a; !(c >= b) && C[c]; ) ++c;
+      return ka.decode(C.subarray(a, c));
     }
-    function la(a, b, c, d) {
-      if (0 < d) {
-        d = c + d - 1;
-        for (var h = 0; h < a.length; ++h) {
-          var g = a.charCodeAt(h);
-          if (55296 <= g && 57343 >= g) {
-            var m = a.charCodeAt(++h);
-            g = (65536 + ((g & 1023) << 10)) | (m & 1023);
-          }
-          if (127 >= g) {
-            if (c >= d) break;
-            b[c++] = g;
-          } else {
-            if (2047 >= g) {
-              if (c + 1 >= d) break;
-              b[c++] = 192 | (g >> 6);
-            } else {
-              if (65535 >= g) {
-                if (c + 2 >= d) break;
-                b[c++] = 224 | (g >> 12);
-              } else {
-                if (c + 3 >= d) break;
-                b[c++] = 240 | (g >> 18);
-                b[c++] = 128 | ((g >> 12) & 63);
-              }
-              b[c++] = 128 | ((g >> 6) & 63);
-            }
-            b[c++] = 128 | (g & 63);
-          }
+    function na(a, b, c, d) {
+      if (!(0 < d)) return 0;
+      var e = c;
+      d = c + d - 1;
+      for (var f = 0; f < a.length; ++f) {
+        var k = a.charCodeAt(f);
+        if (55296 <= k && 57343 >= k) {
+          var l = a.charCodeAt(++f);
+          k = (65536 + ((k & 1023) << 10)) | (l & 1023);
         }
-        b[c] = 0;
+        if (127 >= k) {
+          if (c >= d) break;
+          b[c++] = k;
+        } else {
+          if (2047 >= k) {
+            if (c + 1 >= d) break;
+            b[c++] = 192 | (k >> 6);
+          } else {
+            if (65535 >= k) {
+              if (c + 2 >= d) break;
+              b[c++] = 224 | (k >> 12);
+            } else {
+              if (c + 3 >= d) break;
+              b[c++] = 240 | (k >> 18);
+              b[c++] = 128 | ((k >> 12) & 63);
+            }
+            b[c++] = 128 | ((k >> 6) & 63);
+          }
+          b[c++] = 128 | (k & 63);
+        }
       }
+      b[c] = 0;
+      return c - e;
     }
-    function ma(a) {
+    function oa(a) {
       for (var b = 0, c = 0; c < a.length; ++c) {
         var d = a.charCodeAt(c);
         55296 <= d &&
@@ -97,56 +104,56 @@ var jxl = (function () {
       }
       return b;
     }
-    var na = new TextDecoder("utf-16le");
-    function oa(a, b) {
+    var pa = new TextDecoder("utf-16le");
+    function qa(a, b) {
       var c = a >> 1;
-      for (b = c + b / 2; !(c >= b) && E[c]; ) ++c;
-      return na.decode(D.subarray(a, c << 1));
+      for (b = c + b / 2; !(c >= b) && ra[c]; ) ++c;
+      return pa.decode(C.subarray(a, c << 1));
     }
-    function pa(a, b, c) {
+    function sa(a, b, c) {
       void 0 === c && (c = 2147483647);
       if (2 > c) return 0;
       c -= 2;
       var d = b;
       c = c < 2 * a.length ? c / 2 : a.length;
-      for (var h = 0; h < c; ++h) (F[b >> 1] = a.charCodeAt(h)), (b += 2);
-      F[b >> 1] = 0;
+      for (var e = 0; e < c; ++e) (D[b >> 1] = a.charCodeAt(e)), (b += 2);
+      D[b >> 1] = 0;
       return b - d;
     }
-    function qa(a) {
+    function ta(a) {
       return 2 * a.length;
     }
-    function ra(a, b) {
+    function ua(a, b) {
       for (var c = 0, d = ""; !(c >= b / 4); ) {
-        var h = H[(a + 4 * c) >> 2];
-        if (0 == h) break;
+        var e = E[(a + 4 * c) >> 2];
+        if (0 == e) break;
         ++c;
-        65536 <= h
-          ? ((h -= 65536),
-            (d += String.fromCharCode(55296 | (h >> 10), 56320 | (h & 1023))))
-          : (d += String.fromCharCode(h));
+        65536 <= e
+          ? ((e -= 65536),
+            (d += String.fromCharCode(55296 | (e >> 10), 56320 | (e & 1023))))
+          : (d += String.fromCharCode(e));
       }
       return d;
     }
-    function sa(a, b, c) {
+    function va(a, b, c) {
       void 0 === c && (c = 2147483647);
       if (4 > c) return 0;
       var d = b;
       c = d + c - 4;
-      for (var h = 0; h < a.length; ++h) {
-        var g = a.charCodeAt(h);
-        if (55296 <= g && 57343 >= g) {
-          var m = a.charCodeAt(++h);
-          g = (65536 + ((g & 1023) << 10)) | (m & 1023);
+      for (var e = 0; e < a.length; ++e) {
+        var f = a.charCodeAt(e);
+        if (55296 <= f && 57343 >= f) {
+          var k = a.charCodeAt(++e);
+          f = (65536 + ((f & 1023) << 10)) | (k & 1023);
         }
-        H[b >> 2] = g;
+        E[b >> 2] = f;
         b += 4;
         if (b + 4 > c) break;
       }
-      H[b >> 2] = 0;
+      E[b >> 2] = 0;
       return b - d;
     }
-    function ta(a) {
+    function wa(a) {
       for (var b = 0, c = 0; c < a.length; ++c) {
         var d = a.charCodeAt(c);
         55296 <= d && 57343 >= d && ++c;
@@ -154,132 +161,865 @@ var jxl = (function () {
       }
       return b;
     }
-    function ua(a) {
-      var b = ma(a) + 1,
-        c = va(b);
-      la(a, I, c, b);
+    function xa(a) {
+      var b = oa(a) + 1,
+        c = ya(b);
+      na(a, F, c, b);
       return c;
     }
-    var J, I, D, F, E, H, K, wa, xa;
-    function ya(a) {
-      J = a;
-      e.HEAP8 = I = new Int8Array(a);
-      e.HEAP16 = F = new Int16Array(a);
-      e.HEAP32 = H = new Int32Array(a);
-      e.HEAPU8 = D = new Uint8Array(a);
-      e.HEAPU16 = E = new Uint16Array(a);
-      e.HEAPU32 = K = new Uint32Array(a);
-      e.HEAPF32 = wa = new Float32Array(a);
-      e.HEAPF64 = xa = new Float64Array(a);
+    var G, F, C, D, ra, E, H, za, Aa;
+    function Ba(a) {
+      G = a;
+      g.HEAP8 = F = new Int8Array(a);
+      g.HEAP16 = D = new Int16Array(a);
+      g.HEAP32 = E = new Int32Array(a);
+      g.HEAPU8 = C = new Uint8Array(a);
+      g.HEAPU16 = ra = new Uint16Array(a);
+      g.HEAPU32 = H = new Uint32Array(a);
+      g.HEAPF32 = za = new Float32Array(a);
+      g.HEAPF64 = Aa = new Float64Array(a);
     }
-    var za = e.INITIAL_MEMORY || 16777216;
-    e.wasmMemory
-      ? (C = e.wasmMemory)
-      : (C = new WebAssembly.Memory({ initial: za / 65536, maximum: 32768 }));
-    C && (J = C.buffer);
-    za = J.byteLength;
-    ya(J);
-    var L,
-      Aa = [],
-      Ba = [],
-      Ca = [],
-      Da = [];
-    function Ea() {
-      var a = e.preRun.shift();
-      Aa.unshift(a);
+    var Ca = g.INITIAL_MEMORY || 16777216;
+    g.wasmMemory
+      ? (B = g.wasmMemory)
+      : (B = new WebAssembly.Memory({ initial: Ca / 65536, maximum: 32768 }));
+    B && (G = B.buffer);
+    Ca = G.byteLength;
+    Ba(G);
+    var Da,
+      Ea = [],
+      Fa = [],
+      Ga = [],
+      Ha = [];
+    function Ia() {
+      var a = g.preRun.shift();
+      Ea.unshift(a);
     }
-    var M = 0,
-      Fa = null,
-      N = null;
-    e.preloadedImages = {};
-    e.preloadedAudios = {};
-    function B(a) {
-      if (e.onAbort) e.onAbort(a);
-      y(a);
-      ia = !0;
+    var I = 0,
+      Ja = null,
+      Ka = null;
+    g.preloadedImages = {};
+    g.preloadedAudios = {};
+    function A(a) {
+      if (g.onAbort) g.onAbort(a);
+      z(a);
+      ja = !0;
       a = new WebAssembly.RuntimeError(
         "abort(" + a + "). Build with -s ASSERTIONS=1 for more info."
       );
       ba(a);
       throw a;
     }
-    function Ga() {
-      var a = O;
+    function La() {
+      var a = J;
       return String.prototype.startsWith
         ? a.startsWith("data:application/octet-stream;base64,")
         : 0 === a.indexOf("data:application/octet-stream;base64,");
     }
-    var O = "jxl.wasm";
-    if (!Ga()) {
-      var Ha = O;
-      O = e.locateFile ? e.locateFile(Ha, x) : x + Ha;
+    var J = "jxl.wasm";
+    if (!La()) {
+      var Ma = J;
+      J = g.locateFile ? g.locateFile(Ma, u) : u + Ma;
     }
-    function Ia() {
+    function Na() {
       try {
-        if (A) return new Uint8Array(A);
-        if (fa) return fa(O);
+        if (ia) return new Uint8Array(ia);
+        if (fa) return fa(J);
         throw "both async and sync fetching of the wasm failed";
       } catch (a) {
-        B(a);
+        A(a);
       }
     }
-    function Ja() {
-      return A || "function" !== typeof fetch
-        ? Promise.resolve().then(Ia)
-        : fetch(O, { credentials: "same-origin" })
+    function Oa() {
+      return ia || "function" !== typeof fetch
+        ? Promise.resolve().then(Na)
+        : fetch(J, { credentials: "same-origin" })
             .then(function (a) {
-              if (!a.ok) throw "failed to load wasm binary file at '" + O + "'";
+              if (!a.ok) throw "failed to load wasm binary file at '" + J + "'";
               return a.arrayBuffer();
             })
             .catch(function () {
-              return Ia();
+              return Na();
             });
     }
-    function P(a) {
+    var K, Pa;
+    function Qa(a) {
       for (; 0 < a.length; ) {
         var b = a.shift();
-        if ("function" == typeof b) b(e);
+        if ("function" == typeof b) b(g);
         else {
-          var c = b.ha;
+          var c = b.Ta;
           "number" === typeof c
-            ? void 0 === b.da
-              ? L.get(c)()
-              : L.get(c)(b.da)
-            : c(void 0 === b.da ? null : b.da);
+            ? void 0 === b.ya
+              ? Da.get(c)()
+              : Da.get(c)(b.ya)
+            : c(void 0 === b.ya ? null : b.ya);
         }
       }
     }
-    function Ka(a) {
-      this.Z = a - 16;
-      this.oa = function (b) {
-        H[(this.Z + 8) >> 2] = b;
+    function Ra(a) {
+      this.la = a - 16;
+      this.fb = function (b) {
+        E[(this.la + 8) >> 2] = b;
       };
-      this.la = function (b) {
-        H[(this.Z + 0) >> 2] = b;
+      this.bb = function (b) {
+        E[(this.la + 0) >> 2] = b;
       };
-      this.ma = function () {
-        H[(this.Z + 4) >> 2] = 0;
+      this.cb = function () {
+        E[(this.la + 4) >> 2] = 0;
       };
-      this.ka = function () {
-        I[(this.Z + 12) >> 0] = 0;
+      this.ab = function () {
+        F[(this.la + 12) >> 0] = 0;
       };
-      this.na = function () {
-        I[(this.Z + 13) >> 0] = 0;
+      this.eb = function () {
+        F[(this.la + 13) >> 0] = 0;
       };
-      this.ja = function (b, c) {
-        this.oa(b);
-        this.la(c);
-        this.ma();
-        this.ka();
-        this.na();
+      this.Va = function (b, c) {
+        this.fb(b);
+        this.bb(c);
+        this.cb();
+        this.ab();
+        this.eb();
       };
     }
-    function Q() {
-      return 0 < Q.fa;
+    function Sa() {
+      return 0 < Sa.Pa;
     }
-    var La = [null, [], []],
-      Ma = {};
-    function Na(a) {
+    function Ta(a, b) {
+      for (var c = 0, d = a.length - 1; 0 <= d; d--) {
+        var e = a[d];
+        "." === e
+          ? a.splice(d, 1)
+          : ".." === e
+          ? (a.splice(d, 1), c++)
+          : c && (a.splice(d, 1), c--);
+      }
+      if (b) for (; c; c--) a.unshift("..");
+      return a;
+    }
+    function Ua(a) {
+      var b = "/" === a.charAt(0),
+        c = "/" === a.substr(-1);
+      (a = Ta(
+        a.split("/").filter(function (d) {
+          return !!d;
+        }),
+        !b
+      ).join("/")) ||
+        b ||
+        (a = ".");
+      a && c && (a += "/");
+      return (b ? "/" : "") + a;
+    }
+    function Va(a) {
+      var b = /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/
+        .exec(a)
+        .slice(1);
+      a = b[0];
+      b = b[1];
+      if (!a && !b) return ".";
+      b && (b = b.substr(0, b.length - 1));
+      return a + b;
+    }
+    function Wa(a) {
+      if ("/" === a) return "/";
+      a = Ua(a);
+      a = a.replace(/\/$/, "");
+      var b = a.lastIndexOf("/");
+      return -1 === b ? a : a.substr(b + 1);
+    }
+    function Xa() {
+      if (
+        "object" === typeof crypto &&
+        "function" === typeof crypto.getRandomValues
+      ) {
+        var a = new Uint8Array(1);
+        return function () {
+          crypto.getRandomValues(a);
+          return a[0];
+        };
+      }
+      return function () {
+        A("randomDevice");
+      };
+    }
+    function Ya() {
+      for (var a = "", b = !1, c = arguments.length - 1; -1 <= c && !b; c--) {
+        b = 0 <= c ? arguments[c] : "/";
+        if ("string" !== typeof b)
+          throw new TypeError("Arguments to path.resolve must be strings");
+        if (!b) return "";
+        a = b + "/" + a;
+        b = "/" === b.charAt(0);
+      }
+      a = Ta(
+        a.split("/").filter(function (d) {
+          return !!d;
+        }),
+        !b
+      ).join("/");
+      return (b ? "/" : "") + a || ".";
+    }
+    var Za = [];
+    function $a(a, b) {
+      Za[a] = { input: [], $: [], ka: b };
+      ab(a, bb);
+    }
+    var bb = {
+        open: function (a) {
+          var b = Za[a.node.sa];
+          if (!b) throw new M(43);
+          a.Z = b;
+          a.seekable = !1;
+        },
+        close: function (a) {
+          a.Z.ka.flush(a.Z);
+        },
+        flush: function (a) {
+          a.Z.ka.flush(a.Z);
+        },
+        read: function (a, b, c, d) {
+          if (!a.Z || !a.Z.ka.Ia) throw new M(60);
+          for (var e = 0, f = 0; f < d; f++) {
+            try {
+              var k = a.Z.ka.Ia(a.Z);
+            } catch (l) {
+              throw new M(29);
+            }
+            if (void 0 === k && 0 === e) throw new M(6);
+            if (null === k || void 0 === k) break;
+            e++;
+            b[c + f] = k;
+          }
+          e && (a.node.timestamp = Date.now());
+          return e;
+        },
+        write: function (a, b, c, d) {
+          if (!a.Z || !a.Z.ka.Aa) throw new M(60);
+          try {
+            for (var e = 0; e < d; e++) a.Z.ka.Aa(a.Z, b[c + e]);
+          } catch (f) {
+            throw new M(29);
+          }
+          d && (a.node.timestamp = Date.now());
+          return e;
+        },
+      },
+      db = {
+        Ia: function (a) {
+          if (!a.input.length) {
+            var b = null;
+            "undefined" != typeof window && "function" == typeof window.prompt
+              ? ((b = window.prompt("Input: ")), null !== b && (b += "\n"))
+              : "function" == typeof readline &&
+                ((b = readline()), null !== b && (b += "\n"));
+            if (!b) return null;
+            a.input = cb(b, !0);
+          }
+          return a.input.shift();
+        },
+        Aa: function (a, b) {
+          null === b || 10 === b
+            ? (ha(la(a.$)), (a.$ = []))
+            : 0 != b && a.$.push(b);
+        },
+        flush: function (a) {
+          a.$ && 0 < a.$.length && (ha(la(a.$)), (a.$ = []));
+        },
+      },
+      eb = {
+        Aa: function (a, b) {
+          null === b || 10 === b
+            ? (z(la(a.$)), (a.$ = []))
+            : 0 != b && a.$.push(b);
+        },
+        flush: function (a) {
+          a.$ && 0 < a.$.length && (z(la(a.$)), (a.$ = []));
+        },
+      },
+      N = {
+        ba: null,
+        ea: function () {
+          return N.createNode(null, "/", 16895, 0);
+        },
+        createNode: function (a, b, c, d) {
+          if (24576 === (c & 61440) || 4096 === (c & 61440)) throw new M(63);
+          N.ba ||
+            (N.ba = {
+              dir: {
+                node: {
+                  ha: N.W.ha,
+                  da: N.W.da,
+                  na: N.W.na,
+                  qa: N.W.qa,
+                  Na: N.W.Na,
+                  Qa: N.W.Qa,
+                  Oa: N.W.Oa,
+                  Ma: N.W.Ma,
+                  ta: N.W.ta,
+                },
+                stream: { ja: N.X.ja },
+              },
+              file: {
+                node: { ha: N.W.ha, da: N.W.da },
+                stream: {
+                  ja: N.X.ja,
+                  read: N.X.read,
+                  write: N.X.write,
+                  Da: N.X.Da,
+                  Ja: N.X.Ja,
+                  La: N.X.La,
+                },
+              },
+              link: {
+                node: { ha: N.W.ha, da: N.W.da, oa: N.W.oa },
+                stream: {},
+              },
+              Ea: { node: { ha: N.W.ha, da: N.W.da }, stream: fb },
+            });
+          c = gb(a, b, c, d);
+          16384 === (c.mode & 61440)
+            ? ((c.W = N.ba.dir.node), (c.X = N.ba.dir.stream), (c.V = {}))
+            : 32768 === (c.mode & 61440)
+            ? ((c.W = N.ba.file.node),
+              (c.X = N.ba.file.stream),
+              (c.Y = 0),
+              (c.V = null))
+            : 40960 === (c.mode & 61440)
+            ? ((c.W = N.ba.link.node), (c.X = N.ba.link.stream))
+            : 8192 === (c.mode & 61440) &&
+              ((c.W = N.ba.Ea.node), (c.X = N.ba.Ea.stream));
+          c.timestamp = Date.now();
+          a && (a.V[b] = c);
+          return c;
+        },
+        qb: function (a) {
+          if (a.V && a.V.subarray) {
+            for (var b = [], c = 0; c < a.Y; ++c) b.push(a.V[c]);
+            return b;
+          }
+          return a.V;
+        },
+        rb: function (a) {
+          return a.V
+            ? a.V.subarray
+              ? a.V.subarray(0, a.Y)
+              : new Uint8Array(a.V)
+            : new Uint8Array(0);
+        },
+        Fa: function (a, b) {
+          var c = a.V ? a.V.length : 0;
+          c >= b ||
+            ((b = Math.max(b, (c * (1048576 > c ? 2 : 1.125)) >>> 0)),
+            0 != c && (b = Math.max(b, 256)),
+            (c = a.V),
+            (a.V = new Uint8Array(b)),
+            0 < a.Y && a.V.set(c.subarray(0, a.Y), 0));
+        },
+        Za: function (a, b) {
+          if (a.Y != b)
+            if (0 == b) (a.V = null), (a.Y = 0);
+            else {
+              if (!a.V || a.V.subarray) {
+                var c = a.V;
+                a.V = new Uint8Array(b);
+                c && a.V.set(c.subarray(0, Math.min(b, a.Y)));
+              } else if ((a.V || (a.V = []), a.V.length > b)) a.V.length = b;
+              else for (; a.V.length < b; ) a.V.push(0);
+              a.Y = b;
+            }
+        },
+        W: {
+          ha: function (a) {
+            var b = {};
+            b.pb = 8192 === (a.mode & 61440) ? a.id : 1;
+            b.tb = a.id;
+            b.mode = a.mode;
+            b.wb = 1;
+            b.uid = 0;
+            b.sb = 0;
+            b.sa = a.sa;
+            16384 === (a.mode & 61440)
+              ? (b.size = 4096)
+              : 32768 === (a.mode & 61440)
+              ? (b.size = a.Y)
+              : 40960 === (a.mode & 61440)
+              ? (b.size = a.link.length)
+              : (b.size = 0);
+            b.mb = new Date(a.timestamp);
+            b.vb = new Date(a.timestamp);
+            b.ob = new Date(a.timestamp);
+            b.Sa = 4096;
+            b.nb = Math.ceil(b.size / b.Sa);
+            return b;
+          },
+          da: function (a, b) {
+            void 0 !== b.mode && (a.mode = b.mode);
+            void 0 !== b.timestamp && (a.timestamp = b.timestamp);
+            void 0 !== b.size && N.Za(a, b.size);
+          },
+          na: function () {
+            throw hb[44];
+          },
+          qa: function (a, b, c, d) {
+            return N.createNode(a, b, c, d);
+          },
+          Na: function (a, b, c) {
+            if (16384 === (a.mode & 61440)) {
+              try {
+                var d = ib(b, c);
+              } catch (f) {}
+              if (d) for (var e in d.V) throw new M(55);
+            }
+            delete a.parent.V[a.name];
+            a.name = c;
+            b.V[c] = a;
+            a.parent = b;
+          },
+          Qa: function (a, b) {
+            delete a.V[b];
+          },
+          Oa: function (a, b) {
+            var c = ib(a, b),
+              d;
+            for (d in c.V) throw new M(55);
+            delete a.V[b];
+          },
+          Ma: function (a) {
+            var b = [".", ".."],
+              c;
+            for (c in a.V) a.V.hasOwnProperty(c) && b.push(c);
+            return b;
+          },
+          ta: function (a, b, c) {
+            a = N.createNode(a, b, 41471, 0);
+            a.link = c;
+            return a;
+          },
+          oa: function (a) {
+            if (40960 !== (a.mode & 61440)) throw new M(28);
+            return a.link;
+          },
+        },
+        X: {
+          read: function (a, b, c, d, e) {
+            var f = a.node.V;
+            if (e >= a.node.Y) return 0;
+            a = Math.min(a.node.Y - e, d);
+            if (8 < a && f.subarray) b.set(f.subarray(e, e + a), c);
+            else for (d = 0; d < a; d++) b[c + d] = f[e + d];
+            return a;
+          },
+          write: function (a, b, c, d, e, f) {
+            b.buffer === F.buffer && (f = !1);
+            if (!d) return 0;
+            a = a.node;
+            a.timestamp = Date.now();
+            if (b.subarray && (!a.V || a.V.subarray)) {
+              if (f) return (a.V = b.subarray(c, c + d)), (a.Y = d);
+              if (0 === a.Y && 0 === e)
+                return (a.V = b.slice(c, c + d)), (a.Y = d);
+              if (e + d <= a.Y) return a.V.set(b.subarray(c, c + d), e), d;
+            }
+            N.Fa(a, e + d);
+            if (a.V.subarray && b.subarray) a.V.set(b.subarray(c, c + d), e);
+            else for (f = 0; f < d; f++) a.V[e + f] = b[c + f];
+            a.Y = Math.max(a.Y, e + d);
+            return d;
+          },
+          ja: function (a, b, c) {
+            1 === c
+              ? (b += a.position)
+              : 2 === c && 32768 === (a.node.mode & 61440) && (b += a.node.Y);
+            if (0 > b) throw new M(28);
+            return b;
+          },
+          Da: function (a, b, c) {
+            N.Fa(a.node, b + c);
+            a.node.Y = Math.max(a.node.Y, b + c);
+          },
+          Ja: function (a, b, c, d, e, f) {
+            0 === b || A("Assertion failed: undefined");
+            if (32768 !== (a.node.mode & 61440)) throw new M(43);
+            a = a.node.V;
+            if (f & 2 || a.buffer !== G) {
+              if (0 < d || d + c < a.length)
+                a.subarray
+                  ? (a = a.subarray(d, d + c))
+                  : (a = Array.prototype.slice.call(a, d, d + c));
+              d = !0;
+              f = 16384 * Math.ceil(c / 16384);
+              for (b = jb(f); c < f; ) F[b + c++] = 0;
+              c = b;
+              if (!c) throw new M(48);
+              F.set(a, c);
+            } else (d = !1), (c = a.byteOffset);
+            return { la: c, lb: d };
+          },
+          La: function (a, b, c, d, e) {
+            if (32768 !== (a.node.mode & 61440)) throw new M(43);
+            if (e & 2) return 0;
+            N.X.write(a, b, 0, d, c, !1);
+            return 0;
+          },
+        },
+      },
+      kb = null,
+      lb = {},
+      mb = [],
+      nb = 1,
+      ob = null,
+      pb = !0,
+      qb = {},
+      M = null,
+      hb = {};
+    function O(a, b) {
+      a = Ya("/", a);
+      b = b || {};
+      if (!a) return { path: "", node: null };
+      var c = { Ha: !0, Ba: 0 },
+        d;
+      for (d in c) void 0 === b[d] && (b[d] = c[d]);
+      if (8 < b.Ba) throw new M(32);
+      a = Ta(
+        a.split("/").filter(function (k) {
+          return !!k;
+        }),
+        !1
+      );
+      var e = kb;
+      c = "/";
+      for (d = 0; d < a.length; d++) {
+        var f = d === a.length - 1;
+        if (f && b.parent) break;
+        e = ib(e, a[d]);
+        c = Ua(c + "/" + a[d]);
+        e.ra && (!f || (f && b.Ha)) && (e = e.ra.root);
+        if (!f || b.Ga)
+          for (f = 0; 40960 === (e.mode & 61440); )
+            if (
+              ((e = rb(c)),
+              (c = Ya(Va(c), e)),
+              (e = O(c, { Ba: b.Ba }).node),
+              40 < f++)
+            )
+              throw new M(32);
+      }
+      return { path: c, node: e };
+    }
+    function sb(a) {
+      for (var b; ; ) {
+        if (a === a.parent)
+          return (
+            (a = a.ea.Ka),
+            b ? ("/" !== a[a.length - 1] ? a + "/" + b : a + b) : a
+          );
+        b = b ? a.name + "/" + b : a.name;
+        a = a.parent;
+      }
+    }
+    function tb(a, b) {
+      for (var c = 0, d = 0; d < b.length; d++)
+        c = ((c << 5) - c + b.charCodeAt(d)) | 0;
+      return ((a + c) >>> 0) % ob.length;
+    }
+    function ib(a, b) {
+      var c;
+      if ((c = (c = ub(a, "x")) ? c : a.W.na ? 0 : 2)) throw new M(c, a);
+      for (c = ob[tb(a.id, b)]; c; c = c.Ya) {
+        var d = c.name;
+        if (c.parent.id === a.id && d === b) return c;
+      }
+      return a.W.na(a, b);
+    }
+    function gb(a, b, c, d) {
+      a = new vb(a, b, c, d);
+      b = tb(a.parent.id, a.name);
+      a.Ya = ob[b];
+      return (ob[b] = a);
+    }
+    var wb = {
+      r: 0,
+      rs: 1052672,
+      "r+": 2,
+      w: 577,
+      wx: 705,
+      xw: 705,
+      "w+": 578,
+      "wx+": 706,
+      "xw+": 706,
+      a: 1089,
+      ax: 1217,
+      xa: 1217,
+      "a+": 1090,
+      "ax+": 1218,
+      "xa+": 1218,
+    };
+    function xb(a) {
+      var b = ["r", "w", "rw"][a & 3];
+      a & 512 && (b += "w");
+      return b;
+    }
+    function ub(a, b) {
+      if (pb) return 0;
+      if (-1 === b.indexOf("r") || a.mode & 292) {
+        if (
+          (-1 !== b.indexOf("w") && !(a.mode & 146)) ||
+          (-1 !== b.indexOf("x") && !(a.mode & 73))
+        )
+          return 2;
+      } else return 2;
+      return 0;
+    }
+    function yb(a, b) {
+      try {
+        return ib(a, b), 20;
+      } catch (c) {}
+      return ub(a, "wx");
+    }
+    function zb(a) {
+      var b = 4096;
+      for (a = a || 0; a <= b; a++) if (!mb[a]) return a;
+      throw new M(33);
+    }
+    function Ab(a, b) {
+      Bb || ((Bb = function () {}), (Bb.prototype = {}));
+      var c = new Bb(),
+        d;
+      for (d in a) c[d] = a[d];
+      a = c;
+      b = zb(b);
+      a.ga = b;
+      return (mb[b] = a);
+    }
+    var fb = {
+      open: function (a) {
+        a.X = lb[a.node.sa].X;
+        a.X.open && a.X.open(a);
+      },
+      ja: function () {
+        throw new M(70);
+      },
+    };
+    function ab(a, b) {
+      lb[a] = { X: b };
+    }
+    function Cb(a, b) {
+      var c = "/" === b,
+        d = !b;
+      if (c && kb) throw new M(10);
+      if (!c && !d) {
+        var e = O(b, { Ha: !1 });
+        b = e.path;
+        e = e.node;
+        if (e.ra) throw new M(10);
+        if (16384 !== (e.mode & 61440)) throw new M(54);
+      }
+      b = { type: a, yb: {}, Ka: b, Xa: [] };
+      a = a.ea(b);
+      a.ea = b;
+      b.root = a;
+      c ? (kb = a) : e && ((e.ra = b), e.ea && e.ea.Xa.push(b));
+    }
+    function Db(a, b, c) {
+      var d = O(a, { parent: !0 }).node;
+      a = Wa(a);
+      if (!a || "." === a || ".." === a) throw new M(28);
+      var e = yb(d, a);
+      if (e) throw new M(e);
+      if (!d.W.qa) throw new M(63);
+      return d.W.qa(d, a, b, c);
+    }
+    function P(a) {
+      Db(a, 16895, 0);
+    }
+    function Eb(a, b, c) {
+      "undefined" === typeof c && ((c = b), (b = 438));
+      Db(a, b | 8192, c);
+    }
+    function Fb(a, b) {
+      if (!Ya(a)) throw new M(44);
+      var c = O(b, { parent: !0 }).node;
+      if (!c) throw new M(44);
+      b = Wa(b);
+      var d = yb(c, b);
+      if (d) throw new M(d);
+      if (!c.W.ta) throw new M(63);
+      c.W.ta(c, b, a);
+    }
+    function rb(a) {
+      a = O(a).node;
+      if (!a) throw new M(44);
+      if (!a.W.oa) throw new M(28);
+      return Ya(sb(a.parent), a.W.oa(a));
+    }
+    function Gb(a, b, c, d) {
+      if ("" === a) throw new M(44);
+      if ("string" === typeof b) {
+        var e = wb[b];
+        if ("undefined" === typeof e)
+          throw Error("Unknown file open mode: " + b);
+        b = e;
+      }
+      c = b & 64 ? (("undefined" === typeof c ? 438 : c) & 4095) | 32768 : 0;
+      if ("object" === typeof a) var f = a;
+      else {
+        a = Ua(a);
+        try {
+          f = O(a, { Ga: !(b & 131072) }).node;
+        } catch (l) {}
+      }
+      e = !1;
+      if (b & 64)
+        if (f) {
+          if (b & 128) throw new M(20);
+        } else (f = Db(a, c, 0)), (e = !0);
+      if (!f) throw new M(44);
+      8192 === (f.mode & 61440) && (b &= -513);
+      if (b & 65536 && 16384 !== (f.mode & 61440)) throw new M(54);
+      if (
+        !e &&
+        (c = f
+          ? 40960 === (f.mode & 61440)
+            ? 32
+            : 16384 === (f.mode & 61440) && ("r" !== xb(b) || b & 512)
+            ? 31
+            : ub(f, xb(b))
+          : 44)
+      )
+        throw new M(c);
+      if (b & 512) {
+        c = f;
+        var k;
+        "string" === typeof c ? (k = O(c, { Ga: !0 }).node) : (k = c);
+        if (!k.W.da) throw new M(63);
+        if (16384 === (k.mode & 61440)) throw new M(31);
+        if (32768 !== (k.mode & 61440)) throw new M(28);
+        if ((c = ub(k, "w"))) throw new M(c);
+        k.W.da(k, { size: 0, timestamp: Date.now() });
+      }
+      b &= -131713;
+      d = Ab(
+        {
+          node: f,
+          path: sb(f),
+          flags: b,
+          seekable: !0,
+          position: 0,
+          X: f.X,
+          kb: [],
+          error: !1,
+        },
+        d
+      );
+      d.X.open && d.X.open(d);
+      !g.logReadFiles ||
+        b & 1 ||
+        (Hb || (Hb = {}),
+        a in Hb ||
+          ((Hb[a] = 1), z("FS.trackingDelegate error on read file: " + a)));
+      try {
+        qb.onOpenFile &&
+          ((f = 0),
+          1 !== (b & 2097155) && (f |= 1),
+          0 !== (b & 2097155) && (f |= 2),
+          qb.onOpenFile(a, f));
+      } catch (l) {
+        z(
+          "FS.trackingDelegate['onOpenFile']('" +
+            a +
+            "', flags) threw an exception: " +
+            l.message
+        );
+      }
+      return d;
+    }
+    function Ib(a, b, c) {
+      if (null === a.ga) throw new M(8);
+      if (!a.seekable || !a.X.ja) throw new M(70);
+      if (0 != c && 1 != c && 2 != c) throw new M(28);
+      a.position = a.X.ja(a, b, c);
+      a.kb = [];
+    }
+    function Jb() {
+      M ||
+        ((M = function (a, b) {
+          this.node = b;
+          this.$a = function (c) {
+            this.ia = c;
+          };
+          this.$a(a);
+          this.message = "FS error";
+        }),
+        (M.prototype = Error()),
+        (M.prototype.constructor = M),
+        [44].forEach(function (a) {
+          hb[a] = new M(a);
+          hb[a].stack = "<generic error, no stack>";
+        }));
+    }
+    var Kb;
+    function Lb(a, b) {
+      var c = 0;
+      a && (c |= 365);
+      b && (c |= 146);
+      return c;
+    }
+    function Mb(a, b, c) {
+      a = Ua("/dev/" + a);
+      var d = Lb(!!b, !!c);
+      Nb || (Nb = 64);
+      var e = (Nb++ << 8) | 0;
+      ab(e, {
+        open: function (f) {
+          f.seekable = !1;
+        },
+        close: function () {
+          c && c.buffer && c.buffer.length && c(10);
+        },
+        read: function (f, k, l, p) {
+          for (var q = 0, r = 0; r < p; r++) {
+            try {
+              var v = b();
+            } catch (x) {
+              throw new M(29);
+            }
+            if (void 0 === v && 0 === q) throw new M(6);
+            if (null === v || void 0 === v) break;
+            q++;
+            k[l + r] = v;
+          }
+          q && (f.node.timestamp = Date.now());
+          return q;
+        },
+        write: function (f, k, l, p) {
+          for (var q = 0; q < p; q++)
+            try {
+              c(k[l + q]);
+            } catch (r) {
+              throw new M(29);
+            }
+          p && (f.node.timestamp = Date.now());
+          return q;
+        },
+      });
+      Eb(a, d, e);
+    }
+    var Nb,
+      Q = {},
+      Bb,
+      Hb,
+      Ob = void 0;
+    function R() {
+      Ob += 4;
+      return E[(Ob - 4) >> 2];
+    }
+    function S(a) {
+      a = mb[a];
+      if (!a) throw new M(8);
+      return a;
+    }
+    function Pb(a) {
       switch (a) {
         case 1:
           return 0;
@@ -293,22 +1033,22 @@ var jxl = (function () {
           throw new TypeError("Unknown type size: " + a);
       }
     }
-    var Oa = void 0;
-    function R(a) {
-      for (var b = ""; D[a]; ) b += Oa[D[a++]];
+    var Qb = void 0;
+    function T(a) {
+      for (var b = ""; C[a]; ) b += Qb[C[a++]];
       return b;
     }
-    var S = {},
-      T = {},
-      U = {};
-    function Pa(a) {
+    var U = {},
+      V = {},
+      Rb = {};
+    function Sb(a) {
       if (void 0 === a) return "_unknown";
       a = a.replace(/[^a-zA-Z0-9_]/g, "$");
       var b = a.charCodeAt(0);
       return 48 <= b && 57 >= b ? "_" + a : a;
     }
-    function Qa(a, b) {
-      a = Pa(a);
+    function Tb(a, b) {
+      a = Sb(a);
       return new Function(
         "body",
         "return function " +
@@ -316,9 +1056,9 @@ var jxl = (function () {
           '() {\n    "use strict";    return body.apply(this, arguments);\n};\n'
       )(b);
     }
-    function Ra(a) {
+    function Ub(a) {
       var b = Error,
-        c = Qa(a, function (d) {
+        c = Tb(a, function (d) {
           this.name = a;
           this.message = d;
           d = Error(d).stack;
@@ -335,71 +1075,71 @@ var jxl = (function () {
       };
       return c;
     }
-    var Sa = void 0;
-    function V(a) {
-      throw new Sa(a);
+    var Vb = void 0;
+    function W(a) {
+      throw new Vb(a);
     }
-    var Ta = void 0;
-    function Ua(a, b) {
-      function c(k) {
-        k = b(k);
-        if (k.length !== d.length)
-          throw new Ta("Mismatched type converter count");
-        for (var n = 0; n < d.length; ++n) W(d[n], k[n]);
+    var Wb = void 0;
+    function Xb(a, b) {
+      function c(l) {
+        l = b(l);
+        if (l.length !== d.length)
+          throw new Wb("Mismatched type converter count");
+        for (var p = 0; p < d.length; ++p) X(d[p], l[p]);
       }
       var d = [];
-      d.forEach(function (k) {
-        U[k] = a;
+      d.forEach(function (l) {
+        Rb[l] = a;
       });
-      var h = Array(a.length),
-        g = [],
-        m = 0;
-      a.forEach(function (k, n) {
-        T.hasOwnProperty(k)
-          ? (h[n] = T[k])
-          : (g.push(k),
-            S.hasOwnProperty(k) || (S[k] = []),
-            S[k].push(function () {
-              h[n] = T[k];
-              ++m;
-              m === g.length && c(h);
+      var e = Array(a.length),
+        f = [],
+        k = 0;
+      a.forEach(function (l, p) {
+        V.hasOwnProperty(l)
+          ? (e[p] = V[l])
+          : (f.push(l),
+            U.hasOwnProperty(l) || (U[l] = []),
+            U[l].push(function () {
+              e[p] = V[l];
+              ++k;
+              k === f.length && c(e);
             }));
       });
-      0 === g.length && c(h);
+      0 === f.length && c(e);
     }
-    function W(a, b, c) {
+    function X(a, b, c) {
       c = c || {};
       if (!("argPackAdvance" in b))
         throw new TypeError(
           "registerType registeredInstance requires argPackAdvance"
         );
       var d = b.name;
-      a || V('type "' + d + '" must have a positive integer typeid pointer');
-      if (T.hasOwnProperty(a)) {
-        if (c.ia) return;
-        V("Cannot register type '" + d + "' twice");
+      a || W('type "' + d + '" must have a positive integer typeid pointer');
+      if (V.hasOwnProperty(a)) {
+        if (c.Ua) return;
+        W("Cannot register type '" + d + "' twice");
       }
-      T[a] = b;
-      delete U[a];
-      S.hasOwnProperty(a) &&
-        ((b = S[a]),
-        delete S[a],
-        b.forEach(function (h) {
-          h();
+      V[a] = b;
+      delete Rb[a];
+      U.hasOwnProperty(a) &&
+        ((b = U[a]),
+        delete U[a],
+        b.forEach(function (e) {
+          e();
         }));
     }
-    var Va = [],
-      X = [
+    var Zb = [],
+      Y = [
         {},
         { value: void 0 },
         { value: null },
         { value: !0 },
         { value: !1 },
       ];
-    function Wa(a) {
-      4 < a && 0 === --X[a].ea && ((X[a] = void 0), Va.push(a));
+    function $b(a) {
+      4 < a && 0 === --Y[a].Ca && ((Y[a] = void 0), Zb.push(a));
     }
-    function Y(a) {
+    function ac(a) {
       switch (a) {
         case void 0:
           return 1;
@@ -410,36 +1150,36 @@ var jxl = (function () {
         case !1:
           return 4;
         default:
-          var b = Va.length ? Va.pop() : X.length;
-          X[b] = { ea: 1, value: a };
+          var b = Zb.length ? Zb.pop() : Y.length;
+          Y[b] = { Ca: 1, value: a };
           return b;
       }
     }
-    function Xa(a) {
-      return this.fromWireType(K[a >> 2]);
+    function bc(a) {
+      return this.fromWireType(H[a >> 2]);
     }
-    function Ya(a) {
+    function cc(a) {
       if (null === a) return "null";
       var b = typeof a;
       return "object" === b || "array" === b || "function" === b
         ? a.toString()
         : "" + a;
     }
-    function Za(a, b) {
+    function dc(a, b) {
       switch (b) {
         case 2:
           return function (c) {
-            return this.fromWireType(wa[c >> 2]);
+            return this.fromWireType(za[c >> 2]);
           };
         case 3:
           return function (c) {
-            return this.fromWireType(xa[c >> 3]);
+            return this.fromWireType(Aa[c >> 3]);
           };
         default:
           throw new TypeError("Unknown float type: " + a);
       }
     }
-    function $a(a) {
+    function ec(a) {
       var b = Function;
       if (!(b instanceof Function))
         throw new TypeError(
@@ -447,142 +1187,142 @@ var jxl = (function () {
             typeof b +
             " which is not a function"
         );
-      var c = Qa(b.name || "unknownFunctionName", function () {});
+      var c = Tb(b.name || "unknownFunctionName", function () {});
       c.prototype = b.prototype;
       c = new c();
       a = b.apply(c, a);
       return a instanceof Object ? a : c;
     }
-    function ab(a) {
+    function fc(a) {
       for (; a.length; ) {
         var b = a.pop();
         a.pop()(b);
       }
     }
-    function bb(a, b) {
-      var c = e;
-      if (void 0 === c[a].W) {
+    function gc(a, b) {
+      var c = g;
+      if (void 0 === c[a].ca) {
         var d = c[a];
         c[a] = function () {
-          c[a].W.hasOwnProperty(arguments.length) ||
-            V(
+          c[a].ca.hasOwnProperty(arguments.length) ||
+            W(
               "Function '" +
                 b +
                 "' called with an invalid number of arguments (" +
                 arguments.length +
                 ") - expects one of (" +
-                c[a].W +
+                c[a].ca +
                 ")!"
             );
-          return c[a].W[arguments.length].apply(this, arguments);
+          return c[a].ca[arguments.length].apply(this, arguments);
         };
-        c[a].W = [];
-        c[a].W[d.ga] = d;
+        c[a].ca = [];
+        c[a].ca[d.Ra] = d;
       }
     }
-    function cb(a, b, c) {
-      e.hasOwnProperty(a)
-        ? ((void 0 === c || (void 0 !== e[a].W && void 0 !== e[a].W[c])) &&
-            V("Cannot register public name '" + a + "' twice"),
-          bb(a, a),
-          e.hasOwnProperty(c) &&
-            V(
+    function hc(a, b, c) {
+      g.hasOwnProperty(a)
+        ? ((void 0 === c || (void 0 !== g[a].ca && void 0 !== g[a].ca[c])) &&
+            W("Cannot register public name '" + a + "' twice"),
+          gc(a, a),
+          g.hasOwnProperty(c) &&
+            W(
               "Cannot register multiple overloads of a function with the same number of arguments (" +
                 c +
                 ")!"
             ),
-          (e[a].W[c] = b))
-        : ((e[a] = b), void 0 !== c && (e[a].wa = c));
+          (g[a].ca[c] = b))
+        : ((g[a] = b), void 0 !== c && (g[a].xb = c));
     }
-    function eb(a, b) {
-      for (var c = [], d = 0; d < a; d++) c.push(H[(b >> 2) + d]);
+    function ic(a, b) {
+      for (var c = [], d = 0; d < a; d++) c.push(E[(b >> 2) + d]);
       return c;
     }
-    function fb(a, b) {
+    function jc(a, b) {
       0 <= a.indexOf("j") ||
-        B("Assertion failed: getDynCaller should only be called with i64 sigs");
+        A("Assertion failed: getDynCaller should only be called with i64 sigs");
       var c = [];
       return function () {
         c.length = arguments.length;
         for (var d = 0; d < arguments.length; d++) c[d] = arguments[d];
-        var h;
+        var e;
         -1 != a.indexOf("j")
-          ? (h =
+          ? (e =
               c && c.length
-                ? e["dynCall_" + a].apply(null, [b].concat(c))
-                : e["dynCall_" + a].call(null, b))
-          : (h = L.get(b).apply(null, c));
-        return h;
+                ? g["dynCall_" + a].apply(null, [b].concat(c))
+                : g["dynCall_" + a].call(null, b))
+          : (e = Da.get(b).apply(null, c));
+        return e;
       };
     }
-    function gb(a, b) {
-      a = R(a);
-      var c = -1 != a.indexOf("j") ? fb(a, b) : L.get(b);
+    function kc(a, b) {
+      a = T(a);
+      var c = -1 != a.indexOf("j") ? jc(a, b) : Da.get(b);
       "function" !== typeof c &&
-        V("unknown function pointer with signature " + a + ": " + b);
+        W("unknown function pointer with signature " + a + ": " + b);
       return c;
     }
-    var hb = void 0;
-    function ib(a) {
-      a = jb(a);
-      var b = R(a);
+    var lc = void 0;
+    function mc(a) {
+      a = nc(a);
+      var b = T(a);
       Z(a);
       return b;
     }
-    function kb(a, b) {
-      function c(g) {
-        h[g] || T[g] || (U[g] ? U[g].forEach(c) : (d.push(g), (h[g] = !0)));
+    function oc(a, b) {
+      function c(f) {
+        e[f] || V[f] || (Rb[f] ? Rb[f].forEach(c) : (d.push(f), (e[f] = !0)));
       }
       var d = [],
-        h = {};
+        e = {};
       b.forEach(c);
-      throw new hb(a + ": " + d.map(ib).join([", "]));
+      throw new lc(a + ": " + d.map(mc).join([", "]));
     }
-    function lb(a, b, c) {
+    function pc(a, b, c) {
       switch (b) {
         case 0:
           return c
             ? function (d) {
-                return I[d];
+                return F[d];
               }
             : function (d) {
-                return D[d];
+                return C[d];
               };
         case 1:
           return c
             ? function (d) {
-                return F[d >> 1];
+                return D[d >> 1];
               }
             : function (d) {
-                return E[d >> 1];
+                return ra[d >> 1];
               };
         case 2:
           return c
             ? function (d) {
-                return H[d >> 2];
+                return E[d >> 2];
               }
             : function (d) {
-                return K[d >> 2];
+                return H[d >> 2];
               };
         default:
           throw new TypeError("Unknown integer type: " + a);
       }
     }
-    var mb = {};
-    function nb() {
+    var qc = {};
+    function rc() {
       return "object" === typeof globalThis
         ? globalThis
         : Function("return this")();
     }
-    function ob(a, b) {
-      var c = T[a];
-      void 0 === c && V(b + " has unknown type " + ib(a));
+    function sc(a, b) {
+      var c = V[a];
+      void 0 === c && W(b + " has unknown type " + mc(a));
       return c;
     }
-    var pb = {},
-      qb = {};
-    function rb() {
-      if (!sb) {
+    var tc = {},
+      uc = {};
+    function vc() {
+      if (!wc) {
         var a = {
             USER: "web_user",
             LOGNAME: "web_user",
@@ -599,27 +1339,27 @@ var jxl = (function () {
             _: da || "./this.program",
           },
           b;
-        for (b in qb) a[b] = qb[b];
+        for (b in uc) a[b] = uc[b];
         var c = [];
         for (b in a) c.push(b + "=" + a[b]);
-        sb = c;
+        wc = c;
       }
-      return sb;
+      return wc;
     }
-    var sb;
-    function tb(a) {
+    var wc;
+    function xc(a) {
       return 0 === a % 4 && (0 !== a % 100 || 0 === a % 400);
     }
-    function ub(a, b) {
+    function yc(a, b) {
       for (var c = 0, d = 0; d <= b; c += a[d++]);
       return c;
     }
-    var vb = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
-      wb = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    function xb(a, b) {
+    var zc = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31],
+      Ac = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+    function Bc(a, b) {
       for (a = new Date(a.getTime()); 0 < b; ) {
         var c = a.getMonth(),
-          d = (tb(a.getFullYear()) ? vb : wb)[c];
+          d = (xc(a.getFullYear()) ? zc : Ac)[c];
         if (b > d - a.getDate())
           (b -= d - a.getDate() + 1),
             a.setDate(1),
@@ -633,70 +1373,70 @@ var jxl = (function () {
       }
       return a;
     }
-    function yb(a, b, c, d) {
-      function h(f, l, t) {
-        for (f = "number" === typeof f ? f.toString() : f || ""; f.length < l; )
-          f = t[0] + f;
-        return f;
+    function Cc(a, b, c, d) {
+      function e(h, n, w) {
+        for (h = "number" === typeof h ? h.toString() : h || ""; h.length < n; )
+          h = w[0] + h;
+        return h;
       }
-      function g(f, l) {
-        return h(f, l, "0");
+      function f(h, n) {
+        return e(h, n, "0");
       }
-      function m(f, l) {
-        function t(G) {
-          return 0 > G ? -1 : 0 < G ? 1 : 0;
+      function k(h, n) {
+        function w(L) {
+          return 0 > L ? -1 : 0 < L ? 1 : 0;
         }
-        var w;
-        0 === (w = t(f.getFullYear() - l.getFullYear())) &&
-          0 === (w = t(f.getMonth() - l.getMonth())) &&
-          (w = t(f.getDate() - l.getDate()));
-        return w;
+        var y;
+        0 === (y = w(h.getFullYear() - n.getFullYear())) &&
+          0 === (y = w(h.getMonth() - n.getMonth())) &&
+          (y = w(h.getDate() - n.getDate()));
+        return y;
       }
-      function k(f) {
-        switch (f.getDay()) {
+      function l(h) {
+        switch (h.getDay()) {
           case 0:
-            return new Date(f.getFullYear() - 1, 11, 29);
+            return new Date(h.getFullYear() - 1, 11, 29);
           case 1:
-            return f;
+            return h;
           case 2:
-            return new Date(f.getFullYear(), 0, 3);
+            return new Date(h.getFullYear(), 0, 3);
           case 3:
-            return new Date(f.getFullYear(), 0, 2);
+            return new Date(h.getFullYear(), 0, 2);
           case 4:
-            return new Date(f.getFullYear(), 0, 1);
+            return new Date(h.getFullYear(), 0, 1);
           case 5:
-            return new Date(f.getFullYear() - 1, 11, 31);
+            return new Date(h.getFullYear() - 1, 11, 31);
           case 6:
-            return new Date(f.getFullYear() - 1, 11, 30);
+            return new Date(h.getFullYear() - 1, 11, 30);
         }
       }
-      function n(f) {
-        f = xb(new Date(f.V + 1900, 0, 1), f.ca);
-        var l = new Date(f.getFullYear() + 1, 0, 4),
-          t = k(new Date(f.getFullYear(), 0, 4));
-        l = k(l);
-        return 0 >= m(t, f)
-          ? 0 >= m(l, f)
-            ? f.getFullYear() + 1
-            : f.getFullYear()
-          : f.getFullYear() - 1;
+      function p(h) {
+        h = Bc(new Date(h.aa + 1900, 0, 1), h.wa);
+        var n = new Date(h.getFullYear() + 1, 0, 4),
+          w = l(new Date(h.getFullYear(), 0, 4));
+        n = l(n);
+        return 0 >= k(w, h)
+          ? 0 >= k(n, h)
+            ? h.getFullYear() + 1
+            : h.getFullYear()
+          : h.getFullYear() - 1;
       }
-      var p = H[(d + 40) >> 2];
+      var q = E[(d + 40) >> 2];
       d = {
-        ra: H[d >> 2],
-        qa: H[(d + 4) >> 2],
-        aa: H[(d + 8) >> 2],
-        $: H[(d + 12) >> 2],
-        Y: H[(d + 16) >> 2],
-        V: H[(d + 20) >> 2],
-        ba: H[(d + 24) >> 2],
-        ca: H[(d + 28) >> 2],
-        xa: H[(d + 32) >> 2],
-        pa: H[(d + 36) >> 2],
-        sa: p ? ka(p) : "",
+        ib: E[d >> 2],
+        hb: E[(d + 4) >> 2],
+        ua: E[(d + 8) >> 2],
+        pa: E[(d + 12) >> 2],
+        ma: E[(d + 16) >> 2],
+        aa: E[(d + 20) >> 2],
+        va: E[(d + 24) >> 2],
+        wa: E[(d + 28) >> 2],
+        zb: E[(d + 32) >> 2],
+        gb: E[(d + 36) >> 2],
+        jb: q ? ma(q) : "",
       };
-      c = ka(c);
-      p = {
+      c = ma(c);
+      q = {
         "%c": "%a %b %d %H:%M:%S %Y",
         "%D": "%m/%d/%y",
         "%F": "%Y-%m-%d",
@@ -726,406 +1466,563 @@ var jxl = (function () {
         "%OW": "%W",
         "%Oy": "%y",
       };
-      for (var q in p) c = c.replace(new RegExp(q, "g"), p[q]);
-      var u = "Sunday Monday Tuesday Wednesday Thursday Friday Saturday".split(
+      for (var r in q) c = c.replace(new RegExp(r, "g"), q[r]);
+      var v = "Sunday Monday Tuesday Wednesday Thursday Friday Saturday".split(
           " "
         ),
-        z = "January February March April May June July August September October November December".split(
+        x = "January February March April May June July August September October November December".split(
           " "
         );
-      p = {
-        "%a": function (f) {
-          return u[f.ba].substring(0, 3);
+      q = {
+        "%a": function (h) {
+          return v[h.va].substring(0, 3);
         },
-        "%A": function (f) {
-          return u[f.ba];
+        "%A": function (h) {
+          return v[h.va];
         },
-        "%b": function (f) {
-          return z[f.Y].substring(0, 3);
+        "%b": function (h) {
+          return x[h.ma].substring(0, 3);
         },
-        "%B": function (f) {
-          return z[f.Y];
+        "%B": function (h) {
+          return x[h.ma];
         },
-        "%C": function (f) {
-          return g(((f.V + 1900) / 100) | 0, 2);
+        "%C": function (h) {
+          return f(((h.aa + 1900) / 100) | 0, 2);
         },
-        "%d": function (f) {
-          return g(f.$, 2);
+        "%d": function (h) {
+          return f(h.pa, 2);
         },
-        "%e": function (f) {
-          return h(f.$, 2, " ");
+        "%e": function (h) {
+          return e(h.pa, 2, " ");
         },
-        "%g": function (f) {
-          return n(f).toString().substring(2);
+        "%g": function (h) {
+          return p(h).toString().substring(2);
         },
-        "%G": function (f) {
-          return n(f);
+        "%G": function (h) {
+          return p(h);
         },
-        "%H": function (f) {
-          return g(f.aa, 2);
+        "%H": function (h) {
+          return f(h.ua, 2);
         },
-        "%I": function (f) {
-          f = f.aa;
-          0 == f ? (f = 12) : 12 < f && (f -= 12);
-          return g(f, 2);
+        "%I": function (h) {
+          h = h.ua;
+          0 == h ? (h = 12) : 12 < h && (h -= 12);
+          return f(h, 2);
         },
-        "%j": function (f) {
-          return g(f.$ + ub(tb(f.V + 1900) ? vb : wb, f.Y - 1), 3);
+        "%j": function (h) {
+          return f(h.pa + yc(xc(h.aa + 1900) ? zc : Ac, h.ma - 1), 3);
         },
-        "%m": function (f) {
-          return g(f.Y + 1, 2);
+        "%m": function (h) {
+          return f(h.ma + 1, 2);
         },
-        "%M": function (f) {
-          return g(f.qa, 2);
+        "%M": function (h) {
+          return f(h.hb, 2);
         },
         "%n": function () {
           return "\n";
         },
-        "%p": function (f) {
-          return 0 <= f.aa && 12 > f.aa ? "AM" : "PM";
+        "%p": function (h) {
+          return 0 <= h.ua && 12 > h.ua ? "AM" : "PM";
         },
-        "%S": function (f) {
-          return g(f.ra, 2);
+        "%S": function (h) {
+          return f(h.ib, 2);
         },
         "%t": function () {
           return "\t";
         },
-        "%u": function (f) {
-          return f.ba || 7;
+        "%u": function (h) {
+          return h.va || 7;
         },
-        "%U": function (f) {
-          var l = new Date(f.V + 1900, 0, 1),
-            t = 0 === l.getDay() ? l : xb(l, 7 - l.getDay());
-          f = new Date(f.V + 1900, f.Y, f.$);
-          return 0 > m(t, f)
-            ? g(
+        "%U": function (h) {
+          var n = new Date(h.aa + 1900, 0, 1),
+            w = 0 === n.getDay() ? n : Bc(n, 7 - n.getDay());
+          h = new Date(h.aa + 1900, h.ma, h.pa);
+          return 0 > k(w, h)
+            ? f(
                 Math.ceil(
                   (31 -
-                    t.getDate() +
-                    (ub(tb(f.getFullYear()) ? vb : wb, f.getMonth() - 1) - 31) +
-                    f.getDate()) /
+                    w.getDate() +
+                    (yc(xc(h.getFullYear()) ? zc : Ac, h.getMonth() - 1) - 31) +
+                    h.getDate()) /
                     7
                 ),
                 2
               )
-            : 0 === m(t, l)
+            : 0 === k(w, n)
             ? "01"
             : "00";
         },
-        "%V": function (f) {
-          var l = new Date(f.V + 1901, 0, 4),
-            t = k(new Date(f.V + 1900, 0, 4));
-          l = k(l);
-          var w = xb(new Date(f.V + 1900, 0, 1), f.ca);
-          return 0 > m(w, t)
+        "%V": function (h) {
+          var n = new Date(h.aa + 1901, 0, 4),
+            w = l(new Date(h.aa + 1900, 0, 4));
+          n = l(n);
+          var y = Bc(new Date(h.aa + 1900, 0, 1), h.wa);
+          return 0 > k(y, w)
             ? "53"
-            : 0 >= m(l, w)
+            : 0 >= k(n, y)
             ? "01"
-            : g(
+            : f(
                 Math.ceil(
-                  (t.getFullYear() < f.V + 1900
-                    ? f.ca + 32 - t.getDate()
-                    : f.ca + 1 - t.getDate()) / 7
+                  (w.getFullYear() < h.aa + 1900
+                    ? h.wa + 32 - w.getDate()
+                    : h.wa + 1 - w.getDate()) / 7
                 ),
                 2
               );
         },
-        "%w": function (f) {
-          return f.ba;
+        "%w": function (h) {
+          return h.va;
         },
-        "%W": function (f) {
-          var l = new Date(f.V, 0, 1),
-            t =
-              1 === l.getDay()
-                ? l
-                : xb(l, 0 === l.getDay() ? 1 : 7 - l.getDay() + 1);
-          f = new Date(f.V + 1900, f.Y, f.$);
-          return 0 > m(t, f)
-            ? g(
+        "%W": function (h) {
+          var n = new Date(h.aa, 0, 1),
+            w =
+              1 === n.getDay()
+                ? n
+                : Bc(n, 0 === n.getDay() ? 1 : 7 - n.getDay() + 1);
+          h = new Date(h.aa + 1900, h.ma, h.pa);
+          return 0 > k(w, h)
+            ? f(
                 Math.ceil(
                   (31 -
-                    t.getDate() +
-                    (ub(tb(f.getFullYear()) ? vb : wb, f.getMonth() - 1) - 31) +
-                    f.getDate()) /
+                    w.getDate() +
+                    (yc(xc(h.getFullYear()) ? zc : Ac, h.getMonth() - 1) - 31) +
+                    h.getDate()) /
                     7
                 ),
                 2
               )
-            : 0 === m(t, l)
+            : 0 === k(w, n)
             ? "01"
             : "00";
         },
-        "%y": function (f) {
-          return (f.V + 1900).toString().substring(2);
+        "%y": function (h) {
+          return (h.aa + 1900).toString().substring(2);
         },
-        "%Y": function (f) {
-          return f.V + 1900;
+        "%Y": function (h) {
+          return h.aa + 1900;
         },
-        "%z": function (f) {
-          f = f.pa;
-          var l = 0 <= f;
-          f = Math.abs(f) / 60;
+        "%z": function (h) {
+          h = h.gb;
+          var n = 0 <= h;
+          h = Math.abs(h) / 60;
           return (
-            (l ? "+" : "-") +
-            String("0000" + ((f / 60) * 100 + (f % 60))).slice(-4)
+            (n ? "+" : "-") +
+            String("0000" + ((h / 60) * 100 + (h % 60))).slice(-4)
           );
         },
-        "%Z": function (f) {
-          return f.sa;
+        "%Z": function (h) {
+          return h.jb;
         },
         "%%": function () {
           return "%";
         },
       };
-      for (q in p)
-        0 <= c.indexOf(q) && (c = c.replace(new RegExp(q, "g"), p[q](d)));
-      q = zb(c);
-      if (q.length > b) return 0;
-      I.set(q, a);
-      return q.length - 1;
+      for (r in q)
+        0 <= c.indexOf(r) && (c = c.replace(new RegExp(r, "g"), q[r](d)));
+      r = cb(c, !1);
+      if (r.length > b) return 0;
+      F.set(r, a);
+      return r.length - 1;
     }
-    for (var Ab = Array(256), Bb = 0; 256 > Bb; ++Bb)
-      Ab[Bb] = String.fromCharCode(Bb);
-    Oa = Ab;
-    Sa = e.BindingError = Ra("BindingError");
-    Ta = e.InternalError = Ra("InternalError");
-    e.count_emval_handles = function () {
-      for (var a = 0, b = 5; b < X.length; ++b) void 0 !== X[b] && ++a;
-      return a;
-    };
-    e.get_first_emval = function () {
-      for (var a = 5; a < X.length; ++a) if (void 0 !== X[a]) return X[a];
-      return null;
-    };
-    hb = e.UnboundTypeError = Ra("UnboundTypeError");
-    function zb(a) {
-      var b = Array(ma(a) + 1);
-      la(a, b, 0, b.length);
-      return b;
+    function vb(a, b, c, d) {
+      a || (a = this);
+      this.parent = a;
+      this.ea = a.ea;
+      this.ra = null;
+      this.id = nb++;
+      this.name = b;
+      this.mode = c;
+      this.W = {};
+      this.X = {};
+      this.sa = d;
     }
-    Ba.push({
-      ha: function () {
-        Cb();
+    Object.defineProperties(vb.prototype, {
+      read: {
+        get: function () {
+          return 365 === (this.mode & 365);
+        },
+        set: function (a) {
+          a ? (this.mode |= 365) : (this.mode &= -366);
+        },
+      },
+      write: {
+        get: function () {
+          return 146 === (this.mode & 146);
+        },
+        set: function (a) {
+          a ? (this.mode |= 146) : (this.mode &= -147);
+        },
       },
     });
-    var Fb = {
+    Jb();
+    ob = Array(4096);
+    Cb(N, "/");
+    P("/tmp");
+    P("/home");
+    P("/home/web_user");
+    (function () {
+      P("/dev");
+      ab(259, {
+        read: function () {
+          return 0;
+        },
+        write: function (b, c, d, e) {
+          return e;
+        },
+      });
+      Eb("/dev/null", 259);
+      $a(1280, db);
+      $a(1536, eb);
+      Eb("/dev/tty", 1280);
+      Eb("/dev/tty1", 1536);
+      var a = Xa();
+      Mb("random", a);
+      Mb("urandom", a);
+      P("/dev/shm");
+      P("/dev/shm/tmp");
+    })();
+    P("/proc");
+    P("/proc/self");
+    P("/proc/self/fd");
+    Cb(
+      {
+        ea: function () {
+          var a = gb("/proc/self", "fd", 16895, 73);
+          a.W = {
+            na: function (b, c) {
+              var d = mb[+c];
+              if (!d) throw new M(8);
+              b = {
+                parent: null,
+                ea: { Ka: "fake" },
+                W: {
+                  oa: function () {
+                    return d.path;
+                  },
+                },
+              };
+              return (b.parent = b);
+            },
+          };
+          return a;
+        },
+      },
+      "/proc/self/fd"
+    );
+    for (var Dc = Array(256), Ec = 0; 256 > Ec; ++Ec)
+      Dc[Ec] = String.fromCharCode(Ec);
+    Qb = Dc;
+    Vb = g.BindingError = Ub("BindingError");
+    Wb = g.InternalError = Ub("InternalError");
+    g.count_emval_handles = function () {
+      for (var a = 0, b = 5; b < Y.length; ++b) void 0 !== Y[b] && ++a;
+      return a;
+    };
+    g.get_first_emval = function () {
+      for (var a = 5; a < Y.length; ++a) if (void 0 !== Y[a]) return Y[a];
+      return null;
+    };
+    lc = g.UnboundTypeError = Ub("UnboundTypeError");
+    function cb(a, b) {
+      var c = Array(oa(a) + 1);
+      a = na(a, c, 0, c.length);
+      b && (c.length = a);
+      return c;
+    }
+    Fa.push({
+      Ta: function () {
+        Fc();
+      },
+    });
+    var Hc = {
       k: function (a) {
-        return Db(a + 16) + 16;
+        return jb(a + 16) + 16;
       },
       f: function () {},
       j: function (a, b, c) {
-        new Ka(a).ja(b, c);
-        "uncaught_exception" in Q ? Q.fa++ : (Q.fa = 1);
+        new Ra(a).Va(b, c);
+        "uncaught_exception" in Sa ? Sa.Pa++ : (Sa.Pa = 1);
         throw a;
       },
-      q: function () {
-        return 0;
+      q: function (a, b, c) {
+        Ob = c;
+        try {
+          var d = S(a);
+          switch (b) {
+            case 0:
+              var e = R();
+              return 0 > e ? -28 : Gb(d.path, d.flags, 0, e).ga;
+            case 1:
+            case 2:
+              return 0;
+            case 3:
+              return d.flags;
+            case 4:
+              return (e = R()), (d.flags |= e), 0;
+            case 12:
+              return (e = R()), (D[(e + 0) >> 1] = 2), 0;
+            case 13:
+            case 14:
+              return 0;
+            case 16:
+            case 8:
+              return -28;
+            case 9:
+              return (E[Gc() >> 2] = 28), -1;
+            default:
+              return -28;
+          }
+        } catch (f) {
+          return ("undefined" !== typeof Q && f instanceof M) || A(f), -f.ia;
+        }
       },
-      B: function () {
-        return 0;
+      B: function (a, b, c) {
+        Ob = c;
+        try {
+          var d = S(a);
+          switch (b) {
+            case 21509:
+            case 21505:
+              return d.Z ? 0 : -59;
+            case 21510:
+            case 21511:
+            case 21512:
+            case 21506:
+            case 21507:
+            case 21508:
+              return d.Z ? 0 : -59;
+            case 21519:
+              if (!d.Z) return -59;
+              var e = R();
+              return (E[e >> 2] = 0);
+            case 21520:
+              return d.Z ? -28 : -59;
+            case 21531:
+              a = e = R();
+              if (!d.X.Wa) throw new M(59);
+              return d.X.Wa(d, b, a);
+            case 21523:
+              return d.Z ? 0 : -59;
+            case 21524:
+              return d.Z ? 0 : -59;
+            default:
+              A("bad ioctl syscall " + b);
+          }
+        } catch (f) {
+          return ("undefined" !== typeof Q && f instanceof M) || A(f), -f.ia;
+        }
       },
-      C: function () {},
-      E: function (a, b, c, d, h) {
-        var g = Na(c);
-        b = R(b);
-        W(a, {
+      C: function (a, b, c) {
+        Ob = c;
+        try {
+          var d = ma(a),
+            e = R();
+          return Gb(d, b, e).ga;
+        } catch (f) {
+          return ("undefined" !== typeof Q && f instanceof M) || A(f), -f.ia;
+        }
+      },
+      E: function (a, b, c, d, e) {
+        var f = Pb(c);
+        b = T(b);
+        X(a, {
           name: b,
-          fromWireType: function (m) {
-            return !!m;
+          fromWireType: function (k) {
+            return !!k;
           },
-          toWireType: function (m, k) {
-            return k ? d : h;
+          toWireType: function (k, l) {
+            return l ? d : e;
           },
           argPackAdvance: 8,
-          readValueFromPointer: function (m) {
-            if (1 === c) var k = I;
-            else if (2 === c) k = F;
-            else if (4 === c) k = H;
+          readValueFromPointer: function (k) {
+            if (1 === c) var l = F;
+            else if (2 === c) l = D;
+            else if (4 === c) l = E;
             else throw new TypeError("Unknown boolean type size: " + b);
-            return this.fromWireType(k[m >> g]);
+            return this.fromWireType(l[k >> f]);
           },
-          X: null,
+          fa: null,
         });
       },
       D: function (a, b) {
-        b = R(b);
-        W(a, {
+        b = T(b);
+        X(a, {
           name: b,
           fromWireType: function (c) {
-            var d = X[c].value;
-            Wa(c);
+            var d = Y[c].value;
+            $b(c);
             return d;
           },
           toWireType: function (c, d) {
-            return Y(d);
+            return ac(d);
           },
           argPackAdvance: 8,
-          readValueFromPointer: Xa,
-          X: null,
+          readValueFromPointer: bc,
+          fa: null,
         });
       },
       r: function (a, b, c) {
-        c = Na(c);
-        b = R(b);
-        W(a, {
+        c = Pb(c);
+        b = T(b);
+        X(a, {
           name: b,
           fromWireType: function (d) {
             return d;
           },
-          toWireType: function (d, h) {
-            if ("number" !== typeof h && "boolean" !== typeof h)
+          toWireType: function (d, e) {
+            if ("number" !== typeof e && "boolean" !== typeof e)
               throw new TypeError(
-                'Cannot convert "' + Ya(h) + '" to ' + this.name
+                'Cannot convert "' + cc(e) + '" to ' + this.name
               );
-            return h;
+            return e;
           },
           argPackAdvance: 8,
-          readValueFromPointer: Za(b, c),
-          X: null,
+          readValueFromPointer: dc(b, c),
+          fa: null,
         });
       },
-      m: function (a, b, c, d, h, g) {
-        var m = eb(b, c);
-        a = R(a);
-        h = gb(d, h);
-        cb(
+      m: function (a, b, c, d, e, f) {
+        var k = ic(b, c);
+        a = T(a);
+        e = kc(d, e);
+        hc(
           a,
           function () {
-            kb("Cannot call " + a + " due to unbound types", m);
+            oc("Cannot call " + a + " due to unbound types", k);
           },
           b - 1
         );
-        Ua(m, function (k) {
-          var n = a,
-            p = a;
-          k = [k[0], null].concat(k.slice(1));
-          var q = h,
-            u = k.length;
-          2 > u &&
-            V(
+        Xb(k, function (l) {
+          var p = a,
+            q = a;
+          l = [l[0], null].concat(l.slice(1));
+          var r = e,
+            v = l.length;
+          2 > v &&
+            W(
               "argTypes array size mismatch! Must at least get return value and 'this' types!"
             );
-          for (var z = null !== k[1] && !1, f = !1, l = 1; l < k.length; ++l)
-            if (null !== k[l] && void 0 === k[l].X) {
-              f = !0;
+          for (var x = null !== l[1] && !1, h = !1, n = 1; n < l.length; ++n)
+            if (null !== l[n] && void 0 === l[n].fa) {
+              h = !0;
               break;
             }
-          var t = "void" !== k[0].name,
-            w = "",
-            G = "";
-          for (l = 0; l < u - 2; ++l)
-            (w += (0 !== l ? ", " : "") + "arg" + l),
-              (G += (0 !== l ? ", " : "") + "arg" + l + "Wired");
-          p =
+          var w = "void" !== l[0].name,
+            y = "",
+            L = "";
+          for (n = 0; n < v - 2; ++n)
+            (y += (0 !== n ? ", " : "") + "arg" + n),
+              (L += (0 !== n ? ", " : "") + "arg" + n + "Wired");
+          q =
             "return function " +
-            Pa(p) +
+            Sb(q) +
             "(" +
-            w +
+            y +
             ") {\nif (arguments.length !== " +
-            (u - 2) +
+            (v - 2) +
             ") {\nthrowBindingError('function " +
-            p +
+            q +
             " called with ' + arguments.length + ' arguments, expected " +
-            (u - 2) +
+            (v - 2) +
             " args!');\n}\n";
-          f && (p += "var destructors = [];\n");
-          var db = f ? "destructors" : "null";
-          w = "throwBindingError invoker fn runDestructors retType classParam".split(
+          h && (q += "var destructors = [];\n");
+          var Yb = h ? "destructors" : "null";
+          y = "throwBindingError invoker fn runDestructors retType classParam".split(
             " "
           );
-          q = [V, q, g, ab, k[0], k[1]];
-          z &&
-            (p += "var thisWired = classParam.toWireType(" + db + ", this);\n");
-          for (l = 0; l < u - 2; ++l)
-            (p +=
+          r = [W, r, f, fc, l[0], l[1]];
+          x &&
+            (q += "var thisWired = classParam.toWireType(" + Yb + ", this);\n");
+          for (n = 0; n < v - 2; ++n)
+            (q +=
               "var arg" +
-              l +
+              n +
               "Wired = argType" +
-              l +
+              n +
               ".toWireType(" +
-              db +
+              Yb +
               ", arg" +
-              l +
+              n +
               "); // " +
-              k[l + 2].name +
+              l[n + 2].name +
               "\n"),
-              w.push("argType" + l),
-              q.push(k[l + 2]);
-          z && (G = "thisWired" + (0 < G.length ? ", " : "") + G);
-          p +=
-            (t ? "var rv = " : "") +
+              y.push("argType" + n),
+              r.push(l[n + 2]);
+          x && (L = "thisWired" + (0 < L.length ? ", " : "") + L);
+          q +=
+            (w ? "var rv = " : "") +
             "invoker(fn" +
-            (0 < G.length ? ", " : "") +
-            G +
+            (0 < L.length ? ", " : "") +
+            L +
             ");\n";
-          if (f) p += "runDestructors(destructors);\n";
+          if (h) q += "runDestructors(destructors);\n";
           else
-            for (l = z ? 1 : 2; l < k.length; ++l)
-              (u = 1 === l ? "thisWired" : "arg" + (l - 2) + "Wired"),
-                null !== k[l].X &&
-                  ((p += u + "_dtor(" + u + "); // " + k[l].name + "\n"),
-                  w.push(u + "_dtor"),
-                  q.push(k[l].X));
-          t && (p += "var ret = retType.fromWireType(rv);\nreturn ret;\n");
-          w.push(p + "}\n");
-          k = $a(w).apply(null, q);
-          l = b - 1;
-          if (!e.hasOwnProperty(n))
-            throw new Ta("Replacing nonexistant public symbol");
-          void 0 !== e[n].W && void 0 !== l
-            ? (e[n].W[l] = k)
-            : ((e[n] = k), (e[n].ga = l));
+            for (n = x ? 1 : 2; n < l.length; ++n)
+              (v = 1 === n ? "thisWired" : "arg" + (n - 2) + "Wired"),
+                null !== l[n].fa &&
+                  ((q += v + "_dtor(" + v + "); // " + l[n].name + "\n"),
+                  y.push(v + "_dtor"),
+                  r.push(l[n].fa));
+          w && (q += "var ret = retType.fromWireType(rv);\nreturn ret;\n");
+          y.push(q + "}\n");
+          l = ec(y).apply(null, r);
+          n = b - 1;
+          if (!g.hasOwnProperty(p))
+            throw new Wb("Replacing nonexistant public symbol");
+          void 0 !== g[p].ca && void 0 !== n
+            ? (g[p].ca[n] = l)
+            : ((g[p] = l), (g[p].Ra = n));
           return [];
         });
       },
-      d: function (a, b, c, d, h) {
-        function g(p) {
-          return p;
+      d: function (a, b, c, d, e) {
+        function f(q) {
+          return q;
         }
-        b = R(b);
-        -1 === h && (h = 4294967295);
-        var m = Na(c);
+        b = T(b);
+        -1 === e && (e = 4294967295);
+        var k = Pb(c);
         if (0 === d) {
-          var k = 32 - 8 * c;
-          g = function (p) {
-            return (p << k) >>> k;
+          var l = 32 - 8 * c;
+          f = function (q) {
+            return (q << l) >>> l;
           };
         }
-        var n = -1 != b.indexOf("unsigned");
-        W(a, {
+        var p = -1 != b.indexOf("unsigned");
+        X(a, {
           name: b,
-          fromWireType: g,
-          toWireType: function (p, q) {
-            if ("number" !== typeof q && "boolean" !== typeof q)
+          fromWireType: f,
+          toWireType: function (q, r) {
+            if ("number" !== typeof r && "boolean" !== typeof r)
               throw new TypeError(
-                'Cannot convert "' + Ya(q) + '" to ' + this.name
+                'Cannot convert "' + cc(r) + '" to ' + this.name
               );
-            if (q < d || q > h)
+            if (r < d || r > e)
               throw new TypeError(
                 'Passing a number "' +
-                  Ya(q) +
+                  cc(r) +
                   '" from JS side to C/C++ side to an argument of type "' +
                   b +
                   '", which is outside the valid range [' +
                   d +
                   ", " +
-                  h +
+                  e +
                   "]!"
               );
-            return n ? q >>> 0 : q | 0;
+            return p ? r >>> 0 : r | 0;
           },
           argPackAdvance: 8,
-          readValueFromPointer: lb(b, m, 0 !== d),
-          X: null,
+          readValueFromPointer: pc(b, k, 0 !== d),
+          fa: null,
         });
       },
       c: function (a, b, c) {
-        function d(g) {
-          g >>= 2;
-          var m = K;
-          return new h(J, m[g + 1], m[g]);
+        function d(f) {
+          f >>= 2;
+          var k = H;
+          return new e(G, k[f + 1], k[f]);
         }
-        var h = [
+        var e = [
           Int8Array,
           Uint8Array,
           Int16Array,
@@ -1135,8 +2032,8 @@ var jxl = (function () {
           Float32Array,
           Float64Array,
         ][b];
-        c = R(c);
-        W(
+        c = T(c);
+        X(
           a,
           {
             name: c,
@@ -1144,190 +2041,190 @@ var jxl = (function () {
             argPackAdvance: 8,
             readValueFromPointer: d,
           },
-          { ia: !0 }
+          { Ua: !0 }
         );
       },
       s: function (a, b) {
-        b = R(b);
+        b = T(b);
         var c = "std::string" === b;
-        W(a, {
+        X(a, {
           name: b,
           fromWireType: function (d) {
-            var h = K[d >> 2];
+            var e = H[d >> 2];
             if (c)
-              for (var g = d + 4, m = 0; m <= h; ++m) {
-                var k = d + 4 + m;
-                if (m == h || 0 == D[k]) {
-                  g = ka(g, k - g);
-                  if (void 0 === n) var n = g;
-                  else (n += String.fromCharCode(0)), (n += g);
-                  g = k + 1;
+              for (var f = d + 4, k = 0; k <= e; ++k) {
+                var l = d + 4 + k;
+                if (k == e || 0 == C[l]) {
+                  f = ma(f, l - f);
+                  if (void 0 === p) var p = f;
+                  else (p += String.fromCharCode(0)), (p += f);
+                  f = l + 1;
                 }
               }
             else {
-              n = Array(h);
-              for (m = 0; m < h; ++m) n[m] = String.fromCharCode(D[d + 4 + m]);
-              n = n.join("");
+              p = Array(e);
+              for (k = 0; k < e; ++k) p[k] = String.fromCharCode(C[d + 4 + k]);
+              p = p.join("");
             }
             Z(d);
-            return n;
+            return p;
           },
-          toWireType: function (d, h) {
-            h instanceof ArrayBuffer && (h = new Uint8Array(h));
-            var g = "string" === typeof h;
-            g ||
-              h instanceof Uint8Array ||
-              h instanceof Uint8ClampedArray ||
-              h instanceof Int8Array ||
-              V("Cannot pass non-string to std::string");
-            var m = (c && g
+          toWireType: function (d, e) {
+            e instanceof ArrayBuffer && (e = new Uint8Array(e));
+            var f = "string" === typeof e;
+            f ||
+              e instanceof Uint8Array ||
+              e instanceof Uint8ClampedArray ||
+              e instanceof Int8Array ||
+              W("Cannot pass non-string to std::string");
+            var k = (c && f
                 ? function () {
-                    return ma(h);
+                    return oa(e);
                   }
                 : function () {
-                    return h.length;
+                    return e.length;
                   })(),
-              k = Db(4 + m + 1);
-            K[k >> 2] = m;
-            if (c && g) la(h, D, k + 4, m + 1);
-            else if (g)
-              for (g = 0; g < m; ++g) {
-                var n = h.charCodeAt(g);
-                255 < n &&
-                  (Z(k),
-                  V("String has UTF-16 code units that do not fit in 8 bits"));
-                D[k + 4 + g] = n;
+              l = jb(4 + k + 1);
+            H[l >> 2] = k;
+            if (c && f) na(e, C, l + 4, k + 1);
+            else if (f)
+              for (f = 0; f < k; ++f) {
+                var p = e.charCodeAt(f);
+                255 < p &&
+                  (Z(l),
+                  W("String has UTF-16 code units that do not fit in 8 bits"));
+                C[l + 4 + f] = p;
               }
-            else for (g = 0; g < m; ++g) D[k + 4 + g] = h[g];
-            null !== d && d.push(Z, k);
-            return k;
+            else for (f = 0; f < k; ++f) C[l + 4 + f] = e[f];
+            null !== d && d.push(Z, l);
+            return l;
           },
           argPackAdvance: 8,
-          readValueFromPointer: Xa,
-          X: function (d) {
+          readValueFromPointer: bc,
+          fa: function (d) {
             Z(d);
           },
         });
       },
       l: function (a, b, c) {
-        c = R(c);
+        c = T(c);
         if (2 === b) {
-          var d = oa;
-          var h = pa;
-          var g = qa;
-          var m = function () {
-            return E;
+          var d = qa;
+          var e = sa;
+          var f = ta;
+          var k = function () {
+            return ra;
           };
-          var k = 1;
+          var l = 1;
         } else
           4 === b &&
-            ((d = ra),
-            (h = sa),
-            (g = ta),
-            (m = function () {
-              return K;
+            ((d = ua),
+            (e = va),
+            (f = wa),
+            (k = function () {
+              return H;
             }),
-            (k = 2));
-        W(a, {
+            (l = 2));
+        X(a, {
           name: c,
-          fromWireType: function (n) {
-            for (var p = K[n >> 2], q = m(), u, z = n + 4, f = 0; f <= p; ++f) {
-              var l = n + 4 + f * b;
-              if (f == p || 0 == q[l >> k])
-                (z = d(z, l - z)),
-                  void 0 === u
-                    ? (u = z)
-                    : ((u += String.fromCharCode(0)), (u += z)),
-                  (z = l + b);
+          fromWireType: function (p) {
+            for (var q = H[p >> 2], r = k(), v, x = p + 4, h = 0; h <= q; ++h) {
+              var n = p + 4 + h * b;
+              if (h == q || 0 == r[n >> l])
+                (x = d(x, n - x)),
+                  void 0 === v
+                    ? (v = x)
+                    : ((v += String.fromCharCode(0)), (v += x)),
+                  (x = n + b);
             }
-            Z(n);
-            return u;
+            Z(p);
+            return v;
           },
-          toWireType: function (n, p) {
-            "string" !== typeof p &&
-              V("Cannot pass non-string to C++ string type " + c);
-            var q = g(p),
-              u = Db(4 + q + b);
-            K[u >> 2] = q >> k;
-            h(p, u + 4, q + b);
-            null !== n && n.push(Z, u);
-            return u;
+          toWireType: function (p, q) {
+            "string" !== typeof q &&
+              W("Cannot pass non-string to C++ string type " + c);
+            var r = f(q),
+              v = jb(4 + r + b);
+            H[v >> 2] = r >> l;
+            e(q, v + 4, r + b);
+            null !== p && p.push(Z, v);
+            return v;
           },
           argPackAdvance: 8,
-          readValueFromPointer: Xa,
-          X: function (n) {
-            Z(n);
+          readValueFromPointer: bc,
+          fa: function (p) {
+            Z(p);
           },
         });
       },
       F: function (a, b) {
-        b = R(b);
-        W(a, {
-          va: !0,
+        b = T(b);
+        X(a, {
+          ub: !0,
           name: b,
           argPackAdvance: 0,
           fromWireType: function () {},
           toWireType: function () {},
         });
       },
-      h: Wa,
+      h: $b,
       e: function (a) {
-        if (0 === a) return Y(nb());
-        var b = mb[a];
-        a = void 0 === b ? R(a) : b;
-        return Y(nb()[a]);
+        if (0 === a) return ac(rc());
+        var b = qc[a];
+        a = void 0 === b ? T(a) : b;
+        return ac(rc()[a]);
       },
       n: function (a) {
-        4 < a && (X[a].ea += 1);
+        4 < a && (Y[a].Ca += 1);
       },
       i: function (a, b, c, d) {
-        a || V("Cannot use deleted val. handle = " + a);
-        a = X[a].value;
-        var h = pb[b];
-        if (!h) {
-          h = "";
-          for (var g = 0; g < b; ++g) h += (0 !== g ? ", " : "") + "arg" + g;
-          var m =
+        a || W("Cannot use deleted val. handle = " + a);
+        a = Y[a].value;
+        var e = tc[b];
+        if (!e) {
+          e = "";
+          for (var f = 0; f < b; ++f) e += (0 !== f ? ", " : "") + "arg" + f;
+          var k =
             "return function emval_allocator_" +
             b +
             "(constructor, argTypes, args) {\n";
-          for (g = 0; g < b; ++g)
-            m +=
+          for (f = 0; f < b; ++f)
+            k +=
               "var argType" +
-              g +
+              f +
               " = requireRegisteredType(Module['HEAP32'][(argTypes >>> 2) + " +
-              g +
+              f +
               '], "parameter ' +
-              g +
+              f +
               '");\nvar arg' +
-              g +
+              f +
               " = argType" +
-              g +
+              f +
               ".readValueFromPointer(args);\nargs += argType" +
-              g +
+              f +
               "['argPackAdvance'];\n";
-          h = new Function(
+          e = new Function(
             "requireRegisteredType",
             "Module",
             "__emval_register",
-            m +
+            k +
               ("var obj = new constructor(" +
-                h +
+                e +
                 ");\nreturn __emval_register(obj);\n}\n")
-          )(ob, e, Y);
-          pb[b] = h;
+          )(sc, g, ac);
+          tc[b] = e;
         }
-        return h(a, c, d);
+        return e(a, c, d);
       },
       b: function () {
-        B();
+        A();
       },
       w: function (a, b, c) {
-        D.copyWithin(a, b, b + c);
+        C.copyWithin(a, b, b + c);
       },
       g: function (a) {
         a >>>= 0;
-        var b = D.length;
+        var b = C.length;
         if (2147483648 < a) return !1;
         for (var c = 1; 4 >= c; c *= 2) {
           var d = b * (1 + 0.2 / c);
@@ -1336,128 +2233,217 @@ var jxl = (function () {
           0 < d % 65536 && (d += 65536 - (d % 65536));
           a: {
             try {
-              C.grow((Math.min(2147483648, d) - J.byteLength + 65535) >>> 16);
-              ya(C.buffer);
-              var h = 1;
+              B.grow((Math.min(2147483648, d) - G.byteLength + 65535) >>> 16);
+              Ba(B.buffer);
+              var e = 1;
               break a;
-            } catch (g) {}
-            h = void 0;
+            } catch (f) {}
+            e = void 0;
           }
-          if (h) return !0;
+          if (e) return !0;
         }
         return !1;
       },
       y: function (a, b) {
         var c = 0;
-        rb().forEach(function (d, h) {
-          var g = b + c;
-          h = H[(a + 4 * h) >> 2] = g;
-          for (g = 0; g < d.length; ++g) I[h++ >> 0] = d.charCodeAt(g);
-          I[h >> 0] = 0;
+        vc().forEach(function (d, e) {
+          var f = b + c;
+          e = E[(a + 4 * e) >> 2] = f;
+          for (f = 0; f < d.length; ++f) F[e++ >> 0] = d.charCodeAt(f);
+          F[e >> 0] = 0;
           c += d.length + 1;
         });
         return 0;
       },
       z: function (a, b) {
-        var c = rb();
-        H[a >> 2] = c.length;
+        var c = vc();
+        E[a >> 2] = c.length;
         var d = 0;
-        c.forEach(function (h) {
-          d += h.length + 1;
+        c.forEach(function (e) {
+          d += e.length + 1;
         });
-        H[b >> 2] = d;
+        E[b >> 2] = d;
         return 0;
       },
-      o: function () {
-        return 0;
+      o: function (a) {
+        try {
+          var b = S(a);
+          if (null === b.ga) throw new M(8);
+          b.za && (b.za = null);
+          try {
+            b.X.close && b.X.close(b);
+          } catch (c) {
+            throw c;
+          } finally {
+            mb[b.ga] = null;
+          }
+          b.ga = null;
+          return 0;
+        } catch (c) {
+          return ("undefined" !== typeof Q && c instanceof M) || A(c), c.ia;
+        }
       },
       A: function (a, b, c, d) {
-        a = Ma.ua(a);
-        b = Ma.ta(a, b, c);
-        H[d >> 2] = b;
-        return 0;
-      },
-      u: function () {},
-      p: function (a, b, c, d) {
-        for (var h = 0, g = 0; g < c; g++) {
-          for (
-            var m = H[(b + 8 * g) >> 2], k = H[(b + (8 * g + 4)) >> 2], n = 0;
-            n < k;
-            n++
-          ) {
-            var p = D[m + n],
-              q = La[a];
-            if (0 === p || 10 === p) {
-              for (p = 0; q[p] && !(NaN <= p); ) ++p;
-              p = ja.decode(
-                q.subarray ? q.subarray(0, p) : new Uint8Array(q.slice(0, p))
-              );
-              (1 === a ? ha : y)(p);
-              q.length = 0;
-            } else q.push(p);
+        try {
+          a: {
+            for (var e = S(a), f = (a = 0); f < c; f++) {
+              var k = E[(b + (8 * f + 4)) >> 2],
+                l = e,
+                p = E[(b + 8 * f) >> 2],
+                q = k,
+                r = void 0,
+                v = F;
+              if (0 > q || 0 > r) throw new M(28);
+              if (null === l.ga) throw new M(8);
+              if (1 === (l.flags & 2097155)) throw new M(8);
+              if (16384 === (l.node.mode & 61440)) throw new M(31);
+              if (!l.X.read) throw new M(28);
+              var x = "undefined" !== typeof r;
+              if (!x) r = l.position;
+              else if (!l.seekable) throw new M(70);
+              var h = l.X.read(l, v, p, q, r);
+              x || (l.position += h);
+              var n = h;
+              if (0 > n) {
+                var w = -1;
+                break a;
+              }
+              a += n;
+              if (n < k) break;
+            }
+            w = a;
           }
-          h += k;
+          E[d >> 2] = w;
+          return 0;
+        } catch (y) {
+          return ("undefined" !== typeof Q && y instanceof M) || A(y), y.ia;
         }
-        H[d >> 2] = h;
-        return 0;
       },
-      a: C,
+      u: function (a, b, c, d, e) {
+        try {
+          var f = S(a);
+          a = 4294967296 * c + (b >>> 0);
+          if (-9007199254740992 >= a || 9007199254740992 <= a) return -61;
+          Ib(f, a, d);
+          Pa = [
+            f.position >>> 0,
+            ((K = f.position),
+            1 <= +Math.abs(K)
+              ? 0 < K
+                ? (Math.min(+Math.floor(K / 4294967296), 4294967295) | 0) >>> 0
+                : ~~+Math.ceil((K - +(~~K >>> 0)) / 4294967296) >>> 0
+              : 0),
+          ];
+          E[e >> 2] = Pa[0];
+          E[(e + 4) >> 2] = Pa[1];
+          f.za && 0 === a && 0 === d && (f.za = null);
+          return 0;
+        } catch (k) {
+          return ("undefined" !== typeof Q && k instanceof M) || A(k), k.ia;
+        }
+      },
+      p: function (a, b, c, d) {
+        try {
+          a: {
+            for (var e = S(a), f = (a = 0); f < c; f++) {
+              var k = e,
+                l = E[(b + 8 * f) >> 2],
+                p = E[(b + (8 * f + 4)) >> 2],
+                q = void 0,
+                r = F;
+              if (0 > p || 0 > q) throw new M(28);
+              if (null === k.ga) throw new M(8);
+              if (0 === (k.flags & 2097155)) throw new M(8);
+              if (16384 === (k.node.mode & 61440)) throw new M(31);
+              if (!k.X.write) throw new M(28);
+              k.seekable && k.flags & 1024 && Ib(k, 0, 2);
+              var v = "undefined" !== typeof q;
+              if (!v) q = k.position;
+              else if (!k.seekable) throw new M(70);
+              var x = k.X.write(k, r, l, p, q, void 0);
+              v || (k.position += x);
+              try {
+                if (k.path && qb.onWriteToFile) qb.onWriteToFile(k.path);
+              } catch (w) {
+                z(
+                  "FS.trackingDelegate['onWriteToFile']('" +
+                    k.path +
+                    "') threw an exception: " +
+                    w.message
+                );
+              }
+              var h = x;
+              if (0 > h) {
+                var n = -1;
+                break a;
+              }
+              a += h;
+            }
+            n = a;
+          }
+          E[d >> 2] = n;
+          return 0;
+        } catch (w) {
+          return ("undefined" !== typeof Q && w instanceof M) || A(w), w.ia;
+        }
+      },
+      a: B,
       v: function () {},
       x: function (a, b, c, d) {
-        return yb(a, b, c, d);
+        return Cc(a, b, c, d);
       },
       t: function (a) {
         if (!a) return 0;
-        H[Eb() >> 2] = 6;
+        E[Gc() >> 2] = 6;
         return -1;
       },
     };
     (function () {
-      function a(h) {
-        e.asm = h.exports;
-        L = e.asm.G;
-        M--;
-        e.monitorRunDependencies && e.monitorRunDependencies(M);
-        0 == M &&
-          (null !== Fa && (clearInterval(Fa), (Fa = null)),
-          N && ((h = N), (N = null), h()));
+      function a(e) {
+        g.asm = e.exports;
+        Da = g.asm.G;
+        I--;
+        g.monitorRunDependencies && g.monitorRunDependencies(I);
+        0 == I &&
+          (null !== Ja && (clearInterval(Ja), (Ja = null)),
+          Ka && ((e = Ka), (Ka = null), e()));
       }
-      function b(h) {
-        a(h.instance);
+      function b(e) {
+        a(e.instance);
       }
-      function c(h) {
-        return Ja()
-          .then(function (g) {
-            return WebAssembly.instantiate(g, d);
+      function c(e) {
+        return Oa()
+          .then(function (f) {
+            return WebAssembly.instantiate(f, d);
           })
-          .then(h, function (g) {
-            y("failed to asynchronously prepare wasm: " + g);
-            B(g);
+          .then(e, function (f) {
+            z("failed to asynchronously prepare wasm: " + f);
+            A(f);
           });
       }
-      var d = { a: Fb };
-      M++;
-      e.monitorRunDependencies && e.monitorRunDependencies(M);
-      if (e.instantiateWasm)
+      var d = { a: Hc };
+      I++;
+      g.monitorRunDependencies && g.monitorRunDependencies(I);
+      if (g.instantiateWasm)
         try {
-          return e.instantiateWasm(d, a);
-        } catch (h) {
+          return g.instantiateWasm(d, a);
+        } catch (e) {
           return (
-            y("Module.instantiateWasm callback failed with error: " + h), !1
+            z("Module.instantiateWasm callback failed with error: " + e), !1
           );
         }
       (function () {
-        return A ||
+        return ia ||
           "function" !== typeof WebAssembly.instantiateStreaming ||
-          Ga() ||
+          La() ||
           "function" !== typeof fetch
           ? c(b)
-          : fetch(O, { credentials: "same-origin" }).then(function (h) {
-              return WebAssembly.instantiateStreaming(h, d).then(
+          : fetch(J, { credentials: "same-origin" }).then(function (e) {
+              return WebAssembly.instantiateStreaming(e, d).then(
                 b,
-                function (g) {
-                  y("wasm streaming compile failed: " + g);
-                  y("falling back to ArrayBuffer instantiation");
+                function (f) {
+                  z("wasm streaming compile failed: " + f);
+                  z("falling back to ArrayBuffer instantiation");
                   return c(b);
                 }
               );
@@ -1465,143 +2451,161 @@ var jxl = (function () {
       })().catch(ba);
       return {};
     })();
-    var Cb = (e.___wasm_call_ctors = function () {
-        return (Cb = e.___wasm_call_ctors = e.asm.H).apply(null, arguments);
+    var Fc = (g.___wasm_call_ctors = function () {
+        return (Fc = g.___wasm_call_ctors = g.asm.H).apply(null, arguments);
       }),
-      Db = (e._malloc = function () {
-        return (Db = e._malloc = e.asm.I).apply(null, arguments);
+      jb = (g._malloc = function () {
+        return (jb = g._malloc = g.asm.I).apply(null, arguments);
       }),
-      Z = (e._free = function () {
-        return (Z = e._free = e.asm.J).apply(null, arguments);
+      Z = (g._free = function () {
+        return (Z = g._free = g.asm.J).apply(null, arguments);
       }),
-      Eb = (e.___errno_location = function () {
-        return (Eb = e.___errno_location = e.asm.K).apply(null, arguments);
+      Gc = (g.___errno_location = function () {
+        return (Gc = g.___errno_location = g.asm.K).apply(null, arguments);
       });
-    e._main = function () {
-      return (e._main = e.asm.L).apply(null, arguments);
+    g._main = function () {
+      return (g._main = g.asm.L).apply(null, arguments);
     };
-    var jb = (e.___getTypeName = function () {
-      return (jb = e.___getTypeName = e.asm.M).apply(null, arguments);
+    var nc = (g.___getTypeName = function () {
+      return (nc = g.___getTypeName = g.asm.M).apply(null, arguments);
     });
-    e.___embind_register_native_and_builtin_types = function () {
-      return (e.___embind_register_native_and_builtin_types = e.asm.N).apply(
+    g.___embind_register_native_and_builtin_types = function () {
+      return (g.___embind_register_native_and_builtin_types = g.asm.N).apply(
         null,
         arguments
       );
     };
-    var va = (e.stackAlloc = function () {
-      return (va = e.stackAlloc = e.asm.O).apply(null, arguments);
+    var ya = (g.stackAlloc = function () {
+      return (ya = g.stackAlloc = g.asm.O).apply(null, arguments);
     });
-    e.dynCall_jiji = function () {
-      return (e.dynCall_jiji = e.asm.P).apply(null, arguments);
+    g.dynCall_jiji = function () {
+      return (g.dynCall_jiji = g.asm.P).apply(null, arguments);
     };
-    e.dynCall_viijii = function () {
-      return (e.dynCall_viijii = e.asm.Q).apply(null, arguments);
+    g.dynCall_viijii = function () {
+      return (g.dynCall_viijii = g.asm.Q).apply(null, arguments);
     };
-    e.dynCall_iiji = function () {
-      return (e.dynCall_iiji = e.asm.R).apply(null, arguments);
+    g.dynCall_iiji = function () {
+      return (g.dynCall_iiji = g.asm.R).apply(null, arguments);
     };
-    e.dynCall_iiiiiijj = function () {
-      return (e.dynCall_iiiiiijj = e.asm.S).apply(null, arguments);
+    g.dynCall_iiiiiijj = function () {
+      return (g.dynCall_iiiiiijj = g.asm.S).apply(null, arguments);
     };
-    e.dynCall_iiiiij = function () {
-      return (e.dynCall_iiiiij = e.asm.T).apply(null, arguments);
+    g.dynCall_iiiiij = function () {
+      return (g.dynCall_iiiiij = g.asm.T).apply(null, arguments);
     };
-    e.dynCall_iiiiijj = function () {
-      return (e.dynCall_iiiiijj = e.asm.U).apply(null, arguments);
+    g.dynCall_iiiiijj = function () {
+      return (g.dynCall_iiiiijj = g.asm.U).apply(null, arguments);
     };
-    var Gb;
-    function Hb(a) {
+    var Ic;
+    function Jc(a) {
       this.name = "ExitStatus";
       this.message = "Program terminated with exit(" + a + ")";
       this.status = a;
     }
-    N = function Ib() {
-      Gb || Jb();
-      Gb || (N = Ib);
+    Ka = function Kc() {
+      Ic || Lc();
+      Ic || (Ka = Kc);
     };
-    function Jb(a) {
+    function Lc(a) {
       function b() {
-        if (!Gb && ((Gb = !0), (e.calledRun = !0), !ia)) {
-          P(Ba);
-          P(Ca);
-          aa(e);
-          if (e.onRuntimeInitialized) e.onRuntimeInitialized();
-          if (Kb) {
+        if (!Ic && ((Ic = !0), (g.calledRun = !0), !ja)) {
+          g.noFSInit ||
+            Kb ||
+            ((Kb = !0),
+            Jb(),
+            (g.stdin = g.stdin),
+            (g.stdout = g.stdout),
+            (g.stderr = g.stderr),
+            g.stdin ? Mb("stdin", g.stdin) : Fb("/dev/tty", "/dev/stdin"),
+            g.stdout
+              ? Mb("stdout", null, g.stdout)
+              : Fb("/dev/tty", "/dev/stdout"),
+            g.stderr
+              ? Mb("stderr", null, g.stderr)
+              : Fb("/dev/tty1", "/dev/stderr"),
+            Gb("/dev/stdin", "r"),
+            Gb("/dev/stdout", "w"),
+            Gb("/dev/stderr", "w"));
+          Qa(Fa);
+          pb = !1;
+          Qa(Ga);
+          aa(g);
+          if (g.onRuntimeInitialized) g.onRuntimeInitialized();
+          if (Mc) {
             var c = a,
-              d = e._main;
+              d = g._main;
             c = c || [];
-            var h = c.length + 1,
-              g = va(4 * (h + 1));
-            H[g >> 2] = ua(da);
-            for (var m = 1; m < h; m++) H[(g >> 2) + m] = ua(c[m - 1]);
-            H[(g >> 2) + h] = 0;
+            var e = c.length + 1,
+              f = ya(4 * (e + 1));
+            E[f >> 2] = xa(da);
+            for (var k = 1; k < e; k++) E[(f >> 2) + k] = xa(c[k - 1]);
+            E[(f >> 2) + e] = 0;
             try {
-              var k = d(h, g);
-              if (!noExitRuntime || 0 !== k) {
+              var l = d(e, f);
+              if (!noExitRuntime || 0 !== l) {
                 if (!noExitRuntime) {
-                  if (e.onExit) e.onExit(k);
-                  ia = !0;
+                  if (g.onExit) g.onExit(l);
+                  ja = !0;
                 }
-                ea(k, new Hb(k));
+                ea(l, new Jc(l));
               }
-            } catch (n) {
-              n instanceof Hb ||
-                ("unwind" == n
+            } catch (p) {
+              p instanceof Jc ||
+                ("unwind" == p
                   ? (noExitRuntime = !0)
-                  : ((c = n) &&
-                      "object" === typeof n &&
-                      n.stack &&
-                      (c = [n, n.stack]),
-                    y("exception thrown: " + c),
-                    ea(1, n)));
+                  : ((c = p) &&
+                      "object" === typeof p &&
+                      p.stack &&
+                      (c = [p, p.stack]),
+                    z("exception thrown: " + c),
+                    ea(1, p)));
             } finally {
             }
           }
-          if (e.postRun)
+          if (g.postRun)
             for (
-              "function" == typeof e.postRun && (e.postRun = [e.postRun]);
-              e.postRun.length;
+              "function" == typeof g.postRun && (g.postRun = [g.postRun]);
+              g.postRun.length;
 
             )
-              (c = e.postRun.shift()), Da.unshift(c);
-          P(Da);
+              (c = g.postRun.shift()), Ha.unshift(c);
+          Qa(Ha);
         }
       }
       a = a || ca;
-      if (!(0 < M)) {
-        if (e.preRun)
+      if (!(0 < I)) {
+        if (g.preRun)
           for (
-            "function" == typeof e.preRun && (e.preRun = [e.preRun]);
-            e.preRun.length;
+            "function" == typeof g.preRun && (g.preRun = [g.preRun]);
+            g.preRun.length;
 
           )
-            Ea();
-        P(Aa);
-        0 < M ||
-          (e.setStatus
-            ? (e.setStatus("Running..."),
+            Ia();
+        Qa(Ea);
+        0 < I ||
+          (g.setStatus
+            ? (g.setStatus("Running..."),
               setTimeout(function () {
                 setTimeout(function () {
-                  e.setStatus("");
+                  g.setStatus("");
                 }, 1);
                 b();
               }, 1))
             : b());
       }
     }
-    e.run = Jb;
-    if (e.preInit)
+    g.run = Lc;
+    if (g.preInit)
       for (
-        "function" == typeof e.preInit && (e.preInit = [e.preInit]);
-        0 < e.preInit.length;
+        "function" == typeof g.preInit && (g.preInit = [g.preInit]);
+        0 < g.preInit.length;
 
       )
-        e.preInit.pop()();
-    var Kb = !0;
-    e.noInitialRun && (Kb = !1);
+        g.preInit.pop()();
+    var Mc = !1;
+    g.noInitialRun && (Mc = !1);
     noExitRuntime = !0;
-    Jb();
+    Lc();
 
     return jxl.ready;
   };

@@ -26,6 +26,7 @@ $(OUT_JS): jxl.cpp $(CODEC_BUILD_DIR)/lib/libjxl.a
 		-I $(CODEC_DIR)/third_party/skcms \
 		--bind \
 		--closure 1 \
+		-s INVOKE_RUN=0 \
 		-s ALLOW_MEMORY_GROWTH=1 \
 		-s MODULARIZE=1 \
 		-s TEXTDECODER=2 \

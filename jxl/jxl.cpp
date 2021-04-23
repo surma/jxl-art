@@ -21,9 +21,9 @@
 
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 using namespace emscripten;
-using namespace std;
 
 thread_local const val Uint8ClampedArray = val::global("Uint8ClampedArray");
 thread_local const val ImageData = val::global("ImageData");
@@ -128,15 +128,16 @@ int JxlFromTree(const char *in, const char *out, const char *tree_out);
 } // namespace jxl
 
 val jxl_from_tree(std::string in) {
-  ofstream jxlTree("/in.jxl");
+  std::ofstream jxlTree("/in.jxl");
   jxlTree << in;
   jxlTree.close();
-  jxl::JxlFromTree("/in.jxl", "/out.jxl", NULL);
-  ifstream jxlImg("/out.jxl");
-  std::string img;
-  jxlImg >> img;
+  jxl::JxlFromTree("/in.jxl", "/out.jxl", nullptr);
+  std::ifstream jxlImg("/out.jxl");
+  std::stringstream jxlStream;
+  jxlStream << jxlImg.rdbuf();
+  std::string jxlData = jxlStream.str();
   jxlImg.close();
-  return Uint8Array.new_(typed_memory_view(img.length(), img.c_str()));
+  return Uint8Array.new_(typed_memory_view(jxlData.length(), jxlData.c_str()));
 }
 
 EMSCRIPTEN_BINDINGS(my_module) {

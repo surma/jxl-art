@@ -74,9 +74,11 @@ export default {
         targets: "last 2 Chrome versions, last 2 Safari versions",
       },
     }),
-    terser({
-      compress: true,
-      mangle: true,
-    }),
-  ],
+    process.env.DEBUG
+      ? null
+      : terser({
+          compress: true,
+          mangle: true,
+        }),
+  ].filter(Boolean),
 };
