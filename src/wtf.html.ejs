@@ -31,7 +31,7 @@
   </p>
 
   <p>
-    In the context of JXL art, however, there is only one 1024x1024 square and
+    In the context of JXL art, however,
     the error is always assumed to be zero, which makes the image consist of
     <em>only</em> the prediction tree. That means the predictions effectively
     generate the image. The process of creating JXL art is writing that
@@ -48,9 +48,27 @@
   </p>
 
   <p>
-    A program starts with a decision node — an if-else-like statement.
+    A program starts with an optional header that specifies image properties and
+    optional transformations to apply. The default header looks like this (everything is optional):
+  </p>
+  <pre>
+Width 1024
+Height 1024
+RCT 0          /* Reversible Color Transform. 0 is no transform, so just RGB. 1 means YCoCg. Higher numbers can be used. */
+/* XYB */      /* if this flag is added, the XYB color space is used instead of RGB. */
+/* CbYCr */    /* if this flag is added, the YCbCr transform is applied. Channel 0 becomes Cb, channel 1 is Y, channel 2 is Cr. */
+GroupShift 3   /* The group size is equal to 128 << GroupShift, so default is 1024. Values 0-3 are valid. */
+Bitdepth 8     /* Other bit depths can be used, from 1 to 31. */
+/* FloatExpBits 3 */  /* if this option is used, the numbers are interpreted as IEEE floats with this many exponent bits. */
+/* Alpha */           /* if this flag is added, a fourth channel is added for Alpha. */
+/* Squeeze */         /* if this flag is added, the Squeeze transform will be applied. Weird things will happen and the image gets many channels. */  
+  </pre>
+  <p>
+    It is then followed by a tree description,
+    which starts with a decision node — an if-else-like statement.
     Technically you can also just give a single predictor, but that’s not very
-    useful to generate art, now is it. A decision node looks like this:
+    useful to generate art, now is it (though it can be).
+    A decision node looks like this:
   </p>
 
   <pre>
@@ -68,10 +86,13 @@ if [property] > [value:int]
   <p>The following properties can be used in a decision node:</p>
 
   <ul>
-    <li><code>c</code>: the channel number (0=R, 1=G, 2=B)</li>
+    <li><code>c</code>: the channel number, where 0=R, 1=G, 2=B, 3=A (if Alpha was enabled in the header)</li>
+    <li><code>g</code>: the group number (useful in case the image is larger than one group). Modular group numbers usually start with 21.</li>
     <li><code>x</code>,<code>y</code>: coordinates</li>
     <li><code>N</code>: value of pixel above (north)</li>
     <li><code>W</code>: value of pixel to the left (west)</li>
+    <li><code>|N|</code>: absolute value of pixel above (north)</li>
+    <li><code>|W|</code>: absolute value of pixel to the left (west)</li>
     <li>
       <code>W-WW-NW+NWW</code>: basically the error of the gradient predictor
       for the pixel on the left
@@ -98,6 +119,11 @@ if [property] > [value:int]
       <code>W</code> predictor for the pixel on the left
     </li>
     <li><code>WGH</code>: signed max-absval-error of the weighted predictor</li>
+    <li><code>Prev</code>: the pixel value in this position in the <i>previous</i> channel</li>
+    <li><code>PPrev</code>: the pixel value in this position in the channel before the previous channel</li>
+    <li><code>PrevErr</code>: the difference between pixel value and the <code>Gradient</code>-predicted value in this position in the <i>previous</i> channel</li>
+    <li><code>PPrevErr</code>: like <code>PrevErr</code>, but for the channel before that</li>
+    <li><code>PrevAbs, PPrevAbs, PrevAbsErr, PPrevAbsErr</code>: same as the abov, but the absolute value (not the signed value)</li>
   </ul>
 
   <p>Leaf nodes are of the following form:</p>
