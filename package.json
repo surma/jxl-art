@@ -5,7 +5,7 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -cw",
-    "serve": "serve build",
+    "serve": "superstatic -p 5000 build",
     "dev": "run-p watch serve"
   },
   "keywords": [],
@@ -30,8 +30,8 @@
     "lint-staged": "^10.5.4",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.2.1",
-    "serve": "^11.3.2",
-    "simple-git-hooks": "^2.2.0"
+    "simple-git-hooks": "^2.2.0",
+    "superstatic": "^7.1.0"
   },
   "lint-staged": {
     "*.{html.ejs,as,js,css,md}": "prettier --write",
