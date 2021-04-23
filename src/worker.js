@@ -44,6 +44,14 @@ function mustNext(it) {
   return value;
 }
 
+const zeroArgsHeader = ["squeeze", "xyb", "cbycr", "alpha"];
+function getNumHeaderArgs(name) {
+  if (zeroArgsHeader.includes(name)) {
+    return 0;
+  }
+  return 1;
+}
+
 function prettier(it, depth = 0) {
   let result = "";
   if (typeof it === "string") {
@@ -66,11 +74,13 @@ function prettier(it, depth = 0) {
       }
       break;
     }
-    if (token.toLowerCase() === "squeeze") {
-      result += "Squeeze\n";
-    } else {
-      result += `${token} ${mustNext(it)}\n`;
+    result += token;
+    let numArgs = getNumHeaderArgs(token.toLowerCase());
+    while (numArgs > 0) {
+      result += ` ${mustNext(it)}`;
+      numArgs--;
     }
+    result += "\n";
     foundConfig = true;
   }
 
