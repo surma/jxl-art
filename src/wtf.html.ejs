@@ -22,53 +22,79 @@
 
   <p>
     The oversimplified summary is that JPEG XL has a modular mode that divides
-    the image it encodes into squares, up to 1024x1024. JPEG XL uses a
-    prediction tree to make a prediction what the value of each pixel is in such
-    a square, based on neighboring pixels and their gradients. As a result only
-    the <em>difference</em> (or error) between the <em>actual</em> image and the
-    prediction needs to be encoded. The better the predictions, the smaller the
-    error, the more compressible the data, the smaller the file size. Profit.
+    the image it encodes into squares called groups, up to 1024x1024 each. JPEG
+    XL uses a prediction tree to make a prediction what the value of each pixel
+    is in such a square, based on neighboring pixels and their gradients. As a
+    result only the <em>difference</em> (or error) between the
+    <em>actual</em> image and the prediction needs to be encoded. The better the
+    predictions, the smaller the error, the more compressible the data, the
+    smaller the file size. Profit.
   </p>
 
   <p>
-    In the context of JXL art, however,
-    the error is always assumed to be zero, which makes the image consist of
-    <em>only</em> the prediction tree. That means the predictions effectively
-    generate the image. The process of creating JXL art is writing that
-    prediction tree. A prediction tree is a tree of if-else statements,
-    branching on different properties and selecting a predictor for each leaf of
-    the tree. The flexibility of these prediction trees is intentionally limited
-    because they need to be small and execution needs to be fast, as it is part
-    of the image decoding process. The prediction tree is run for every channel
-    (red, green and blue) and for every pixel. Some predictors incorporate the
-    values of the current pixel’s neighbors, specifically to the left, top-left,
-    top and top-right, which dictates in which order the pixels have to be
-    predicted: Row-by-row, top-to-bottom, left-to-right — just like Westerners
-    read text.
+    In the context of JXL art, however, the error is always assumed to be zero,
+    which makes the image consist of <em>only</em> the prediction tree. That
+    means the predictions effectively generate the image. The process of
+    creating JXL art is writing that prediction tree. A prediction tree is a
+    tree of if-else statements, branching on different properties and selecting
+    a predictor for each leaf of the tree. The flexibility of these prediction
+    trees is intentionally limited because they need to be small and execution
+    needs to be fast, as it is part of the image decoding process. The
+    prediction tree is run for every channel (red, green and blue) and for every
+    pixel. Some predictors incorporate the values of the current pixel’s
+    neighbors, specifically to the left, top-left, top and top-right, which
+    dictates in which order the pixels have to be predicted: Row-by-row,
+    top-to-bottom, left-to-right — just like Westerners read text.
   </p>
 
   <p>
     A program starts with an optional header that specifies image properties and
-    optional transformations to apply. The default header looks like this (everything is optional):
+    transformations to apply. The default header looks like this (everything is
+    optional):
   </p>
-  <pre>
-Width 1024
-Height 1024
-RCT 0          /* Reversible Color Transform. 0 is no transform, so just RGB. 1 means YCoCg. Higher numbers can be used. */
-/* XYB */      /* if this flag is added, the XYB color space is used instead of RGB. */
-/* CbYCr */    /* if this flag is added, the YCbCr transform is applied. Channel 0 becomes Cb, channel 1 is Y, channel 2 is Cr. */
-GroupShift 3   /* The group size is equal to 128 << GroupShift, so default is 1024. Values 0-3 are valid. */
-Bitdepth 8     /* Other bit depths can be used, from 1 to 31. */
-/* FloatExpBits 3 */  /* if this option is used, the numbers are interpreted as IEEE floats with this many exponent bits. */
-/* Alpha */           /* if this flag is added, a fourth channel is added for Alpha. */
-/* Squeeze */         /* if this flag is added, the Squeeze transform will be applied. Weird things will happen and the image gets many channels. */  
-  </pre>
+  <ul>
+    <li><code>Width 1024</code>: Width of the image</li>
+    <li><code>Height 1024</code>: Height of the image</li>
+    <li>
+      <code>RCT 0</code>: Reversible Color Transform.
+      <ul>
+        <li>0 is no transform, i.e. RGB.</li>
+        <li>1 is YCoCg.</li>
+        <li>Higher numbers can be used.</li>
+      </ul>
+    </li>
+
+    <li>
+      <code>XYB</code>: Use XYB color space is used instead of RGB (not enabled
+      by default).
+    </li>
+    <li>
+      <code>CbYCr</code>: Use YCbCr color space. Channel 0 becomes Cb, channel 1
+      is Y, channel 2 is Cr (not enabled by default).
+    </li>
+    <li>
+      <code>GroupShift 3</code>: Set the group size to
+      <code>128 << GroupShift</code>. Values 0-3 are valid.
+    </li>
+    <li>
+      <code>Bitdepth 8</code>: Self-explanatory. Other bit depths can be used,
+      from 1 to 31.
+    </li>
+    <li>
+      <code>FloatExpBits 3</code>: Numbers are interpreted as IEEE floats with
+      this many bits for the exponent.
+    </li>
+    <li><code>Alpha</code>: Add a fourth channel for Alpha.</li>
+    <li>
+      <code>Squeeze</code>: Apply the Squeeze transform. Weird things will
+      happen and the image gets many channels. */
+    </li>
+  </ul>
+
   <p>
-    It is then followed by a tree description,
-    which starts with a decision node — an if-else-like statement.
-    Technically you can also just give a single predictor, but that’s not very
-    useful to generate art, now is it (though it can be).
-    A decision node looks like this:
+    It is then followed by a tree description, which starts with a decision node
+    — an if-else-like statement. Technically you can also just give a single
+    predictor, but that’s rarely interesting. A decision node looks like this:
   </p>
 
   <pre>
@@ -86,8 +112,14 @@ if [property] > [value:int]
   <p>The following properties can be used in a decision node:</p>
 
   <ul>
-    <li><code>c</code>: the channel number, where 0=R, 1=G, 2=B, 3=A (if Alpha was enabled in the header)</li>
-    <li><code>g</code>: the group number (useful in case the image is larger than one group). Modular group numbers usually start with 21.</li>
+    <li>
+      <code>c</code>: the channel number, where 0=R, 1=G, 2=B, 3=A (if Alpha was
+      enabled in the header)
+    </li>
+    <li>
+      <code>g</code>: the group number (useful in case the image is larger than
+      one group). Modular group numbers usually start with 21.
+    </li>
     <li><code>x</code>,<code>y</code>: coordinates</li>
     <li><code>N</code>: value of pixel above (north)</li>
     <li><code>W</code>: value of pixel to the left (west)</li>
@@ -119,11 +151,27 @@ if [property] > [value:int]
       <code>W</code> predictor for the pixel on the left
     </li>
     <li><code>WGH</code>: signed max-absval-error of the weighted predictor</li>
-    <li><code>Prev</code>: the pixel value in this position in the <i>previous</i> channel</li>
-    <li><code>PPrev</code>: the pixel value in this position in the channel before the previous channel</li>
-    <li><code>PrevErr</code>: the difference between pixel value and the <code>Gradient</code>-predicted value in this position in the <i>previous</i> channel</li>
-    <li><code>PPrevErr</code>: like <code>PrevErr</code>, but for the channel before that</li>
-    <li><code>PrevAbs, PPrevAbs, PrevAbsErr, PPrevAbsErr</code>: same as the abov, but the absolute value (not the signed value)</li>
+    <li>
+      <code>Prev</code>: the pixel value in this position in the
+      <i>previous</i> channel
+    </li>
+    <li>
+      <code>PPrev</code>: the pixel value in this position in the channel before
+      the previous channel
+    </li>
+    <li>
+      <code>PrevErr</code>: the difference between pixel value and the
+      <code>Gradient</code>-predicted value in this position in the
+      <i>previous</i> channel
+    </li>
+    <li>
+      <code>PPrevErr</code>: like <code>PrevErr</code>, but for the channel
+      before that
+    </li>
+    <li>
+      <code>PrevAbs, PPrevAbs, PrevAbsErr, PPrevAbsErr</code>: same as the abov,
+      but the absolute value (not the signed value)
+    </li>
   </ul>
 
   <p>Leaf nodes are of the following form:</p>
