@@ -100,6 +100,10 @@ png.onclick = async () => {
   a.click();
 };
 
+zoom.onchange = () => {
+  cvs.classList.toggle("pixelated", zoom.scale > 1);
+};
+
 const IDBKey = "source";
 async function main() {
   const p = new URLSearchParams(location.search);

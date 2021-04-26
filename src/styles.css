@@ -7,7 +7,7 @@ body {
   display: flex;
   flex-direction: column;
 }
-#cvs {
+#cvs.pixelated {
   image-rendering: optimizeSpeed;
   image-rendering: -moz-crisp-edges;
   image-rendering: -o-crisp-edges;
