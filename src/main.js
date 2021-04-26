@@ -16,7 +16,7 @@ import { get, set } from "idb-keyval";
 import inflate from "./inflate.js";
 
 import { idle } from "./utils.js";
-import "./pinch-zoom.js";
+import "pinch-zoom-element";
 
 import workerURL from "omt:./worker.js";
 
