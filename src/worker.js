@@ -74,6 +74,17 @@ function prettier(it, depth = 0) {
       }
       break;
     }
+    if (token.startsWith("/*")) {
+      let endFound = token.endsWith("*/");
+      result += `${"  ".repeat(depth)}${token}`;
+      while (!endFound) {
+        const next = mustNext(it);
+        endFound = next.endsWith("*/");
+        result += ` ${next}`;
+      }
+      result += "\n";
+      continue;
+    }
     result += token;
     let numArgs = getNumHeaderArgs(token.toLowerCase());
     while (numArgs > 0) {
