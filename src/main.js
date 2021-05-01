@@ -115,6 +115,13 @@ function onCodeChange() {
   history.replaceState({}, "", u);
 }
 
+function onCompileShortcut(ev) {
+  if (!(ev.code === "Enter" && ev.ctrlKey && ev.altKey)) {
+    return;
+  }
+  compile();
+}
+
 const IDBKey = "source";
 async function main() {
   const p = new URLSearchParams(location.search);
@@ -133,6 +140,7 @@ async function main() {
     code.value = lastSource;
   }
   code.addEventListener("input", onCodeChange);
+  code.addEventListener("keydown", onCompileShortcut);
   run.disabled = false;
   if (fromURL) {
     await compile();
