@@ -50,7 +50,7 @@ async function rerender() {
   ctx.putImageData(imageData, 0, 0);
 }
 
-run.onclick = async () => {
+async function compile() {
   run.disabled = true;
   log.innerHTML = "";
   try {
@@ -59,7 +59,8 @@ run.onclick = async () => {
     showLog(e.message);
   }
   [run, jxl, png].forEach((btn) => (btn.disabled = false));
-};
+}
+run.onclick = compile;
 
 share.onclick = async () => {
   const u = new URL(location);
@@ -104,22 +105,38 @@ zoom.onchange = () => {
   cvs.classList.toggle("pixelated", zoom.scale > 1);
 };
 
+function onCodeChange() {
+  storeCode();
+  const u = new URL(location);
+  const p = new URLSearchParams(u.search);
+  p.delete("code");
+  p.delete("zcode");
+  u.search = "?" + p.toString();
+  history.replaceState({}, "", u);
+}
+
 const IDBKey = "source";
 async function main() {
   const p = new URLSearchParams(location.search);
   let lastSource = "";
+  let fromURL = false;
   if (p.has("zcode")) {
     lastSource = inflate(atob(p.get("zcode")));
+    fromURL = true;
   } else if (p.has("code")) {
     lastSource = atob(p.get("code"));
+    fromURL = true;
   } else {
     lastSource = await get(IDBKey);
   }
   if (lastSource) {
     code.value = lastSource;
   }
-  code.addEventListener("input", () => storeCode());
+  code.addEventListener("input", onCodeChange);
   run.disabled = false;
+  if (fromURL) {
+    await compile();
+  }
   const rect = zoom.getBoundingClientRect();
   const scale = Math.min(rect.width, rect.height) / 1024;
   zoom.scaleTo(scale.toFixed(2));
