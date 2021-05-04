@@ -44,10 +44,14 @@ function mustNext(it) {
   return value;
 }
 
-const zeroArgsHeader = ["squeeze", "xyb", "cbycr", "alpha"];
+const zeroArgsHeader = ["squeeze", "xyb", "cbycr", "alpha", "notlast"];
+const twoArgsHeader = ["framepos"];
 function getNumHeaderArgs(name) {
   if (zeroArgsHeader.includes(name)) {
     return 0;
+  }
+  if (twoArgsHeader.includes(name)) {
+    return 2;
   }
   return 1;
 }
@@ -109,7 +113,8 @@ function prettier(it, depth = 0) {
     }
   }
   if (depth == 0) {
-    result += [...it].join(" ");
+    result += `\n`;
+    result += prettier(it);
   }
   return result;
 }
