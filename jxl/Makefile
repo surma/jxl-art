@@ -24,16 +24,12 @@ $(OUT_JS): jxl.cpp $(CODEC_BUILD_DIR)/lib/libjxl.a
 		-I $(CODEC_BUILD_DIR)/lib/include \
 		-I $(CODEC_DIR)/third_party/highway \
 		-I $(CODEC_DIR)/third_party/skcms \
-		--bind \
 		--closure 1 \
 		-s INVOKE_RUN=0 \
 		-s ALLOW_MEMORY_GROWTH=1 \
-		-s MODULARIZE=1 \
-		-s TEXTDECODER=2 \
-		-s ENVIRONMENT=$(ENVIRONMENT) \
-		-s EXPORT_ES6=1 \
-		-s EXPORT_NAME="$(basename $(@F))" \
-		-o $@ \
+		-s STANDALONE_WASM=1 \
+		--no-entry \
+		-o jxl.wasm \
 		$+ \
 		$(CODEC_DIR)/tools/jxl_from_tree.cc \
 		$(CODEC_BUILD_DIR)/third_party/brotli/libbrotlidec-static.a \

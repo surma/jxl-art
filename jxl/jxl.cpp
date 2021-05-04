@@ -11,8 +11,7 @@
  * limitations under the License.
  */
 
-#include <emscripten/bind.h>
-#include <emscripten/val.h>
+#include "emscripten.h"
 
 #include "lib/jxl/color_encoding_internal.h"
 #include <jxl/decode.h>
@@ -22,12 +21,6 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-
-using namespace emscripten;
-
-thread_local const val Uint8ClampedArray = val::global("Uint8ClampedArray");
-thread_local const val ImageData = val::global("ImageData");
-thread_local const val Uint8Array = val::global("Uint8Array");
 
 // R, G, B, A
 #define COMPONENTS_PER_PIXEL 4
@@ -40,7 +33,7 @@ thread_local const val Uint8Array = val::global("Uint8Array");
 #define EXPECT_TRUE(a)                                                         \
   if (!(a)) {                                                                  \
     fprintf(stderr, "Assertion failure (%d): %s\n", __LINE__, #a);             \
-    return val::null();                                                        \
+    return -1;                                                                 \
   }
 #define EXPECT_EQ(a, b)                                                        \
   {                                                                            \
@@ -49,19 +42,21 @@ thread_local const val Uint8Array = val::global("Uint8Array");
     if (a_ != b_) {                                                            \
       fprintf(stderr, "Assertion failure (%d): %s (%d) != %s (%d)\n",          \
               __LINE__, #a, a_, #b, b_);                                       \
-      return val::null();                                                      \
+      return -1;                                                               \
     }                                                                          \
   }
 #else
 #define EXPECT_TRUE(a)                                                         \
   if (!(a)) {                                                                  \
-    return val::null();                                                        \
+    return -1;                                                                 \
   }
 
 #define EXPECT_EQ(a, b) EXPECT_TRUE((a) == (b));
 #endif
 
-val decode(std::string data) {
+extern "C" 
+EMSCRIPTEN_KEEPALIVE
+intptr_t decode(uint8_t* data, size_t len) {
   std::unique_ptr<
       JxlDecoder,
       std::integral_constant<decltype(&JxlDecoderDestroy), JxlDecoderDestroy>>
@@ -71,8 +66,8 @@ val decode(std::string data) {
                                                      JXL_DEC_COLOR_ENCODING |
                                                      JXL_DEC_FULL_IMAGE));
 
-  auto next_in = (const uint8_t *)data.c_str();
-  auto avail_in = data.size();
+  auto next_in = data;
+  auto avail_in = len;
   JxlDecoderSetInput(dec.get(), next_in, avail_in);
   EXPECT_EQ(JXL_DEC_BASIC_INFO, JxlDecoderProcessInput(dec.get()));
   JxlBasicInfo info;
@@ -105,7 +100,7 @@ val decode(std::string data) {
                                         component_count * sizeof(float)));
   EXPECT_EQ(JXL_DEC_FULL_IMAGE, JxlDecoderProcessInput(dec.get()));
 
-  auto byte_pixels = std::make_unique<uint8_t[]>(component_count);
+  auto byte_pixels = new std::vector<uint8_t>(component_count);
   // Convert to sRGB.
   skcms_ICCProfile jxl_profile;
   EXPECT_TRUE(
@@ -114,12 +109,11 @@ val decode(std::string data) {
       float_pixels.get(), skcms_PixelFormat_RGBA_ffff,
       info.alpha_premultiplied ? skcms_AlphaFormat_PremulAsEncoded
                                : skcms_AlphaFormat_Unpremul,
-      &jxl_profile, byte_pixels.get(), skcms_PixelFormat_RGBA_8888,
+      &jxl_profile, &byte_pixels[0], skcms_PixelFormat_RGBA_8888,
       skcms_AlphaFormat_Unpremul, skcms_sRGB_profile(), pixel_count));
 
-  return ImageData.new_(Uint8ClampedArray.new_(typed_memory_view(
-                            component_count, byte_pixels.get())),
-                        info.xsize, info.ysize);
+
+  return reinterpret_cast<intptr_t>(byte_pixels);
 }
 
 namespace jxl {
@@ -127,20 +121,14 @@ namespace jxl {
 int JxlFromTree(const char *in, const char *out, const char *tree_out);
 } // namespace jxl
 
-val jxl_from_tree(std::string in) {
-  std::ofstream jxlTree("/in.jxl");
-  jxlTree << in;
-  jxlTree.close();
+extern "C" 
+EMSCRIPTEN_KEEPALIVE
+intptr_t jxl_from_tree() {
   jxl::JxlFromTree("/in.jxl", "/out.jxl", nullptr);
   std::ifstream jxlImg("/out.jxl");
   std::stringstream jxlStream;
   jxlStream << jxlImg.rdbuf();
-  std::string jxlData = jxlStream.str();
+  std::string* jxlData = new std::string(jxlStream.str());
   jxlImg.close();
-  return Uint8Array.new_(typed_memory_view(jxlData.length(), jxlData.c_str()));
-}
-
-EMSCRIPTEN_BINDINGS(my_module) {
-  emscripten::function("jxl_from_tree", &jxl_from_tree);
-  emscripten::function("decode", &decode);
+  return reinterpret_cast<intptr_t>(jxlData);
 }

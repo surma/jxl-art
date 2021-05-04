@@ -13,7 +13,10 @@
 
 import { expose } from "comlink";
 
-import glue from "../jxl/jxl.js";
+import { create as createFS } from "./emscripten-modular/fs.js";
+import { create as createEmscripten } from "./emscripten-modular/emscripten.js";
+import { create as createEnv } from "./emscripten-modular/env.js";
+import { create as createMisc } from "./emscripten-modular/misc.js";
 import wasmURL from "asset-url:../jxl/jxl.wasm";
 
 const instanceP = glue({
