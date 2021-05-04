@@ -1744,7 +1744,7 @@ var jxl = (function () {
         "uncaught_exception" in Sa ? Sa.Pa++ : (Sa.Pa = 1);
         throw a;
       },
-      q: function (a, b, c) {
+      o: function (a, b, c) {
         Ob = c;
         try {
           var d = S(a);
@@ -2265,7 +2265,7 @@ var jxl = (function () {
         E[b >> 2] = d;
         return 0;
       },
-      o: function (a) {
+      q: function (a) {
         try {
           var b = S(a);
           if (null === b.ga) throw new M(8);
