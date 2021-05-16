@@ -136,7 +136,7 @@ async function main() {
     lastSource = inflate(atob(b64));
     fromURL = true;
   } else if (p.has("code")) {
-    lastSource = atob(p.get("code"));
+    lastSource = atob(p.get("code").replaceAll("-", "+").replaceAll("_", "/"));
     fromURL = true;
   } else {
     lastSource = await get(IDBKey);
