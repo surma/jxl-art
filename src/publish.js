@@ -14,7 +14,7 @@
 import { wrap } from "comlink";
 import inflate from "./inflate.js";
 
-import { idle } from "./utils.js";
+import { get, set } from "idb-keyval";
 import hookURL from "env:HOOK_URL";
 
 import workerURL from "omt:./worker.js";
@@ -26,17 +26,30 @@ const { title, artist, publishbtn, img } = document.all;
 let blob;
 let code;
 let jxlData;
+let zcode;
 async function main() {
   const p = new URLSearchParams(location.search);
   if (!p.has("payload")) {
     location.href = "/";
     return;
   }
-  code = inflate(atob(p.get("payload")));
+  zcode = p.get("payload");
+  code = inflate(atob(zcode));
   jxlData = await api.encodeJxl(code);
   if (typeof jxlData === "string") {
     return;
   }
+
+  const prevTitle = await get("previous-title");
+  if (prevTitle) {
+    title.value = prevTitle;
+  }
+
+  const prevArtist = await get("previous-artist");
+  if (prevArtist) {
+    artist.value = prevArtist;
+  }
+
   const imageData = await api.decodeJxl(jxlData);
   const cvs = document.createElement("canvas");
   cvs.width = imageData.width;
@@ -59,6 +72,7 @@ function unindent(str) {
 }
 
 publishbtn.onclick = async () => {
+  publishbtn.disabled = true;
   const formData = new FormData();
 
   const content = unindent(`
@@ -67,6 +81,10 @@ publishbtn.onclick = async () => {
     \`\`\`
     ${code}
     \`\`\`
+
+    https://jxl-art.surma.technology/?${new URLSearchParams({
+      zcode,
+    }).toString()}
   `);
   formData.append("payload_json", JSON.stringify({ content }));
   formData.append("file", new File([blob], "art.png", { type: "image/png" }));
@@ -75,6 +93,8 @@ publishbtn.onclick = async () => {
     method: "POST",
     body: formData,
   });
+  await set("previous-artist", artist.value);
+  await set("previous-title", title.value);
   location.href = "/";
 };
 main();

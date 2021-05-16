@@ -5,16 +5,13 @@
 <link rel="stylesheet" href="<%= emitAsset('src/styles.css') %>" />
 <style>
   img {
-    width: 128px;
+    max-width: 100%;
     height: auto;
   }
 </style>
 <h1>Publish your JXL Art</h1>
 
-<fieldset>
-  <legend>Image</legend>
-  <img id="img" />
-</fieldset>
+<button class="button" id="publishbtn" disabled>Publish</button>
 <fieldset>
   <legend>Title</legend>
   <input type="text" id="title" value="Unnamed piece" />
@@ -23,6 +20,8 @@
   <legend>Artist</legend>
   <input type="text" id="artist" value="Anonymous" />
 </fieldset>
-<button id="publishbtn" disabled>Publish</button>
-
+<fieldset>
+  <legend>Image</legend>
+  <img id="img" />
+</fieldset>
 <script src="<%= emitChunk('src/publish.js') %>"></script>
