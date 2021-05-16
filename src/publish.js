@@ -11,16 +11,17 @@
  * limitations under the License.
  */
 
-import { wrap } from "comlink";
-import inflate from "./inflate.js";
-
 import { get, set } from "idb-keyval";
+
+import inflate from "./inflate.js";
+import { process } from "./api.js";
+import {
+  imageDataToCanvas,
+  canvasToPNGBlobk as canvasToPNGBlob,
+  unindent,
+} from "./utils.js";
+
 import hookURL from "env:HOOK_URL";
-
-import workerURL from "omt:./worker.js";
-
-const worker = new Worker(workerURL);
-const api = wrap(worker);
 
 const { title, artist, publishbtn, img } = document.all;
 let blob;
@@ -35,10 +36,6 @@ async function main() {
   }
   zcode = p.get("payload");
   code = inflate(atob(zcode));
-  jxlData = await api.encodeJxl(code);
-  if (typeof jxlData === "string") {
-    return;
-  }
 
   const prevTitle = await get("previous-title");
   if (prevTitle) {
@@ -50,25 +47,18 @@ async function main() {
     artist.value = prevArtist;
   }
 
-  const imageData = await api.decodeJxl(jxlData);
-  const cvs = document.createElement("canvas");
-  cvs.width = imageData.width;
-  cvs.height = imageData.height;
-  const ctx = cvs.getContext("2d");
-  ctx.putImageData(imageData, 0, 0);
-  blob = await new Promise((resolve) => cvs.toBlob(resolve, "image/png"));
-  const url = URL.createObjectURL(blob);
-  img.src = url;
-  publishbtn.disabled = false;
-}
-
-function unindent(str) {
-  const lines = str.split("\n");
-  if (lines[0] === "") {
-    lines.shift();
+  let imageData;
+  try {
+    ({ jxlData, imageData } = await process(code));
+  } catch (e) {
+    location.href = "/";
+    return;
   }
-  const numLeadingSpaces = lines[0].search(/\S/);
-  return lines.map((line) => line.slice(numLeadingSpaces)).join("\n");
+
+  const cvs = imageDataToCanvas(imageData);
+  blob = await canvasToPNGBlob(cvs, { name: "art.png" });
+  img.src = URL.createObjectURL(blob);
+  publishbtn.disabled = false;
 }
 
 publishbtn.onclick = async () => {
@@ -87,7 +77,7 @@ publishbtn.onclick = async () => {
     }).toString()}
   `);
   formData.append("payload_json", JSON.stringify({ content }));
-  formData.append("file", new File([blob], "art.png", { type: "image/png" }));
+  formData.append("file", blob);
 
   await fetch(hookURL, {
     method: "POST",
