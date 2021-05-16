@@ -67,7 +67,10 @@ share.onclick = async () => {
   const p = new URLSearchParams(u.search);
   const { default: deflate } = await import("./deflate.js");
   const payload = btoa(deflate(code.value, 9));
-  p.set("zcode", payload);
+  // change letters around so payload can be put in a url
+  // padding is not needed
+  const safePayload = payload.replaceAll("+", "-").replaceAll("/", "_").replaceAll("=", "");
+  p.set("zcode", safePayload);
   p.delete("code");
   u.search = "?" + p.toString();
   history.replaceState({}, "", u);
@@ -128,7 +131,9 @@ async function main() {
   let lastSource = "";
   let fromURL = false;
   if (p.has("zcode")) {
-    lastSource = inflate(atob(p.get("zcode")));
+    // restore - and _ to + and /
+    const b64 = p.get("zcode").replaceAll("-", "+").replaceAll("_", "/");
+    lastSource = inflate(atob(b64));
     fromURL = true;
   } else if (p.has("code")) {
     lastSource = atob(p.get("code"));
