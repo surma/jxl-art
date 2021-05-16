@@ -20,7 +20,18 @@ import "pinch-zoom-element";
 
 import workerURL from "omt:./worker.js";
 
-const { code, run, share, log, cvs, jxl, png, zoom, prettier } = document.all;
+const {
+  code,
+  run,
+  share,
+  publish,
+  log,
+  cvs,
+  jxl,
+  png,
+  zoom,
+  prettier,
+} = document.all;
 const ctx = cvs.getContext("2d");
 
 const worker = new Worker(workerURL);
@@ -33,6 +44,14 @@ function showLog(error) {
 async function storeCode() {
   set(IDBKey, code.value);
 }
+
+publish.onclick = async (ev) => {
+  ev.preventDefault();
+  const { default: deflate } = await import("./deflate.js");
+  const payload = btoa(deflate(code.value, 9));
+  const searchParams = new URLSearchParams({ payload });
+  location.href = `/publish.html?${searchParams.toString()}`;
+};
 
 let jxlData;
 async function rerender() {

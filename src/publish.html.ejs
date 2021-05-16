@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<title>JXL Art</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="manifest" href="<%= emitEjs('src/manifest.json.ejs') %>" />
+<link rel="stylesheet" href="<%= emitAsset('src/styles.css') %>" />
+<style>
+  img {
+    width: 128px;
+    height: auto;
+  }
+</style>
+<h1>Publish your JXL Art</h1>
+
+<fieldset>
+  <legend>Image</legend>
+  <img id="img" />
+</fieldset>
+<fieldset>
+  <legend>Title</legend>
+  <input type="text" id="title" value="Unnamed piece" />
+</fieldset>
+<fieldset>
+  <legend>Artist</legend>
+  <input type="text" id="artist" value="Anonymous" />
+</fieldset>
+<button id="publishbtn" disabled>Publish</button>
+
+<script src="<%= emitChunk('src/publish.js') %>"></script>

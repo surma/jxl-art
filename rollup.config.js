@@ -23,6 +23,7 @@ import ejs from "./rollup/ejs.js";
 import fileList from "./rollup/file-list.js";
 import emitChunk from "./rollup/emit-chunk.js";
 import asset from "./rollup/asset.js";
+import env from "./rollup/env.js";
 
 require("rimraf").sync("build");
 
@@ -44,6 +45,7 @@ export default {
       },
       files: ["src/_headers", "src/index.html.ejs"],
     }),
+    env(),
     emitChunk(),
     resolve(),
     omt(),
