@@ -20,10 +20,17 @@ import {
   canvasToPNGBlobk as canvasToPNGBlob,
   unindent,
 } from "./utils.js";
+import {
+  generateInsecureKeyFromString,
+  decryptStringWithKey,
+} from "./crypto.js";
 
-import hookURL from "env:HOOK_URL";
+import * as hookData from "env:discord:HOOK_URL";
 
-const { title, artist, publishbtn, img } = document.all;
+async function lol() {}
+lol();
+
+const { title, artist, publishbtn, img, bottest } = document.all;
 let blob;
 let code;
 let jxlData;
@@ -62,7 +69,19 @@ async function main() {
 }
 
 publishbtn.onclick = async () => {
+  let hookURL;
+  try {
+    const keyphrase = bottest.value.toLowerCase();
+    const key = await generateInsecureKeyFromString(crypto, keyphrase);
+    hookURL = JSON.parse(
+      await decryptStringWithKey(crypto, hookData.data, hookData.iv, key)
+    );
+  } catch (e) {
+    bottest.style.borderColor = "red";
+    return;
+  }
   publishbtn.disabled = true;
+
   const formData = new FormData();
 
   const content = unindent(`

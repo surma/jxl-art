@@ -11,6 +11,12 @@
  * limitations under the License.
  */
 
+import { webcrypto as crypto } from "crypto";
+import {
+  generateInsecureKeyFromString,
+  encryptStringWithKey,
+} from "../src/crypto.js";
+
 const PREFIX = "env:";
 
 export default function () {
@@ -22,12 +28,25 @@ export default function () {
       }
       return prefixedId;
     },
-    load(prefixedId) {
+    async load(prefixedId) {
       if (!prefixedId.startsWith(PREFIX)) {
         return;
       }
-      const [, envName] = prefixedId.split(":", 2);
-      return `export default ${JSON.stringify(process.env[envName])}`;
+      const [, keyphrase, envName] = prefixedId.split(":");
+      const iv = new Uint8Array(16).map((v) => Math.floor(Math.random() * 256));
+      const key = await generateInsecureKeyFromString(crypto, keyphrase);
+      const data = await encryptStringWithKey(
+        crypto,
+        JSON.stringify(process.env[envName]),
+        iv,
+        key
+      );
+      return `
+        export const iv = new Uint8Array(${JSON.stringify([...iv])}); 
+        export const data = new Uint8Array(${JSON.stringify([
+          ...new Uint8Array(data),
+        ])});
+      `;
     },
   };
 }
