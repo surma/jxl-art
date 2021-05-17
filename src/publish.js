@@ -15,11 +15,7 @@ import { get, set } from "idb-keyval";
 
 import inflate from "./inflate.js";
 import { process } from "./api.js";
-import {
-  imageDataToCanvas,
-  canvasToPNGBlobk as canvasToPNGBlob,
-  unindent,
-} from "./utils.js";
+import { imageDataToCanvas, canvasToBlob, unindent } from "./utils.js";
 import {
   generateInsecureKeyFromString,
   decryptStringWithKey,
@@ -63,7 +59,7 @@ async function main() {
   }
 
   const cvs = imageDataToCanvas(imageData);
-  blob = await canvasToPNGBlob(cvs, { name: "art.png" });
+  blob = await canvasToBlob(cvs, { name: "art.jpg", type: "image/jpeg" });
   img.src = URL.createObjectURL(blob);
   publishbtn.disabled = false;
 }
@@ -85,11 +81,11 @@ publishbtn.onclick = async () => {
   const formData = new FormData();
 
   const content = unindent(`
-    _“${title.value}”_ by **${artist.value}**, ${jxlData.byteLength} bytes
-
-    \`\`\`
-    ${code}
-    \`\`\`
+    **${artist.value}**
+    _“${title.value}”_
+    ${new Date().getFullYear()}
+    image/jxl
+    ${jxlData.byteLength} bytes
 
     https://jxl-art.surma.technology/?${new URLSearchParams({
       zcode,

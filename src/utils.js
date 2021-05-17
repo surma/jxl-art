@@ -31,11 +31,12 @@ export function imageDataToCanvas(imageData) {
   return cvs;
 }
 
-export async function canvasToPNGBlobk(canvas, { name = "image.png" }) {
-  const blob = await new Promise((resolve) =>
-    canvas.toBlob(resolve, "image/png")
-  );
-  return new File([blob], name, { type: "image/png" });
+export async function canvasToBlob(
+  canvas,
+  { name = "image.png", type = "image/png" } = {}
+) {
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve, type));
+  return new File([blob], name, { type });
 }
 
 export function unindent(str) {
