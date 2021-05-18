@@ -11,20 +11,26 @@
  * limitations under the License.
  */
 
-import { wrap } from "comlink";
 import { get, set } from "idb-keyval";
 import inflate from "./inflate.js";
+import { process, api } from "./api.js";
 
 import { idle } from "./utils.js";
 import "pinch-zoom-element";
 
-import workerURL from "omt:./worker.js";
-
-const { code, run, share, log, cvs, jxl, png, zoom, prettier } = document.all;
+const {
+  code,
+  run,
+  share,
+  publish,
+  log,
+  cvs,
+  jxl,
+  png,
+  zoom,
+  prettier,
+} = document.all;
 const ctx = cvs.getContext("2d");
-
-const worker = new Worker(workerURL);
-const api = wrap(worker);
 
 function showLog(error) {
   log.innerHTML = error;
@@ -34,17 +40,26 @@ async function storeCode() {
   set(IDBKey, code.value);
 }
 
+publish.onclick = async (ev) => {
+  ev.preventDefault();
+  const { default: deflate } = await import("./deflate.js");
+  const payload = btoa(deflate(code.value, 9));
+  const searchParams = new URLSearchParams({ payload });
+  location.href = `/publish.html?${searchParams.toString()}`;
+};
+
 let jxlData;
 async function rerender() {
-  jxlData = await api.encodeJxl(code.value);
-  if (typeof jxlData === "string") {
-    return showLog(jxlData);
+  let imageData;
+  try {
+    ({ jxlData, imageData } = await process(code.value));
+  } catch (e) {
+    showLog(e.message);
   }
   jxl.textContent = jxl.textContent.replace(
     /(\([^)]+\))?$/,
     `(${jxlData.byteLength} bytes)`
   );
-  const imageData = await api.decodeJxl(jxlData);
   ctx.canvas.width = imageData.width;
   ctx.canvas.height = imageData.height;
   ctx.putImageData(imageData, 0, 0);

@@ -21,3 +21,29 @@ export function idle() {
     }
   });
 }
+
+export function imageDataToCanvas(imageData) {
+  const cvs = document.createElement("canvas");
+  cvs.width = imageData.width;
+  cvs.height = imageData.height;
+  const ctx = cvs.getContext("2d");
+  ctx.putImageData(imageData, 0, 0);
+  return cvs;
+}
+
+export async function canvasToBlob(
+  canvas,
+  { name = "image.png", type = "image/png" } = {}
+) {
+  const blob = await new Promise((resolve) => canvas.toBlob(resolve, type));
+  return new File([blob], name, { type });
+}
+
+export function unindent(str) {
+  const lines = str.split("\n");
+  if (lines[0] === "") {
+    lines.shift();
+  }
+  const numLeadingSpaces = lines[0].search(/\S/);
+  return lines.map((line) => line.slice(numLeadingSpaces)).join("\n");
+}
