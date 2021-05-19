@@ -53,8 +53,8 @@
     optional):
   </p>
   <ul>
-    <li><code>Width 1024</code>: Width of the image</li>
-    <li><code>Height 1024</code>: Height of the image</li>
+    <li><code>Width 1024</code>: Width of the image (frame)</li>
+    <li><code>Height 1024</code>: Height of the image (frame)</li>
     <li>
       <code>RCT 0</code>: Reversible Color Transform.
       <ul>
@@ -95,12 +95,27 @@
     </li>
     <li>
       <code>FloatExpBits 3</code>: Numbers are interpreted as IEEE floats with
-      this many bits for the exponent.
+      this many bits for the exponent (not enabled by default).
     </li>
-    <li><code>Alpha</code>: Add a fourth channel for Alpha.</li>
+    <li><code>Alpha</code>: Add a fourth channel (c == 3) for Alpha (not enabled by default).</li>
     <li>
       <code>Squeeze</code>: Apply the Squeeze transform. Weird things will
-      happen and the image gets many channels.
+      happen and the image gets many channels (not enabled by default).
+    </li>
+    <li>
+      <code>FramePos 0 0</code>: The frame position is set to this (x0, y0) position.
+      The image canvas size also gets adjusted so the bottom right corner of the frame remains in the bottom right corner of the image.
+      This is mostly useful with negative values, e.g. FramePos -100 -200, which has the effect of hiding the first 100 columns and the first 200 rows.
+    </li>
+    <li>
+      <code>NotLast</code>: This is not the last frame/layer (not enabled by default).
+      This flag can be used to do multi-layer images. After encoding this layer, another layer will be encoded, which gets alpha-blended
+      over the first layer and which can itself also have the NotLast option (there is no limit on the number of layers you can create this way).
+      Every layer gets its own tree, so when this flag is used, you should specify not just one tree, but (at least) two.
+      You can change the RCT between layers (they are local transforms), but not the Bitdepth, XYB, Orientation or presence of Alpha,
+      since those are file/global properties/transforms.
+      (without Alpha it is not very useful at the moment to do layering, since only alpha-blending can currently be done, though this will change when
+      we add support for other blend modes and/or animation)
     </li>
   </ul>
 
