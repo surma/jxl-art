@@ -117,6 +117,15 @@
       (without Alpha it is not very useful at the moment to do layering, since only alpha-blending can currently be done, though this will change when
       we add support for other blend modes and/or animation)
     </li>
+    <li>
+      <code>Spline [4 * 32 coefficients] x0 y0 x1 y1 ... xn yn EndSpline</code>:
+      Draws a spline that goes through the points (x0,y0), (x1,y1), ..., (xn,yn) and that has a color and thickness given by 4 times 32 numbers.
+      These 32 numbers are 1D-DCT32 coefficients and floating point numbers, where the first number is the DC (i.e. the average value) and the next numbers
+      correspond to increasing frequencies. The first series of 32 numbers corresponds to the color of the first channel (e.g. Red), where 1.0 is the maximum value.
+      The second series corresponds to the second channel (e.g. Green), the third to the third channel (e.g. Blue).
+      The final series of 32 numbers defines the 'thickness' in pixels (note that it's more like a blur radius than a thickness of a solid line).
+      The spline gets 'added' to the frame, so negative numbers (both in colors and in thickness) correspond to darkening while positive numbers correspond to brightening.
+    </li>
   </ul>
 
   <p>
