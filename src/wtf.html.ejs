@@ -118,7 +118,7 @@
       we add support for other blend modes and/or animation)
     </li>
     <li>
-      <code>Spline [4 * 32 coefficients] x0 y0 x1 y1 ... xn yn EndSpline<code>:
+      <code>Spline [4 * 32 coefficients] x0 y0 x1 y1 ... xn yn EndSpline</code>:
       Draws a spline that goes through the points (x0,y0), (x1,y1), ..., (xn,yn) and that has a color and thickness given by 4 times 32 numbers.
       These 32 numbers are 1D-DCT32 coefficients and floating point numbers, where the first number is the DC (i.e. the average value) and the next numbers
       correspond to increasing frequencies. The first series of 32 numbers corresponds to the color of the first channel (e.g. Red), where 1.0 is the maximum value.
