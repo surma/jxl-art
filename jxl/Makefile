@@ -1,5 +1,5 @@
 CODEC_URL = https://github.com/libjxl/libjxl.git
-CODEC_VERSION = 08f3fb4cdd4d5ca86c955303db11a95b9a636e3f
+CODEC_VERSION = 1e80b6c163139f567838bf58bb2220c23501526b
 CODEC_DIR = node_modules/jxl
 CODEC_BUILD_ROOT := $(CODEC_DIR)/build
 CODEC_BUILD_DIR := $(CODEC_BUILD_ROOT)
