@@ -1,6 +1,7 @@
 {
   "name": "starterkit",
   "version": "0.0.1",
+  "type": "module",
   "description": "",
   "scripts": {
     "build": "rollup -c",
@@ -12,28 +13,28 @@
   "author": "Surma <surma@surma.dev>",
   "license": "Apache-2.0",
   "dependencies": {
-    "@rollup/plugin-node-resolve": "^11.2.1",
-    "@surma/rollup-plugin-off-main-thread": "^2.1.0",
-    "@swc/core": "^1.2.51",
-    "comlink": "^4.3.0",
-    "ejs": "^3.1.6",
-    "idb-keyval": "^5.0.4",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-swc": "^0.3.0",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@surma/rollup-plugin-off-main-thread": "^2.2.3",
+    "@swc/core": "^1.4.2",
+    "comlink": "^4.4.1",
+    "ejs": "^3.1.9",
+    "idb-keyval": "^6.2.1",
     "pinch-zoom-element": "^1.1.1",
-    "pointer-tracker": "^2.4.0",
-    "postcss": "^8.2.13",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.79.1",
-    "rollup-plugin-postcss": "^4.0.0",
-    "rollup-plugin-swc": "^0.1.4",
-    "rollup-plugin-terser": "^7.0.2",
-    "web-streams-polyfill": "^3.0.2"
+    "pointer-tracker": "^2.5.3",
+    "postcss": "^8.4.35",
+    "rimraf": "^5.0.5",
+    "rollup": "^4.12.0",
+    "rollup-plugin-postcss": "^4.0.2",
+    "web-streams-polyfill": "^3.3.3"
   },
   "devDependencies": {
-    "lint-staged": "^10.5.4",
+    "lint-staged": "^15.2.2",
     "npm-run-all": "^4.1.5",
-    "prettier": "^2.2.1",
-    "simple-git-hooks": "^2.2.0",
-    "superstatic": "^7.1.0"
+    "prettier": "^3.2.5",
+    "simple-git-hooks": "^2.9.0",
+    "superstatic": "^9.0.3"
   },
   "lint-staged": {
     "*.{html.ejs,as,js,css,md}": "prettier --write",

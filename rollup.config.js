@@ -15,8 +15,8 @@ import { execSync } from "child_process";
 
 import resolve from "@rollup/plugin-node-resolve";
 import omt from "@surma/rollup-plugin-off-main-thread";
-import { terser } from "rollup-plugin-terser";
-import swc from "rollup-plugin-swc";
+import terser from "@rollup/plugin-terser";
+import swc from "@rollup/plugin-swc";
 import postcss from "rollup-plugin-postcss";
 
 import ejs from "./rollup/ejs.js";
@@ -25,10 +25,11 @@ import emitChunk from "./rollup/emit-chunk.js";
 import asset from "./rollup/asset.js";
 import env from "./rollup/env.js";
 
-require("rimraf").sync("build");
+import * as rimraf from "rimraf";
+rimraf.sync("build");
 
 const currentCommit = execSync("git show HEAD --format=format:%h -s").toString(
-  "utf8"
+  "utf8",
 );
 
 export default {
