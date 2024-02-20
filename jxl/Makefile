@@ -1,5 +1,5 @@
 CODEC_URL = https://github.com/libjxl/libjxl.git
-CODEC_VERSION = v0.7
+CODEC_VERSION = 1e80b6c163139f567838bf58bb2220c23501526b
 CODEC_DIR = node_modules/jxl
 CODEC_BUILD_ROOT := $(CODEC_DIR)/build
 CODEC_BUILD_DIR := $(CODEC_BUILD_ROOT)
@@ -14,7 +14,7 @@ OUT_WORKER = $(OUT_JS:.js=.worker.js)
 
 all: $(OUT_JS)
 
-$(OUT_JS): jxl.cpp $(CODEC_BUILD_DIR)/lib/libjxl.a
+$(OUT_JS): jxl.cpp $(CODEC_BUILD_DIR)/lib/libjxl.a $(CODEC_BUILD_DIR)/lib/libjxl_cms.a
 	$(CXX) \
 		$(CXXFLAGS) \
 		$(LDFLAGS) \
@@ -36,14 +36,13 @@ $(OUT_JS): jxl.cpp $(CODEC_BUILD_DIR)/lib/libjxl.a
 		-o $@ \
 		$+ \
 		$(CODEC_DIR)/tools/jxl_from_tree.cc \
-		$(CODEC_BUILD_DIR)/third_party/brotli/libbrotlidec-static.a \
-		$(CODEC_BUILD_DIR)/third_party/brotli/libbrotlienc-static.a \
-		$(CODEC_BUILD_DIR)/third_party/brotli/libbrotlicommon-static.a \
-		$(CODEC_BUILD_DIR)/third_party/libskcms.a \
+		$(CODEC_BUILD_DIR)/third_party/brotli/libbrotlidec.a \
+		$(CODEC_BUILD_DIR)/third_party/brotli/libbrotlienc.a \
+		$(CODEC_BUILD_DIR)/third_party/brotli/libbrotlicommon.a \
 		$(CODEC_BUILD_DIR)/third_party/highway/libhwy.a
 
-%/lib/libjxl.a: %/Makefile
-	$(MAKE) -C $(<D) jxl-static
+%/lib/libjxl.a %/lib/libjxl_cms.a: %/Makefile
+	$(MAKE) -C $(<D) jxl jxl_cms
 
 %/Makefile: $(CODEC_DIR)/CMakeLists.txt
 	emcmake cmake \
