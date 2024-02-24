@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <title>JXL Art</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="manifest" href="<%= emitEjs('src/manifest.json.ejs') %>" />
@@ -34,4 +34,5 @@
   <legend>Image</legend>
   <img id="img" />
 </fieldset>
+<script src="<%= emitAsset('node_modules/ejs/ejs.min.js') %>"></script>
 <script src="<%= emitChunk('src/publish.js') %>"></script>

@@ -1,14 +1,9 @@
-<!DOCTYPE html>
+<!doctype html>
 <title>JXL Art</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="manifest" href="<%= emitEjs('src/manifest.json.ejs') %>" />
 <link rel="stylesheet" href="<%= emitAsset('src/styles.css') %>" />
-<style>
-  html,
-  body {
-    background: #ddd;
-  }
-</style>
+<meta charset="UTF-8" />
 
 <body class="text">
   <p>
@@ -78,8 +73,8 @@
     </li>
 
     <li>
-      <code>XYB</code>: Use XYB color space instead of RGB (not enabled
-      by default).
+      <code>XYB</code>: Use XYB color space instead of RGB (not enabled by
+      default).
     </li>
     <li>
       <code>CbYCr</code>: Use YCbCr color space. Channel 0 becomes Cb, channel 1
@@ -97,34 +92,51 @@
       <code>FloatExpBits 3</code>: Numbers are interpreted as IEEE floats with
       this many bits for the exponent (not enabled by default).
     </li>
-    <li><code>Alpha</code>: Add a fourth channel (c == 3) for Alpha (not enabled by default).</li>
     <li>
-      <code>Squeeze</code>: Apply the Squeeze transform (not enabled by default). Weird things will
-      happen and the image gets many channels; keep predictor values low to avoid blocky images.
+      <code>Alpha</code>: Add a fourth channel (c == 3) for Alpha (not enabled
+      by default).
     </li>
     <li>
-      <code>FramePos 0 0</code>: The frame position is set to this (x0, y0) position.
-      The image canvas size also gets adjusted so the bottom right corner of the frame remains in the bottom right corner of the image.
-      This is mostly useful with negative values, e.g. <code>FramePos -100 -200</code>, which has the effect of hiding the first 100 columns and the first 200 rows.
+      <code>Squeeze</code>: Apply the Squeeze transform (not enabled by
+      default). Weird things will happen and the image gets many channels; keep
+      predictor values low to avoid blocky images.
     </li>
     <li>
-      <code>NotLast</code>: This is not the last frame/layer (not enabled by default).
-      This flag can be used to do multi-layer images. After encoding this layer, another layer will be encoded, which gets alpha-blended
-      over the first layer and which can itself also have the NotLast option (there is no limit on the number of layers you can create this way).
-      Every layer gets its own tree, so when this flag is used, you should specify not just one tree, but (at least) two.
-      You can change the RCT between layers (they are local transforms), but not the Bitdepth, XYB, Orientation or presence of Alpha,
-      since those are file/global properties/transforms.
-      (without Alpha it is not very useful at the moment to do layering, since only alpha-blending can currently be done, though this will change when
-      we add support for other blend modes and/or animation)
+      <code>FramePos 0 0</code>: The frame position is set to this (x0, y0)
+      position. The image canvas size also gets adjusted so the bottom right
+      corner of the frame remains in the bottom right corner of the image. This
+      is mostly useful with negative values, e.g.
+      <code>FramePos -100 -200</code>, which has the effect of hiding the first
+      100 columns and the first 200 rows.
+    </li>
+    <li>
+      <code>NotLast</code>: This is not the last frame/layer (not enabled by
+      default). This flag can be used to do multi-layer images. After encoding
+      this layer, another layer will be encoded, which gets alpha-blended over
+      the first layer and which can itself also have the NotLast option (there
+      is no limit on the number of layers you can create this way). Every layer
+      gets its own tree, so when this flag is used, you should specify not just
+      one tree, but (at least) two. You can change the RCT between layers (they
+      are local transforms), but not the Bitdepth, XYB, Orientation or presence
+      of Alpha, since those are file/global properties/transforms. (without
+      Alpha it is not very useful at the moment to do layering, since only
+      alpha-blending can currently be done, though this will change when we add
+      support for other blend modes and/or animation)
     </li>
     <li>
       <code>Spline [4 * 32 coefficients] x0 y0 x1 y1 ... xn yn EndSpline</code>:
-      Draws a spline that goes through the points (x0,y0), (x1,y1), ..., (xn,yn) and that has a color and thickness given by 4 times 32 numbers.
-      These 32 numbers are 1D-DCT32 coefficients and floating point numbers, where the first number is the DC (i.e. the average value) and the next numbers
-      correspond to increasing frequencies. The first series of 32 numbers corresponds to the color of the first channel (e.g. Red), where 1.0 is the maximum value.
-      The second series corresponds to the second channel (e.g. Green), the third to the third channel (e.g. Blue).
-      The final series of 32 numbers defines the 'thickness' in pixels (note that it's more like a blur radius than a thickness of a solid line).
-      The spline gets 'added' to the frame, so negative numbers (both in colors and in thickness) correspond to darkening while positive numbers correspond to brightening.
+      Draws a spline that goes through the points (x0,y0), (x1,y1), ..., (xn,yn)
+      and that has a color and thickness given by 4 times 32 numbers. These 32
+      numbers are 1D-DCT32 coefficients and floating point numbers, where the
+      first number is the DC (i.e. the average value) and the next numbers
+      correspond to increasing frequencies. The first series of 32 numbers
+      corresponds to the color of the first channel (e.g. Red), where 1.0 is the
+      maximum value. The second series corresponds to the second channel (e.g.
+      Green), the third to the third channel (e.g. Blue). The final series of 32
+      numbers defines the 'thickness' in pixels (note that it's more like a blur
+      radius than a thickness of a solid line). The spline gets 'added' to the
+      frame, so negative numbers (both in colors and in thickness) correspond to
+      darkening while positive numbers correspond to brightening.
     </li>
   </ul>
 
@@ -206,8 +218,8 @@ if [property] > [value:int]
       before that
     </li>
     <li>
-      <code>PrevAbs, PPrevAbs, PrevAbsErr, PPrevAbsErr</code>: same as the above,
-      but the absolute value (not the signed value)
+      <code>PrevAbs, PPrevAbs, PrevAbsErr, PPrevAbsErr</code>: same as the
+      above, but the absolute value (not the signed value)
     </li>
   </ul>
 

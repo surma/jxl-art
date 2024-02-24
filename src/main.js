@@ -40,7 +40,7 @@ const {
 const ctx = cvs.getContext("2d");
 
 function showLog(error) {
-  log.innerHTML = error;
+  log.textContent = error;
 }
 
 async function storeCode() {
@@ -59,17 +59,20 @@ let jxlData;
 async function rerender() {
   let imageData;
   try {
-    ({ jxlData, imageData } = await process(ejs.render(code.value)));
+    let jxltree = ejs.render(code.value);
+    ({ jxlData, imageData } = await process(jxltree));
+    jxl.textContent = jxl.textContent.replace(
+      /(\([^)]+\))?$/,
+      `(${jxlData.byteLength} bytes)`,
+    );
+    ctx.canvas.width = imageData.width;
+    ctx.canvas.height = imageData.height;
+    ctx.putImageData(imageData, 0, 0);
   } catch (e) {
-    showLog(e.message);
+    showLog(
+      `${e}\n\nStack:\n    ${e.stack.split("\n").join("\n    ")}\n${e.cause != null ? JSON.stringify(e.cause, null, 4) : ""}`,
+    );
   }
-  jxl.textContent = jxl.textContent.replace(
-    /(\([^)]+\))?$/,
-    `(${jxlData.byteLength} bytes)`,
-  );
-  ctx.canvas.width = imageData.width;
-  ctx.canvas.height = imageData.height;
-  ctx.putImageData(imageData, 0, 0);
 }
 
 async function compile() {
@@ -116,8 +119,10 @@ jxl.onclick = () => {
 };
 
 prettier.onclick = async () => {
-  code.value = await api.prettier(code.value);
-  storeCode();
+  if (code.value === ejs.render(code.value)) {
+    code.value = await api.prettier(code.value);
+    storeCode();
+  }
 };
 
 png.onclick = async () => {
