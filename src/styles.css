@@ -1,3 +1,8 @@
+:root {
+  --dark-color: #272822;
+  --medium-color: #373833;
+  --light-color: #484944;
+}
 html,
 body {
   background: #ddd;
@@ -21,6 +26,7 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1;
+  background: black;
 }
 .vertical-split {
   display: flex;
@@ -58,7 +64,7 @@ body {
   padding: 0.5em;
 }
 a {
-  color: #007;
+  color: #88f;
 }
 footer {
   text-align: center;
@@ -66,20 +72,20 @@ footer {
 
 .button {
   border: 1px solid black;
-  background: linear-gradient(to bottom, #eee, #ccc);
+  background: linear-gradient(to bottom, var(--light-color), var(--dark-color));
   border-radius: 2px;
   margin: 0.1em;
   padding: 0.5em 1em;
   text-align: center;
   text-decoration: none;
-  color: black;
+  color: white;
   font-size: 1em;
 }
 .button[disabled] {
   color: #888;
 }
 .button:active {
-  background: linear-gradient(to bottom, #ccc, #eee);
+  background: linear-gradient(to bottom, var(--dark-color), var(--light-color));
 }
 
 body.text {
@@ -91,8 +97,11 @@ body.text {
 #output {
   position: relative;
   flex-grow: 1;
-  background: repeating-conic-gradient(#272822 0% 25%, #484944 0% 50%) 50%/60px
-    60px;
+  background: repeating-conic-gradient(
+      var(--dark-color) 0% 25%,
+      var(--light-color) 0% 50%
+    )
+    50%/60px 60px; /* https://css-tricks.com/background-patterns-simplified-by-conic-gradients/#checkerboard */
 }
 
 #zoom {
@@ -106,10 +115,11 @@ body.text {
   position: absolute;
   bottom: 0;
   right: 0;
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(0, 0, 0, 0.7);
   padding: 0.1em;
   display: flex;
   flex-direction: column;
+  color: white;
 }
 
 /* pinch zoom stuff */
