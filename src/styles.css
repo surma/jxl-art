@@ -11,6 +11,7 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
+  color: white;
 }
 #cvs.pixelated {
   image-rendering: optimizeSpeed;
@@ -26,7 +27,11 @@ body {
   display: flex;
   flex-direction: column;
   flex: 1;
-  background: black;
+  background: repeating-conic-gradient(
+      var(--dark-color) 0% 25%,
+      var(--light-color) 0% 50%
+    )
+    50%/60px 60px; /* https://css-tricks.com/background-patterns-simplified-by-conic-gradients/#checkerboard */
 }
 .vertical-split {
   display: flex;
@@ -50,6 +55,7 @@ body {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  background: rgba(0, 0, 0, 0.7);
 }
 #controls > * {
   flex-grow: 1;
@@ -97,11 +103,6 @@ body.text {
 #output {
   position: relative;
   flex-grow: 1;
-  background: repeating-conic-gradient(
-      var(--dark-color) 0% 25%,
-      var(--light-color) 0% 50%
-    )
-    50%/60px 60px; /* https://css-tricks.com/background-patterns-simplified-by-conic-gradients/#checkerboard */
 }
 
 #zoom {
@@ -119,7 +120,6 @@ body.text {
   padding: 0.1em;
   display: flex;
   flex-direction: column;
-  color: white;
 }
 
 /* pinch zoom stuff */
