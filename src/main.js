@@ -20,7 +20,8 @@ import "pinch-zoom-element";
 
 import "./ace-src-noconflict/ace.js";
 import "./ace-src-noconflict/theme-monokai.js";
-import "./ace-src-noconflict/mode-json.js";
+// import "./ace-src-noconflict/mode-json.js";
+import "./ace-src-noconflict/mode-javascript.js";
 // import  "./ace-src-noconflict/worker-json.js"
 
 let code;
@@ -58,7 +59,7 @@ let jxlData;
 async function rerender() {
   let imageData;
   try {
-    ({ jxlData, imageData } = await process(code.value));
+    ({ jxlData, imageData } = await process(ejs.render(code.value)));
   } catch (e) {
     showLog(e.message);
   }
@@ -170,6 +171,7 @@ function make_editor(editor_el, mode = "json") {
   });
   editor.setTheme("ace/theme/monokai");
   editor.session.setMode(`ace/mode/${mode}`);
+  editor.session.setTabSize(2);
   ++editor_counter;
   return editor;
 }
@@ -177,7 +179,7 @@ function make_editor(editor_el, mode = "json") {
 const IDBKey = "source";
 async function main() {
   for (let editor_el of document.querySelectorAll(".editor")) {
-    make_editor(editor_el, "json");
+    make_editor(editor_el, "javascript");
   }
   let element = document.querySelector(".editor");
   let editor = editors.get(element);

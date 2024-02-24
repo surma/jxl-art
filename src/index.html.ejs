@@ -4,7 +4,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="manifest" href="<%= emitEjs('src/manifest.json.ejs') %>" />
 <link rel="stylesheet" href="<%= emitAsset('src/styles.css') %>" />
-<% emitEjs('src/ace-src-noconflict/worker-json.js') %>
 <div class="vertical-split">
   <pre id="editor" class="editor" style="width: 50%">
 RCT 0
@@ -223,4 +222,5 @@ if y > 0
     </div>
   </div>
 </div>
+<script src="<%= emitAsset('node_modules/ejs/ejs.min.js') %>"></script>
 <script src="<%= emitChunk('src/main.js') %>"></script>
