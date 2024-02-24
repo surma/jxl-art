@@ -17,6 +17,24 @@ body {
   image-rendering: pixelated;
   -ms-interpolation-mode: nearest-neighbor;
 }
+.horizontal-split {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.vertical-split {
+  display: flex;
+  height: 100%;
+}
+
+.editor {
+  margin: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  resize: horizontal;
+}
 #code {
   height: 20em;
   flex-basis: 100%;
@@ -73,6 +91,8 @@ body.text {
 #output {
   position: relative;
   flex-grow: 1;
+  background: repeating-conic-gradient(#272822 0% 25%, #484944 0% 50%) 50%/60px
+    60px;
 }
 
 #zoom {
