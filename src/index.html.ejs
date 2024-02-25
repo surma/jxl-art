@@ -1,64 +1,236 @@
-<!DOCTYPE html>
+<!doctype html>
 <title>JXL Art</title>
+<meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link rel="manifest" href="<%= emitEjs('src/manifest.json.ejs') %>" />
 <link rel="stylesheet" href="<%= emitAsset('src/styles.css') %>" />
-<div id="controls">
-  <textarea id="code">
-    Bitdepth 8
-    Orientation 7
-    RCT 6
-
-    if y > 150
-      if c > 0
-        - N 0
-        if x > 500
-          if WGH > 5
-            - AvgN+NW + 2
-            - AvgN+NE - 2
-          if x > 470
-            - AvgW+NW -2
-            if WGH > 0
-              - AvgN+NW +1
-              - AvgN+NE - 1
-      if y > 136
-        if c > 0
-          if c > 1
-            if x > 500
-              - Set -20
-              - Set 40
-            if x > 501
-              - W - 1
-              - Set 150
-          if x > 500
-            - N + 5
-            - N - 15
-        if W > -50
-          - Weighted -1
-          - Set 320
-  </textarea>
-  <button id="run" disabled class="button">Run ▶️</button>
-  <button id="share" class="button">Share 🌍</button>
-  <a id="publish" href="<%= emitEjs('src/publish.html.ejs'); %>" class="button">
-    Publish 🖼</a
-  >
-  <button id="prettier" class="button">Prettify✨</button>
-  <a href="<%= emitEjs('src/wtf.html.ejs'); %>" target="_blank" class="button"
-    >Help 😭</a
-  >
-  <pre id="log"></pre>
-</div>
-<div id="output">
-  <pinch-zoom id="zoom">
-    <canvas id="cvs" width="1024" height="1024"></canvas>
-  </pinch-zoom>
-  <footer>
-    <button disabled id="jxl" class="button">Download JXL ⬇️</button>
-    <button disabled id="png" class="button">Download PNG ⬇️</button>
-    <div id="credits">
-      Made with 🤪 by <a href="https://twitter.com/dassurma">Surma</a>. <br />
-      <a href="https://github.com/surma/jxl-art">Source</a> on GitHub.
+<div class="vertical-split">
+  <div id="editortabpane" class="tabbed-interface">
+    <div class="tab-bar">
+      <div id="tab-btn-source" class="tab-btn selected">jxl_0.ejs</div>
+      <div class="tab-bar-separator" style="flex-grow: 1"></div>
     </div>
-  </footer>
+    <div id="tab-content-source" class="tab-content">
+      <pre id="editor" class="editor">
+<%% /* Enter jxltree code here, preprocessed with EJS templating language */ %>
+RCT 0
+Width 1024
+Height 1024
+Bitdepth 8
+Alpha
+HiddenChannel 15
+NotLast
+if c > 17
+    - Set 255
+    if c > 16
+      - Set 0
+    if c > 15
+      - Set 0
+      - Set 0
+
+if c > 17
+    if Prev5 > 0
+  - Set 255
+  if Prev4 > 0
+  - Set 255
+  - Set 0
+if c > 16
+    if Prev4 > 0
+    - Set 0
+    - Set 255
+if c > 15
+    if Prev3 > 0
+    - Set 0
+    - Set 255
+if c > 14
+    if Prev2 > 0
+    - Set 255
+    - Set 255
+if c > 13
+    if Prev1 > 0
+  - Set 1
+  if N > 0
+    if NW-N > -1
+      if N-NE > 0
+        - Set 1
+        - Set 0
+      if N-NE > 0
+        - Set 1
+        - Set 1
+    if NW-N > 0
+      if N-NE > -1
+        - Set 0
+        - Set 1
+      if N-NE > -1
+        - Set 0
+        - Set 1
+if c > 12
+    if Prev13 > 0
+  if Prev3 > 0
+  if Prev5 > 0
+  if Prev6 > 0
+  if Prev7 > 0
+          - Set 1
+          if Prev12 > 0
+          - Set 1
+          - Set 0
+  if Prev11 > 0
+          - Set 1
+          - Set 0
+  if Prev4 > 0
+          if Prev10 > 0
+          - Set 1
+          - Set 0
+          if Prev9 > 0
+          - Set 1
+          - Set 0
+  if Prev1 > 0
+  if Prev2 > 0
+          if Prev8 > 0
+          - Set 1
+          - Set 0
+          if Prev7 > 0
+          - Set 1
+          - Set 0
+  if Prev6 > 0
+          - Set 1
+          - Set 0
+  if Prev10 > 0
+  if Prev11 > 0
+  if Prev12 > 0
+          if Prev5 > 0
+          - Set 1
+          - Set 0
+          if Prev4 > 0
+          - Set 1
+          - Set 0
+  if Prev3 > 0
+          - Set 1
+          - Set 0
+  if Prev9 > 0
+          if Prev2 > 0
+          - Set 1
+          - Set 0
+          if Prev8 > 0
+          if Prev1 > 0
+          - Set 1
+          - Set 0
+          - Set 0
+if c > 11
+    if y > 0
+  - N + 1024
+    if x > 0
+    - W + 1483
+    - Set -1174267
+if c > 10
+    if y > 0
+  - N + 1024
+    if x > 0
+    - W + 537
+    - Set -729166
+if c > 9
+    if y > 0
+  - N + 1
+    - Set -452
+if c > 8
+    if y > 0
+  - N + 1024
+    if x > 0
+    - W - 537
+    - Set -179230
+if c > 7
+    if y > 0
+  - N + 1024
+    if x > 0
+    - W - 1483
+    - Set 344681
+if c > 6
+    if y > 0
+  - N + 1024
+    if x > 0
+    - W - 8405
+    - Set 4291243
+if c > 5
+    if y > 0
+  - N - 1024
+    if x > 0
+    - W - 2700
+    - Set 2079185
+if c > 4
+    if y > 0
+  - N - 1024
+    if x > 0
+    - W - 907
+    - Set 1070498
+if c > 3
+    if y > 0
+  - N - 1024
+    if x > 0
+    - W - 252
+    - Set 716613
+if c > 2
+    if y > 0
+  - N - 256
+    if x > 0
+    - W + 63
+    - Set 114705
+if c > 1
+    if y > 0
+  - N - 1024
+    if x > 0
+    - W + 907
+    - Set 141880
+if c > 0
+    if y > 0
+  - N - 512
+    if x > 0
+    - W + 1350
+    - Set -342621
+if y > 0
+  - N + 1024
+    if x > 0
+    - W + 8405
+    - Set -4315819
+      </pre>
+    </div>
+  </div>
+  <div class="horizontal-split">
+    <div id="controls">
+      <button id="run" disabled class="button">Run ▶️</button>
+      <button id="share" class="button">Share 🌍</button>
+      <a
+        id="publish"
+        href="<%= emitEjs('src/publish.html.ejs'); %>"
+        class="button"
+      >
+        Publish 🖼</a
+      >
+      <button id="prettier" class="button">Prettify✨</button>
+      <a
+        href="<%= emitEjs('src/wtf.html.ejs'); %>"
+        target="_blank"
+        class="button"
+        >Help 😭</a
+      >
+      <pre id="log"></pre>
+    </div>
+    <div id="output">
+      <pinch-zoom id="zoom">
+        <canvas id="cvs" width="1024" height="1024"></canvas>
+      </pinch-zoom>
+      <footer>
+        <button disabled id="jxl" class="button">Download JXL ⬇️</button>
+        <button disabled id="png" class="button">Download PNG ⬇️</button>
+        <div id="credits">
+          Made with 🤪 by <a href="https://twitter.com/dassurma">Surma</a>.
+          <br />
+          Forked and updated by veluca93 & <span class="rainbowtext">Qon</span>
+          <br />
+          Source on a GitHub somewhere.
+        </div>
+      </footer>
+    </div>
+  </div>
 </div>
+<script src="<%= emitAsset('node_modules/ejs/ejs.min.js') %>"></script>
 <script src="<%= emitChunk('src/main.js') %>"></script>

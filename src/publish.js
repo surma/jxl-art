@@ -11,11 +11,11 @@
  * limitations under the License.
  */
 
-import {get, set} from "idb-keyval";
+import { get, set } from "idb-keyval";
 
 import inflate from "./inflate.js";
-import {process} from "./api.js";
-import {imageDataToCanvas, canvasToBlob, unindent} from "./utils.js";
+import { process } from "./api.js";
+import { imageDataToCanvas, canvasToBlob, unindent } from "./utils.js";
 import {
   generateInsecureKeyFromString,
   decryptStringWithKey,
@@ -26,7 +26,7 @@ import * as hookData from "env:discord:HOOK_URL";
 async function lol() {}
 lol();
 
-const {title, artist, publishbtn, img, bottest} = document.all;
+const { title, artist, publishbtn, img, bottest } = document.all;
 let blob;
 let code;
 let jxlData;
@@ -39,6 +39,8 @@ async function main() {
   }
   zcode = p.get("payload");
   code = inflate(atob(zcode));
+  let prev = code;
+  for (; prev !== (code = ejs.render(prev)); prev = code) {}
 
   const prevTitle = await get("previous-title");
   if (prevTitle) {
@@ -52,14 +54,14 @@ async function main() {
 
   let imageData;
   try {
-    ({jxlData, imageData} = await process(code));
+    ({ jxlData, imageData } = await process(code));
   } catch (e) {
     location.href = "/";
     return;
   }
 
   const cvs = imageDataToCanvas(imageData);
-  blob = await canvasToBlob(cvs, {name: "art.jpg", type: "image/jpeg"});
+  blob = await canvasToBlob(cvs, { name: "art.jpg", type: "image/jpeg" });
   img.src = URL.createObjectURL(blob);
   publishbtn.disabled = false;
 }
@@ -70,7 +72,7 @@ publishbtn.onclick = async () => {
     const keyphrase = bottest.value.toLowerCase();
     const key = await generateInsecureKeyFromString(crypto, keyphrase);
     hookURL = JSON.parse(
-      await decryptStringWithKey(crypto, hookData.data, hookData.iv, key)
+      await decryptStringWithKey(crypto, hookData.data, hookData.iv, key),
     );
   } catch (e) {
     console.log(e);
@@ -89,10 +91,10 @@ publishbtn.onclick = async () => {
     ${jxlData.byteLength} bytes
 
     https://jxl-art.surma.technology/?${new URLSearchParams({
-    zcode,
-  }).toString()}
+      zcode,
+    }).toString()}
   `);
-  formData.append("payload_json", JSON.stringify({content}));
+  formData.append("payload_json", JSON.stringify({ content }));
   formData.append("file", blob);
 
   await fetch(hookURL, {
