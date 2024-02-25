@@ -65,9 +65,6 @@ body {
   padding: 10px;
   cursor: pointer;
 }
-.tab-btn:not(.assemble) {
-  border-radius: 10px 10px 0 0;
-}
 .tab-btn:hover {
   background-color: #373833;
 }
@@ -75,14 +72,6 @@ body {
   background-color: #282923;
 }
 .tab-btn.selected:hover {
-}
-
-.tab-btn.assemble {
-  background-color: green;
-}
-.tab-btn.assemble:hover {
-  background-color: lime;
-  color: black;
 }
 .hidden {
   display: none !important;

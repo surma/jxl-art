@@ -80,7 +80,7 @@ function ejs_multipass() {
   let prev = code.value;
   let jxltree, last_added_tab;
   let i = 0;
-  for (; prev != (jxltree = ejs.render(prev)); ++i, prev = jxltree) {
+  for (; prev !== (jxltree = ejs.render(prev)); ++i, prev = jxltree) {
     last_added_tab = add_tab(editortabpane, `jxl_${i + 1}.ejs`, jxltree, {
       type: "editor",
       readonly: false,

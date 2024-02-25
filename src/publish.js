@@ -38,7 +38,9 @@ async function main() {
     return;
   }
   zcode = p.get("payload");
-  code = ejs.render(inflate(atob(zcode)));
+  code = inflate(atob(zcode));
+  let prev = code;
+  for (; prev !== (code = ejs.render(prev)); prev = code) {}
 
   const prevTitle = await get("previous-title");
   if (prevTitle) {
