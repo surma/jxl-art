@@ -37,14 +37,64 @@ body {
   display: flex;
   height: 100%;
 }
+.vertical-split > *:not(:nth-child(1)) {
+  flex: 1;
+}
+.vertical-split > *:nth-child(1) {
+  width: 50%;
+  resize: horizontal;
+  overflow: hidden;
+}
+.tabbed-interface {
+  display: flex;
+  flex-direction: column;
+}
+.tab-content {
+  flex: 1;
+}
+.tab-bar {
+  background-color: #484944;
+  grid-row: 1;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
 
+.tab-btn {
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+}
+.tab-btn:not(.assemble) {
+  border-radius: 10px 10px 0 0;
+}
+.tab-btn:hover {
+  background-color: #373833;
+}
+.tab-btn.selected.selected {
+  background-color: #282923;
+}
+.tab-btn.selected:hover {
+}
+
+.tab-btn.assemble {
+  background-color: green;
+}
+.tab-btn.assemble:hover {
+  background-color: lime;
+  color: black;
+}
+.hidden {
+  display: none !important;
+}
 .editor {
   margin: 0;
   top: 0;
   bottom: 0;
   left: 0;
   right: 0;
-  resize: horizontal;
+  width: 100%;
+  height: 100%;
 }
 #code {
   height: 20em;
@@ -88,7 +138,7 @@ footer {
   font-size: 1em;
 }
 .button[disabled] {
-  color: #888;
+  color: #666;
 }
 .button:active {
   background: linear-gradient(to bottom, var(--dark-color), var(--light-color));

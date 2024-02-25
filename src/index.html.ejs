@@ -5,7 +5,13 @@
 <link rel="manifest" href="<%= emitEjs('src/manifest.json.ejs') %>" />
 <link rel="stylesheet" href="<%= emitAsset('src/styles.css') %>" />
 <div class="vertical-split">
-  <pre id="editor" class="editor" style="width: 50%">
+  <div id="editortabpane" class="tabbed-interface">
+    <div class="tab-bar">
+      <div id="tab-btn-source" class="tab-btn selected">jxl.ejs</div>
+      <div class="tab-bar-separator" style="flex-grow: 1"></div>
+    </div>
+    <div id="tab-content-source" class="tab-content">
+      <pre id="editor" class="editor">
 <%% /* Enter jxltree code here, preprocessed with EJS templating language */ %>
 RCT 0
 Width 1024
@@ -185,7 +191,9 @@ if y > 0
     if x > 0
     - W + 8405
     - Set -4315819
-  </pre>
+      </pre>
+    </div>
+  </div>
   <div class="horizontal-split">
     <div id="controls">
       <button id="run" disabled class="button">Run ▶️</button>
