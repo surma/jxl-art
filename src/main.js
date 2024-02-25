@@ -22,6 +22,7 @@ import "./ace-src-noconflict/ace.js";
 import "./ace-src-noconflict/theme-monokai.js";
 // import "./ace-src-noconflict/mode-json.js";
 import "./ace-src-noconflict/mode-javascript.js";
+import "./ace-src-noconflict/keybinding-sublime.js";
 // import  "./ace-src-noconflict/worker-json.js"
 
 let code;
@@ -149,9 +150,9 @@ function onCodeChange() {
 }
 
 function onCompileShortcut(ev) {
-  // if (!(ev.code === "Enter" && ev.ctrlKey && ev.altKey)) {
-  //   return;
-  // }
+  if (!(ev.code === "Enter" && ev.ctrlKey)) {
+    return;
+  }
   compile();
 }
 
@@ -165,7 +166,7 @@ function make_editor_elements(mode) {
   wrap.appendChild(pre);
   return [wrap, pre];
 }
-function make_editor(editor_el, mode = "json") {
+function make_editor(editor_el, mode = "javascript") {
   if (!editor_el.id) editor_el.id = "editor" + editor_counter;
   let editor = ace.edit(editor_el.id);
   editors.set(editor_el, editor);
@@ -174,6 +175,7 @@ function make_editor(editor_el, mode = "json") {
     wrap: false,
     fixedWidthGutter: true,
   });
+  editor.setKeyboardHandler("ace/keyboard/sublime");
   editor.setTheme("ace/theme/monokai");
   editor.session.setMode(`ace/mode/${mode}`);
   editor.session.setTabSize(2);
@@ -218,16 +220,18 @@ async function main() {
   }
   // code.addEventListener("input", onCodeChange);
   editor.on("change", onCodeChange);
-  // code.addEventListener("keydown", onCompileShortcut);
+  window.addEventListener("keydown", onCompileShortcut);
+  // editor.commands.removeCommand('addLineAfter')
   editor.commands.addCommand({
     name: "run",
     bindKey: {
-      win: "Ctrl-Enter",
-      mac: "Command-Enter",
+      win: "Ctrl-B",
+      mac: "Command-B",
     },
-    exec: onCompileShortcut,
+    exec: compile,
     readOnly: true, // false if this command should not apply in readOnly mode
   });
+  editor.focus();
 
   run.disabled = false;
   if (fromURL) {
